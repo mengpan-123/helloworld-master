@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="界面跳转根据Internet传递参数"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+
+
+    <EditText
+        android:id="@+id/inputphone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="请输入手机号码"
+        android:lines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColorHint="#95A1AA"
+        android:textSize="14sp" />
+    <EditText
+        android:id="@+id/inputname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="请输入姓名"
+        android:lines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColorHint="#95A1AA"
+        android:textSize="14sp" />
+    <EditText
+        android:id="@+id/inputage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="请输入性别"
+        android:lines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColorHint="#95A1AA"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/parampass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="参数传递"
+        android:textColor="#f00"
+        android:textSize="14sp" />
+</LinearLayout>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainColor"
+    >
+
+
+   <!-- 首先需要登陆一下，将门店信息和款台，机器号信息等进行输入，然后保存到本地作为初始化数据-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+
+        android:layout_marginTop="100dp"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/khid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="门店号"
+            android:layout_weight="1"
+            android:textColor="#f00"
+            android:textSize="14sp"
+            android:layout_marginLeft="30dp"
+            />
+
+        <EditText
+            android:id="@+id/inputkhid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="20dp"
+            android:hint="请输入当前门店编号"
+            android:layout_weight="2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="40dp"
+            android:lines="1"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColorHint="#95A1AA"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/machine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="机器编号"
+            android:layout_weight="1"
+            android:textColor="#f00"
+            android:textSize="14sp"
+            android:layout_marginLeft="30dp"
+            />
+
+        <EditText
+            android:id="@+id/inputmachine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="20dp"
+            android:hint="请输入当前机器编号"
+            android:layout_weight="2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="40dp"
+            android:lines="1"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColorHint="#95A1AA"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:orientation="vertical"
+        android:layout_marginTop="60dp" >
+        >
+        <TextView
+            android:id="@+id/explain"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="说明"
+            android:layout_marginLeft="20dp"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:gravity="left"
+            android:text="本消息请谨慎录入，一旦写入后，将不可更改。\n该参数请如实填写"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+         >
+
+        <Button
+            android:id="@+id/Login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="45dp"
+            android:background="@color/buttonColor"
+            android:text="确认登陆"
+
+            android:textSize="18sp"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,56 @@
+package com.ceshi.helloworld.net;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
+
+public class MyDatabaseHelper extends SQLiteOpenHelper {
+
+
+
+    private Context mContext;
+
+    //声明一个建表的语句，用于存储这个门店 和机器编号,和录入日期，app版本，微信支付商户号
+    public static final String CREATE_KHDA = "create table  Khda ("
+
+            + "khid text  primary key, "
+
+            + "khsname  text , "
+
+            + "machine_number text, "
+
+            + "app_version  text, "
+
+            + "date_lr date, "
+
+            + "mch_id text)";
+
+
+    //构造函数
+    public MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+
+        super(context, name, factory, version);
+
+        mContext = context;
+
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+        db.execSQL(CREATE_KHDA);
+
+        Toast.makeText(mContext, "Create succeeded", Toast.LENGTH_SHORT).show();
+
+    }
+
+
+
+
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    }
+}
