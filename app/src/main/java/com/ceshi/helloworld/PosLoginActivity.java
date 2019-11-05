@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,10 +17,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 import com.ceshi.helloworld.net.AllInterFace;
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.HttpSendRequest;
 import com.ceshi.helloworld.net.MyDatabaseHelper;
+import com.ceshi.helloworld.net.RetrofitHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -27,6 +31,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 没有在清单文件注册 现在应该好了
@@ -36,7 +44,7 @@ public class PosLoginActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private  SQLiteDatabase querydb;
 
-
+    private Call<getdeviceinfoEntity> getdeviceinfoEntityCall;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,136 +86,94 @@ public class PosLoginActivity extends AppCompatActivity {
                 TextView inputmachine = findViewById(R.id.inputmachine);
                 TextView  inputkhid= findViewById(R.id.inputkhid);
 
-                if (inputmachine.getText().toString().length()==0||inputkhid.getText().toString().length()==0)
+                String   s_inputmachine=inputmachine.getText().toString();
+                String   s_inputkhid=inputkhid.getText().toString();
+
+
+
+                if (s_inputmachine.length()==0||s_inputkhid.length()==0)
                 {
                     Toast.makeText(PosLoginActivity.this, "请输入门店号或者设备号", Toast.LENGTH_LONG).show();
                     return;
                 }
+
+
+                //传入门店编号和设备号，进行注册
+                getdeviceinfoEntityCall  = RetrofitHelper.getInstance().getdeviceinfobyselfhelpdeviceid(
+                        s_inputkhid,
+                        s_inputmachine);
+
+                getdeviceinfoEntityCall.enqueue(new Callback<getdeviceinfoEntity>() {
+                    @Override
+                    public void onResponse(Call<getdeviceinfoEntity> call, Response<getdeviceinfoEntity> response) {
+                        if (response != null) {
+
+                            String  use_khid="";
+                            String  storeName="";
+
+                            getdeviceinfoEntity body = response.body();
+
+                            int nCode= body.getReturnX().getNCode();
+
+                            Log.e("zhoupan","nCode = "+nCode);
+
+                            if (nCode!=0){
+                                String message=body.getReturnX().getStrText();
+                                Toast.makeText(PosLoginActivity.this, message, Toast.LENGTH_LONG).show();
+
+                                Log.e("本次返回失败",message);
+                                return;
+                            }
+
+                            //成功的话，拿到门店的值
+                            getdeviceinfoEntity.ResponseBean response1 = body.getResponse();
+                            use_khid=response1.getStoreId();
+
+
+                            //然后根据获取到的 门店的值 ，进行下一次门店商户号的获取
+
+
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<getdeviceinfoEntity> call, Throwable t) {
+
+                    }
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 String  use_khid="";
 
                 String useresult="";
 
 
 
-                String result=AllInterFace.getdeviceinfobyselfhelpdeviceid(inputkhid.getText().toString(),inputmachine.getText().toString());
 
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    String newresult = jsonObject.getString("return");
-
-                    JSONObject newjsonObject = new JSONObject(newresult);
-                    if (newjsonObject.getString("nCode") != "0") {
-
-                        String returnmsg = newjsonObject.getString("strText");
-                        Toast.makeText(PosLoginActivity.this, returnmsg, Toast.LENGTH_LONG).show();
-                    }
-                }
-                catch (JSONException e) {
-                    Toast.makeText(PosLoginActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-
-                 }
-
-                //AlertDialog alertDialog = new AlertDialog.Builder(PosLoginActivity.this).create();
-                //alertDialog.setIcon(R.mipmap.advise);      //设置对话框的图标 10
-                //alertDialog.setTitle("温馨提示");            //设置对话框的标题 11         //设置要显示的内容 12
-                //alertDialog.setMessage(returnmsg);
-                //alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确认",
-                //new DialogInterface.OnClickListener() {
-                // @Override
-                // public void onClick(DialogInterface dialog, int which) {
-                // alertDialog.hide();
-                //   }
-                //});
-                //alertDialog.show();
-
-
-                //return;
-                // }
-                //}
-                //catch (JSONException e){
-
-
-                // }
-
-
-                //调用 接口  进行门店注册
-                //new Thread(new Runnable(){
-                   // @Override
-                    //public void run() {
-                        //String result=AllInterFace.getdeviceinfobyselfhelpdeviceid(inputkhid.getText().toString(),inputmachine.getText().toString());
-
-                        //
-
-
-                        //try {
-                            //JSONObject jsonObject = new JSONObject(result);
-                            //String  newresult= jsonObject.getString("return");
-
-                            //JSONObject newjsonObject = new JSONObject(newresult);
-                            //if (  newjsonObject.getString("nCode")!="0"){
-
-                                //String returnmsg=newjsonObject.getString("strText");
-
-
-
-                                //AlertDialog alertDialog = new AlertDialog.Builder(PosLoginActivity.this).create();
-                                //alertDialog.setIcon(R.mipmap.advise);      //设置对话框的图标 10
-                                //alertDialog.setTitle("温馨提示");            //设置对话框的标题 11         //设置要显示的内容 12
-                                //alertDialog.setMessage(returnmsg);
-                                //alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确认",
-                                          //new DialogInterface.OnClickListener() {
-                                          // @Override
-                                             // public void onClick(DialogInterface dialog, int which) {
-                                              // alertDialog.hide();
-                                             //   }
-                                //});
-                                //alertDialog.show();
-
-
-                                  //return;
-                           // }
-                        //}
-                        //catch (JSONException e){
-
-
-                       // }
-
-                       /* try {
-                            JSONArray jsonArray=new JSONArray(result);
-                            for (int i=0; i<jsonArray.length();i++){
-                                JSONObject jsonObject=jsonArray.getJSONObject(i);
-
-                                String  newresult= jsonObject.getString("return");
-                                JSONArray secjsonArray=new JSONArray(newresult);
-                                for (int k=0; k<secjsonArray.length();k++) {
-                                    JSONObject newjsonObject = jsonArray.getJSONObject(k);
-
-                                    if (  newjsonObject.getString("nCode")!="0"){
-
-                                        String returnmsg=newjsonObject.getString("strText");
-
-                                        Toast.makeText(PosLoginActivity.this, returnmsg, Toast.LENGTH_LONG).show();
-                                        return;
-                                    }
-
-                                }
-                            }
-
-                        }catch (JSONException e){
-                            e.printStackTrace();
-                        }*/
-
-
-
-                    //}
-               // }).start();
 
                 //String Result=AllInterFace.getdeviceinfobyselfhelpdeviceid(inputkhid.getText().toString(),inputmachine.getText().toString());
                 //解析门店信息，然后用返回的门店基础信息进行保存
 
                 String  storeName="";
                 //注册成功之后 ，拿到 返回的门店编号之后，进行获取微信商户号
-                AllInterFace.getMchIdByStoreId(use_khid);
+                //AllInterFace.getMchIdByStoreId(use_khid);
                 //解析出商户号编号
                 String  mch_id="";
 

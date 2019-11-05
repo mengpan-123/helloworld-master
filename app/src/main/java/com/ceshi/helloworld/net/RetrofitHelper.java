@@ -2,8 +2,10 @@ package com.ceshi.helloworld.net;
 
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
+import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -100,12 +102,12 @@ public class RetrofitHelper {
 
 
     /**
-     * 登陆/注册
+     * 输入门店号和设备号之后 进行登陆/注册
      *
      * @param inputstoreid 用户id
      * @param deviceid 任务id
      */
-    public Call<TaskDetailEntity> getdeviceinfobyselfhelpdeviceid(String inputstoreid,String deviceid) {
+    public Call<getdeviceinfoEntity> getdeviceinfobyselfhelpdeviceid(String inputstoreid, String deviceid) {
         return mAPIService.getdeviceinfobyselfhelpdeviceid(inputstoreid, inputstoreid);
     }
 
@@ -124,4 +126,14 @@ public class RetrofitHelper {
     public Call<ClearCarEntity>  ClearCar(String storeId,String deviceid){
         return mAPIService.ClearCar(storeId,deviceid);
     }
+
+
+    /**
+     * StoreIdEntity就是返回的json，框架会帮你自动解析google.code.gson 就这个玩意
+     * streId就是你要传的参数
+     */
+    public Call<PurchaseBag>  getBagInfo(String userId, String storeId){
+        return mAPIService.getBagInfo(userId,storeId);
+    }
+
 }

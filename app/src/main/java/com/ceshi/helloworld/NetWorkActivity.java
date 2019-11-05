@@ -10,9 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.net.RetrofitHelper;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +33,8 @@ public class NetWorkActivity extends AppCompatActivity {
     private TextView tvAlldata;
     private Call<StoreIdEntity> storeIdEntityCall;
     private Call<ClearCarEntity> ClearCarEntityCall;
+
+    private Call<PurchaseBag> PurchaseBagCall;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,7 +79,7 @@ public class NetWorkActivity extends AppCompatActivity {
 
             }
         });*/
-        ClearCarEntityCall  = RetrofitHelper.getInstance().ClearCar("S2101","111111");
+       /* ClearCarEntityCall  = RetrofitHelper.getInstance().ClearCar("S2101","111111");
 
         ClearCarEntityCall.enqueue(new Callback<ClearCarEntity>() {
             @Override
@@ -97,8 +102,28 @@ public class NetWorkActivity extends AppCompatActivity {
             public void onFailure(Call<ClearCarEntity> call, Throwable t) {
 
             }
+        });*/
+
+        PurchaseBagCall= RetrofitHelper.getInstance().getBagInfo("526374","S101");
+
+        PurchaseBagCall.enqueue(new Callback<PurchaseBag>() {
+            @Override
+            public void onResponse(Call<PurchaseBag> call, Response<PurchaseBag> response) {
+
+                PurchaseBag body = response.body();
+
+                int nCode= body.getReturnX().getNCode();
+
+                PurchaseBag.ResponseBean  res=body.getResponse();
+                List<PurchaseBag.ResponseBean.BagMapBean>  maps= res.getBagMap();
+                
+
+            }
+
+            @Override
+            public void onFailure(Call<PurchaseBag> call, Throwable t) {
+
+            }
         });
-
-
     }
 }

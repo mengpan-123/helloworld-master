@@ -1,8 +1,10 @@
 package com.ceshi.helloworld.net;
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
+import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -27,9 +29,9 @@ public interface APIService {
      */
     @FormUrlEncoded
     @POST("rest/v3/CheckService/getdeviceinfobyselfhelpdeviceid")
-    Call<TaskDetailEntity> getdeviceinfobyselfhelpdeviceid(
-            @Field("userid") String inputstoreid,
-            @Field("password") String deviceid
+    Call<getdeviceinfoEntity> getdeviceinfobyselfhelpdeviceid(
+            @Field("inputId") String inputId,
+            @Field("deviceId") String deviceId
     );
 
 
@@ -56,4 +58,11 @@ public interface APIService {
     Call<ClearCarEntity> ClearCar(
             @Field("storeId")  String storeId,
             @Field("deviceId")  String deviceId);
+
+
+    @FormUrlEncoded
+    @POST("base/rest/v3/cartService/cleanCartOfDevice")
+    Call<PurchaseBag> getBagInfo(
+            @Field("userId")  String storeId,
+            @Field("storeId")  String deviceId);
 }
