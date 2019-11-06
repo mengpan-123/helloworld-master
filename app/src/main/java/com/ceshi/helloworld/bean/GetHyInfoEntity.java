@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class GetHyInfoEntity implements Serializable {
 
     /**
-     * 会员录入信息
+     * 会员录入信息    Entity
      * return : {"nCode":-1,"strText":"FieldId 11 not exists","strInfo":""}
      * response : {"server_timestamp":1573002760736}
      */
