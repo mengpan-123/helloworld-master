@@ -41,33 +41,4 @@ public  class CommonData  extends Application {
     public static String    app_version="";
 
 
-
-    public static  class   SpInfoList {
-
-        public String barcode = "";
-
-        public String goodsId = "";
-        public String pluName = "";
-        public String pluUnit = "";
-        public String mainPrice = "";
-
-        public String pluTypeId = "";
-
-        public String realPrice="";
-
-        //订单总价
-        public String totalPrice="";
-    }
-
-
-    public static  class   HyInfo {
-
-        //会员卡号
-        public String cardnumber = "";
-        //会员手机号
-        public String hytelphone = "";
-        //是否录入会员
-        public String isInputHy = "";
-
-    }
 }
