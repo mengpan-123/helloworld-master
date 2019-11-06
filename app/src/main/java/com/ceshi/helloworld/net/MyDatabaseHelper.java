@@ -11,10 +11,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     private Context mContext;
 
-    //声明一个建表的语句，用于存储这个门店 和机器编号,和录入日期，app版本，微信支付商户号
-    public static final String CREATE_KHDA = "create table  Khda ("
+    //声明一个建表的语句，用于存储这个门店 和机器编号,和录入日期，app版本，微信支付商户号,门店商户id-》lCorpId
+    public static final String CREATE_SQL = "create table  "+CommonData.tablename+" ("
 
             + "khid text  primary key, "
+
+            + "lCorpId  text , "
 
             + "khsname  text , "
 
@@ -39,7 +41,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(CREATE_KHDA);
+        db.execSQL(CREATE_SQL);
 
         Toast.makeText(mContext, "Create succeeded", Toast.LENGTH_SHORT).show();
 

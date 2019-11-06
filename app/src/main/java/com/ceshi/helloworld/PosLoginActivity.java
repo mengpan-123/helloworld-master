@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 import com.ceshi.helloworld.net.AllInterFace;
 import com.ceshi.helloworld.net.CommonData;
@@ -45,6 +46,23 @@ public class PosLoginActivity extends AppCompatActivity {
     private  SQLiteDatabase querydb;
 
     private Call<getdeviceinfoEntity> getdeviceinfoEntityCall;
+
+    private Call<StoreIdEntity> StoreIdEntityCall;
+
+    private String  use_khid="";
+
+    private String  storeName="";
+
+    private String mch_id="";
+
+    private String  sub_mch_id="";
+
+    private  String lCorpId="";
+    private  String app_version="";
+
+    private   String   s_inputmachine="";
+
+    private   String  s_inputkhid="";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,14 +99,11 @@ public class PosLoginActivity extends AppCompatActivity {
             @Override
             public  void  onClick(View view) {
 
-
                 //创建成功之后进行写数据
                 TextView inputmachine = findViewById(R.id.inputmachine);
                 TextView  inputkhid= findViewById(R.id.inputkhid);
-
-                String   s_inputmachine=inputmachine.getText().toString();
-                String   s_inputkhid=inputkhid.getText().toString();
-
+                s_inputmachine=inputmachine.getText().toString();
+                s_inputkhid=inputkhid.getText().toString();
 
 
                 if (s_inputmachine.length()==0||s_inputkhid.length()==0)
@@ -107,32 +122,52 @@ public class PosLoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<getdeviceinfoEntity> call, Response<getdeviceinfoEntity> response) {
                         if (response != null) {
-
-                            String  use_khid="";
-                            String  storeName="";
-
                             getdeviceinfoEntity body = response.body();
 
                             int nCode= body.getReturnX().getNCode();
 
                             Log.e("zhoupan","nCode = "+nCode);
 
-                            if (nCode!=0){
-                                String message=body.getReturnX().getStrText();
+                            if (nCode!=0) {
+                                String message = body.getReturnX().getStrText();
                                 Toast.makeText(PosLoginActivity.this, message, Toast.LENGTH_LONG).show();
 
-                                Log.e("本次返回失败",message);
+                                Log.e("本次返回失败", message);
                                 return;
                             }
 
                             //成功的话，拿到门店的值
                             getdeviceinfoEntity.ResponseBean response1 = body.getResponse();
                             use_khid=response1.getStoreId();
-
+                            storeName=response1.getStoreName();
+                            lCorpId=response1.getCorpId();
 
                             //然后根据获取到的 门店的值 ，进行下一次门店商户号的获取
+                            StoreIdEntityCall= RetrofitHelper.getInstance().getStoreId(use_khid);
 
+                            StoreIdEntityCall.enqueue(new Callback<StoreIdEntity>() {
+                                @Override
+                                public void onResponse(Call<StoreIdEntity> call, Response<StoreIdEntity> response) {
+                                    if (response != null) {
+                                        StoreIdEntity body = response.body();
+                                        //这里就直接拿到后台返回的对象StoreIdEntity  比如我要取return下的code
+                                        StoreIdEntity.ReturnBean returnX = body.getReturnX();
 
+                                        int nCode = returnX.getNCode();
+                                       if (nCode==0){
+                                           StoreIdEntity.ResponseBean response1 = body.getResponse();
+
+                                           mch_id=response1.getMch_id();
+                                           sub_mch_id=response1.getSub_mch_id();
+                                       }
+                                    }
+
+                                }
+                                @Override
+                                public void onFailure(Call<StoreIdEntity> call, Throwable t) {
+
+                                }
+                            });
 
 
                         }
@@ -144,54 +179,43 @@ public class PosLoginActivity extends AppCompatActivity {
                     }
                 });
 
+                app_version=getAppVersion(PosLoginActivity.this);
+
+
+                try {
+                    //然后将 以上获取到的 数据 写入到 本地数据库中
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+
+                    values.put("khid", use_khid);
+                    values.put("khsname", storeName);
+                    values.put("lCorpId", lCorpId);
+                    values.put("machine_number", s_inputmachine);
+                    values.put("app_version", app_version);
+                    values.put("date_lr", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").toString());
+                    values.put("mch_id", mch_id);
+
+                    db.insert(CommonData.tablename, null, values);
+
+                    values.clear();
+
+                }
+                catch(Exception ex){
+
+                }
+
+
+                //写数据成功之后 ，跳转到主页.所有字段赋值便于以后使用
+
+                CommonData.khid=use_khid;
+                CommonData.mch_id=mch_id;
+                CommonData.sub_mch_id=sub_mch_id;
+                CommonData.lCorpId=lCorpId;
+                CommonData.machine_number=s_inputmachine;
+                CommonData.app_version=app_version;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                String  use_khid="";
-
-                String useresult="";
-
-
-
-
-
-                //String Result=AllInterFace.getdeviceinfobyselfhelpdeviceid(inputkhid.getText().toString(),inputmachine.getText().toString());
-                //解析门店信息，然后用返回的门店基础信息进行保存
-
-                String  storeName="";
-                //注册成功之后 ，拿到 返回的门店编号之后，进行获取微信商户号
-                //AllInterFace.getMchIdByStoreId(use_khid);
-                //解析出商户号编号
-                String  mch_id="";
-
-
-                //然后将 数据 写入到 本地数据库中
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-
-                values.put("khid", use_khid);
-                values.put("khsname", storeName);
-                values.put("machine_number", inputmachine.getText().toString());
-                values.put("app_version", inputmachine.getText().toString());
-                values.put("date_lr", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").toString());
-                values.put("mch_id", mch_id);
-
-                db.insert("Book", null, values);
-                values.clear();
-                //写数据成功之后 ，跳转到主页
 
                 setContentView(R.layout.activity_getphone);  //设置页面*//*
 
@@ -208,7 +232,7 @@ public class PosLoginActivity extends AppCompatActivity {
 
         //从本地取出数据来
 
-        Cursor cursor = querydb.query("Khda", null, null, null, null, null, null);
+        Cursor cursor = querydb.query(CommonData.tablename, null, null, null, null, null, null);
 
         // 查询Book表中所有的数据
         if (null!=cursor) {
@@ -241,7 +265,7 @@ public class PosLoginActivity extends AppCompatActivity {
 
                     CommonData.khid = khid;
                     CommonData.machine_number = machine_number;
-                    CommonData.app_versio=appVersion;
+                    CommonData.app_version=appVersion;
                     CommonData.machine_name=khsname;
 
                 }

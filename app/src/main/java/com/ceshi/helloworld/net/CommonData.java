@@ -11,11 +11,18 @@ public  class CommonData  extends Application {
     public static String    CommonUrl="http://dvp.rongxwy.com/";
 
 
+    //自定义一个全局变量，作为表名称，多个地方使用
+    public static String    tablename="BaseInfo";
+
     //设备号deviceId
     public static String    machine_number="";
 
     //门店编号
     public static String    khid="";
+
+
+    //商户编号，是由接口返回的
+    public static String    lCorpId="";
 
     //机器名称
     public static String    machine_name="";
@@ -23,19 +30,15 @@ public  class CommonData  extends Application {
     //订单流水号
     public static String    prepayId="";
 
-    //商户号
+    //微信支付商户号
     public static String    mch_id="";
 
-    //子商户号
+    //微信支付子商户号
     public static String    sub_mch_id="";
 
 
     //程序版本号
-    public static String    app_versio="";
-
-
-    //会员信息
-    public static String    lCorpId="";
+    public static String    app_version="";
 
 
 
