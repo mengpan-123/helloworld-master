@@ -34,6 +34,11 @@ public  class CommonData  extends Application {
     public static String    app_versio="";
 
 
+    //会员信息
+    public static String    lCorpId="";
+
+
+
     public static  class   SpInfoList {
 
         public String barcode = "";

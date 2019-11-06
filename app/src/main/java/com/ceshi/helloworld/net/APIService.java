@@ -1,6 +1,7 @@
 package com.ceshi.helloworld.net;
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
@@ -65,4 +66,18 @@ public interface APIService {
     Call<PurchaseBag> getBagInfo(
             @Field("userId")  String storeId,
             @Field("storeId")  String deviceId);
+
+
+    /**
+     * 获取会员登录信息
+     * */
+    @FormUrlEncoded
+    @POST("base/rest/v3/MemberService/testingMemberCard")
+    Call<GetHyInfoEntity> getHyInfoEntityCall(
+            //String sBindMobile,String sCorpId,CommonData.lCorpId,String sUserId
+            @Field("sBindMobile")  String sBindMobile,
+            @Field("sCorpId")  String sCorpId,
+            @Field("lCorpId")   String lCorpId,
+            @Field("sUserId")  String sUserId
+    );
 }

@@ -2,6 +2,7 @@ package com.ceshi.helloworld.net;
 
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
@@ -134,6 +135,20 @@ public class RetrofitHelper {
      */
     public Call<PurchaseBag>  getBagInfo(String userId, String storeId){
         return mAPIService.getBagInfo(userId,storeId);
+    }
+
+
+    /***
+     * GetHyInfoEntity是返回的结果
+     *sBindMobile 手机号
+     * sCorpId    商户号
+     * lCorpId    商户编号
+     * sUserId    用户编号
+     * */
+
+    public Call<GetHyInfoEntity> getHyInfoEntityCall(String sBindMobile,String sCorpId,String lCorpId,String sUserId){
+        lCorpId=CommonData.lCorpId;
+        return mAPIService.getHyInfoEntityCall(sBindMobile,sCorpId,CommonData.lCorpId,sUserId);
     }
 
 }

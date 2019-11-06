@@ -25,7 +25,7 @@ public class AllInterFace {
         String result="";
         String  Url="http://dvp.rongxwy.com/base/rest/v3/CheckService/getdeviceinfobyselfhelpdeviceid";
 
-        Call<TaskDetailEntity> taskDetail= RetrofitHelper.getInstance().getdeviceinfobyselfhelpdeviceid(inputstoreid, deviceid);
+        Call<TaskDetailEntity> taskDetail= RetrofitHelper.getInstance().getTaskDetail(inputstoreid, deviceid);
         taskDetail.enqueue(new Callback<TaskDetailEntity>() {
             @Override
             public void onResponse(Call<TaskDetailEntity> call, Response<TaskDetailEntity> response) {
