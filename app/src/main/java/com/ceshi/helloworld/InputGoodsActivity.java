@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.net.CreateAddAdapter;
+import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
+import com.ceshi.helloworld.net.SplnfoList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,10 +37,15 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     View layout=null;
     private List<HashMap<String,String>> listmap=new ArrayList<>();
     private CreateAddAdapter adapter;
-
+    HashMap<String,String> map=new HashMap<String,String>();
     private double totalPrice = 0.00;
     private int totalCount = 0;
     private Call<Addgoods> Addgoodsinfo;
+   /* private List<OrderInfo> orderInfos;*/
+    OrderInfo  orderInfos=new  OrderInfo();
+    List<SplnfoList>   spList  =new ArrayList<SplnfoList>() ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +60,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         shopcar_num=findViewById(R.id.shopcar_num);
         tv_go_to_pay = (TextView) findViewById(R.id.tv_go_to_pay);
         tv_go_to_pay.setOnClickListener(this);
-       // initDate();
+
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
         adapter.setRefreshPriceInterface(this);
@@ -82,17 +89,19 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     /**
      * 数据
      */
-    private void initDate() {
-        for(int i=0;i<10;i++){
-            HashMap<String,String> map=new HashMap<>();
-            map.put("id",i+"");
-            map.put("name",i+"name");
-            map.put("type",i+"type");
-            map.put("price",i+"");
-            map.put("count",i+"");
-            listmap.add(map);
-        }
-    }
+//    private void initDate() {
+//        for (int i =0;i<)
+//
+////        for(int i=0;i<10;i++){
+////            HashMap<String,String> map=new HashMap<>();
+////            map.put("id",i+"");
+////            map.put("name",i+"name");
+////            map.put("type",i+"type");
+////            map.put("price",i+"");
+////            map.put("count",i+"");
+////            listmap.add(map);
+////        }
+  //  }
 
     @Override
     public void refreshPrice(HashMap<String, Integer> pitchOnMap) {
@@ -160,7 +169,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onClick(View v) {
-
+                orderInfos.spList=spList;
                 EditText editText1=layout.findViewById(R.id.username);
                 String  barcode=editText1.getText().toString();
                 Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo("6907992501468","S101","526374","0");
@@ -172,6 +181,64 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         int onCode=addgoods.getReturnX().getNCode();
                         Addgoods.ResponseBean responseBean=addgoods.getResponse();
                         List<Addgoods.ResponseBean.GoodsListBean> maps=responseBean.getGoodsList();
+
+
+
+                        for (int i=0;i<maps.size(); i++){
+                          SplnfoList splnfoList=new SplnfoList();
+                          if (orderInfos.spList!=null){
+
+                              for (int j=0;j<orderInfos.spList.size();j++){
+                                  if (orderInfos.spList.get(j).getGoodsId()!=maps.get(i).getGoodsId()){
+                                      splnfoList.setBarcode(maps.get(i).getBarcode());
+                                      splnfoList.setGoodsId(maps.get(i).getGoodsId());
+                                      splnfoList.setMainPrice(maps.get(i).getMainPrice());
+                                      splnfoList.setPackNum(maps.get(i).getPackNum());
+                                      splnfoList.setPluName(maps.get(i).getPluName());
+                                      splnfoList.setPluTypeId(maps.get(i).getPluTypeId());
+                                      splnfoList.setPluUnit(maps.get(i).getPluUnit());
+                                      splnfoList.setRealPrice(maps.get(i).getRealPrice());
+                                      double totalPrice=(maps.get(i).getPackNum()*maps.get(i).getRealPrice());
+                                      splnfoList.setTotalPrice(totalPrice);
+                                  }else {
+                                      splnfoList=orderInfos.spList.get(j);
+                                      splnfoList.setPackNum( splnfoList.getPackNum()+maps.get(i).getPackNum());
+                                  }
+
+                              }
+                          }else {
+                              splnfoList.setBarcode(maps.get(i).getBarcode());
+                              splnfoList.setGoodsId(maps.get(i).getGoodsId());
+                              splnfoList.setMainPrice(maps.get(i).getMainPrice());
+                              splnfoList.setPackNum(maps.get(i).getPackNum());
+                              splnfoList.setPluName(maps.get(i).getPluName());
+                              splnfoList.setPluTypeId(maps.get(i).getPluTypeId());
+                              splnfoList.setPluUnit(maps.get(i).getPluUnit());
+                              splnfoList.setRealPrice(maps.get(i).getRealPrice());
+                              double totalPrice=(maps.get(i).getPackNum()*maps.get(i).getRealPrice());
+                              splnfoList.setTotalPrice(totalPrice);
+                          }
+                          orderInfos.spList.add(splnfoList);
+
+////            map.put("id",i+"");
+////            map.put("name",i+"name");
+////            map.put("type",i+"type");
+////            map.put("price",i+"");
+////            map.put("count",i+"");
+////            listmap.add(map);
+                        }
+                    for (int i=0;i<orderInfos.spList.size();i++){
+
+                        map.put("id",orderInfos.spList.get(i).getGoodsId());
+                        map.put("name",orderInfos.spList.get(i).getPluName());
+                        map.put("price",String.valueOf(orderInfos.spList.get(i).getRealPrice()));
+                        map.put("count",String.valueOf(orderInfos.spList.get(i).getPackNum()));
+                        listmap.add(map);
+                    }
+                        adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
+                        listview.setAdapter(adapter);
+                        adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+                        priceControl(adapter.getPitchOnMap());
                     }
 
                     @Override
