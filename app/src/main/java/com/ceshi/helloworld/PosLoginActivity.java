@@ -3,6 +3,7 @@ package com.ceshi.helloworld;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.StoreIdEntity;
+import com.ceshi.helloworld.bean.UpdateVersionEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 import com.ceshi.helloworld.net.AllInterFace;
 import com.ceshi.helloworld.net.CommonData;
@@ -49,6 +51,8 @@ public class PosLoginActivity extends AppCompatActivity {
 
     private Call<StoreIdEntity> StoreIdEntityCall;
 
+    private  Call<UpdateVersionEntity>   UpdateVersionEntityCall;
+
     private String  use_khid="";
 
     private String  storeName="";
@@ -69,9 +73,9 @@ public class PosLoginActivity extends AppCompatActivity {
 
 
         //在这里需要检测，是否已经初始化过，即检查dblite是否存在，存在的话，直接跳转到首界面
-        //首先创建出数据库  KhdaInfo ，用于保存信息
+        //首先创建出数据库  BaseInfo ，用于保存信息
         try {
-            dbHelper = new MyDatabaseHelper(this, "KhdaInfo.db", null, 1);
+            dbHelper = new MyDatabaseHelper(this, "BaseInfo.db", null, 1);
             querydb = dbHelper.getWritableDatabase();
 
         }
@@ -84,9 +88,14 @@ public class PosLoginActivity extends AppCompatActivity {
         InitData(querydb);
 
         setContentView(R.layout.activity_l_login);  //设置页面
-        if (CommonData.khid!=""){
+        if (!CommonData.khid.equals("")&&!CommonData.machine_number.equals("")) {
             //说明已经初始化过了 ，直接跳转到欢迎界面
-            setContentView(R.layout.activity_getphone);  //设置页面*//*
+            //setContentView(R.layout.activity_index);  //设置页面*//*
+
+            //显示跳转
+            Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
+            startActivity(intent);
+
             return;
         }
 
@@ -105,14 +114,11 @@ public class PosLoginActivity extends AppCompatActivity {
                 s_inputmachine=inputmachine.getText().toString();
                 s_inputkhid=inputkhid.getText().toString();
 
-
                 if (s_inputmachine.length()==0||s_inputkhid.length()==0)
                 {
                     Toast.makeText(PosLoginActivity.this, "请输入门店号或者设备号", Toast.LENGTH_LONG).show();
                     return;
                 }
-
-
                 //传入门店编号和设备号，进行注册
                 getdeviceinfoEntityCall  = RetrofitHelper.getInstance().getdeviceinfobyselfhelpdeviceid(
                         s_inputkhid,
@@ -159,6 +165,9 @@ public class PosLoginActivity extends AppCompatActivity {
 
                                            mch_id=response1.getMch_id();
                                            sub_mch_id=response1.getSub_mch_id();
+
+                                           //因为请求是异步的。以上基础信息写完之后 在进行操作
+                                           WirttenDataToSqlite();
                                        }
                                     }
 
@@ -181,44 +190,6 @@ public class PosLoginActivity extends AppCompatActivity {
 
                 app_version=getAppVersion(PosLoginActivity.this);
 
-
-                try {
-                    //然后将 以上获取到的 数据 写入到 本地数据库中
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-
-                    values.put("khid", use_khid);
-                    values.put("khsname", storeName);
-                    values.put("lCorpId", lCorpId);
-                    values.put("machine_number", s_inputmachine);
-                    values.put("app_version", app_version);
-                    values.put("date_lr", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").toString());
-                    values.put("mch_id", mch_id);
-
-                    db.insert(CommonData.tablename, null, values);
-
-                    values.clear();
-
-                }
-                catch(Exception ex){
-
-                }
-
-
-                //写数据成功之后 ，跳转到主页.所有字段赋值便于以后使用
-
-                CommonData.khid=use_khid;
-                CommonData.mch_id=mch_id;
-                CommonData.sub_mch_id=sub_mch_id;
-                CommonData.lCorpId=lCorpId;
-                CommonData.machine_number=s_inputmachine;
-                CommonData.app_version=app_version;
-
-
-
-
-                setContentView(R.layout.activity_getphone);  //设置页面*//*
-
             }
         });
     }
@@ -240,33 +211,48 @@ public class PosLoginActivity extends AppCompatActivity {
 
                 // 遍历Cursor对象，取出数据并打印
                 do {
-                    String khid = cursor.getString(cursor.getColumnIndex("khid"));
+                    CommonData.khid = cursor.getString(cursor.getColumnIndex("khid"));
 
-                    String appVersion = cursor.getString(cursor.getColumnIndex("app_version"));
+                    CommonData.app_version = cursor.getString(cursor.getColumnIndex("app_version"));
 
-                    String khsname = cursor.getString(cursor.getColumnIndex("khsname"));
+                    CommonData.lCorpId= cursor.getString(cursor.getColumnIndex("lCorpId"));
+
+                    CommonData.machine_name = cursor.getString(cursor.getColumnIndex("khsname"));
+
+                    CommonData.mch_id= cursor.getString(cursor.getColumnIndex("mch_id"));
+
+                    CommonData.machine_number=cursor.getString(cursor.getColumnIndex("machine_number"));
 
                     //然后获取到本地文件的版本，判断是否需要升级
                     String  newversion=getAppVersion(this);
 
-                    if (newversion!=newversion){
+                    if (!newversion.equals(CommonData.app_version)){
                         //调用接口，拿到升级地址进行升级
-
-                        new Thread(new Runnable(){
+                        UpdateVersionEntityCall = RetrofitHelper.getInstance().UpdateVersion(CommonData.machine_name,
+                                CommonData.machine_number,
+                                CommonData.khid);
+                        UpdateVersionEntityCall.enqueue(new Callback<UpdateVersionEntity>() {
                             @Override
-                            public void run() {
-                                String Result=AllInterFace.getdeviceinfobyselfhelpdeviceid("11","222");
+                            public void onResponse(Call<UpdateVersionEntity> call, Response<UpdateVersionEntity> response) {
+                                if (response != null) {
+                                    UpdateVersionEntity body = response.body();
+
+                                    if(body.getReturnX().getNCode()==0){
+                                        //说明需要做更新操作，然后拿到url进行访问下载
+
+
+                                    }
+                                }
                             }
-                        }).start();
+
+                            @Override
+                            public void onFailure(Call<UpdateVersionEntity> call, Throwable t) {
+
+                            }
+                        });
+
 
                     }
-
-                    String machine_number = cursor.getString(cursor.getColumnIndex("machine_number"));
-
-                    CommonData.khid = khid;
-                    CommonData.machine_number = machine_number;
-                    CommonData.app_version=appVersion;
-                    CommonData.machine_name=khsname;
 
                 }
                 while
@@ -291,6 +277,46 @@ public class PosLoginActivity extends AppCompatActivity {
         return code;
     }
 
+
+
+
+    public  void  WirttenDataToSqlite(){
+
+        try {
+            //然后将 以上获取到的 数据 写入到 本地数据库中
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+
+            values.put("khid", use_khid);
+            values.put("khsname", storeName);
+            values.put("lCorpId", lCorpId);
+            values.put("machine_number", s_inputmachine);
+            values.put("app_version", app_version);
+            values.put("date_lr", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").toString());
+            values.put("mch_id", mch_id);
+
+            db.insert(CommonData.tablename, null, values);
+
+            values.clear();
+
+        }
+        catch(Exception ex){
+
+        }
+
+        //写数据成功之后 ，跳转到主页.所有字段赋值便于以后使用
+
+        CommonData.khid=use_khid;
+        CommonData.mch_id=mch_id;
+        CommonData.sub_mch_id=sub_mch_id;
+        CommonData.lCorpId=lCorpId;
+        CommonData.machine_number=s_inputmachine;
+        CommonData.app_version=app_version;
+
+        //显示跳转
+        Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
+        startActivity(intent);
+    }
 }
 
 

@@ -6,6 +6,7 @@ import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
+import com.ceshi.helloworld.bean.UpdateVersionEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 
 import retrofit2.Call;
@@ -30,7 +31,7 @@ public interface APIService {
      * 门店信息登陆或注册
      */
     @FormUrlEncoded
-    @POST("rest/v3/CheckService/getdeviceinfobyselfhelpdeviceid")
+    @POST("base/rest/v3/CheckService/getdeviceinfobyselfhelpdeviceid")
     Call<getdeviceinfoEntity> getdeviceinfobyselfhelpdeviceid(
             @Field("inputId") String inputId,
             @Field("deviceId") String deviceId
@@ -93,5 +94,17 @@ public interface APIService {
             @Field("storeId") String storeId,
             @Field("userId") String userId,
             @Field("goodsPrice") String goodsPrice
+    );
+
+
+    /**
+     * 更新版本
+     * */
+    @FormUrlEncoded
+    @POST("base/rest/v3/SystemService/updateversion")
+    Call<UpdateVersionEntity> UpdateVersion(
+            @Field("appName")  String appName,
+            @Field("appId")  String appId,
+            @Field("storeId")   String storeId
     );
 }

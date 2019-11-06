@@ -12,9 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.net.CommonData;
+import com.ceshi.helloworld.net.HyMessage;
+import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 
 import java.util.HashMap;
@@ -22,10 +26,35 @@ import java.util.HashMap;
 public class IndexActivity extends Activity {
     String result=null;
     View layout=null;
+
+    private  Call<ClearCarEntity>  ClearCarEntityCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
+
+
+        /*需要在这里，第一。每次进入时，清空会员信息，清空订单信息,调用接口清空购物车*/
+        ClearCarEntityCall=RetrofitHelper.getInstance().ClearCar(CommonData.khid,CommonData.machine_number);
+        ClearCarEntityCall.enqueue(new Callback<ClearCarEntity>() {
+            @Override
+            public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
+                if (response!=null){
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClearCarEntity> call, Throwable t) {
+
+            }
+        });
+
+
+        HyMessage  hyMessage=null;
+        OrderInfo orderInfo=null;
+
     }
     /**
      *
@@ -71,7 +100,9 @@ public class IndexActivity extends Activity {
                                      //就拿到后台返回的数据了, tasktitle  设置给我们自己的页面
                                      String Info= body.getReturnX().getStrText();
                                      Log.e("zhoupan","getSub_mch_id = "+response.message());
+
                                  }
+
                              }
                          }
 

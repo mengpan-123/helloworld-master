@@ -7,6 +7,7 @@ import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
+import com.ceshi.helloworld.bean.UpdateVersionEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 
 import java.util.concurrent.TimeUnit;
@@ -164,4 +165,18 @@ public class RetrofitHelper {
     public  Call<Addgoods> getgoodsinfo(String barcode, String storeId, String userId, String goodsPrice){
         return  mAPIService.getgoodsinfo(barcode, storeId, userId,  goodsPrice);
     }
+
+    /***
+     * 调用接口告诉对方程序升级了
+     *sBindMobile 手机号
+     * sCorpId    商户号
+     * lCorpId    商户编号n
+     * sUserId    用户编号
+     * */
+    public Call<UpdateVersionEntity> UpdateVersion(String appName, String appId, String storeId){
+        return mAPIService.UpdateVersion(appName,appId,storeId);
+    }
+
+
+
 }

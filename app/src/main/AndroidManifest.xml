@@ -47,8 +47,19 @@
 
         </activity>
 
+
+        <activity android:name=".IndexActivity">
+
+        </activity>
+
         <!--这里的intent-filter  MAIN表示进入的第一个页面  现在启动app进入的第一个页面就是这个-->
         <activity android:name=".PosLoginActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />  <!--//这一句属性 的意思要设置其作为初始启动Activity-->
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.HOME" />   <!--用于返回的首界面，和上面差不多-->
+                <category android:name="android.intent.category.LAUNCHER" />   <!--让 Activity 在顶层启动器中显示-->
+            </intent-filter>
 
         </activity>
     </application>

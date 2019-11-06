@@ -104,7 +104,7 @@ public class NetWorkActivity extends AppCompatActivity {
             }
         });*/
 
-        PurchaseBagCall= RetrofitHelper.getInstance().getBagInfo("526374","S101");
+        /*PurchaseBagCall= RetrofitHelper.getInstance().getBagInfo("526374","S101");
 
         PurchaseBagCall.enqueue(new Callback<PurchaseBag>() {
             @Override
@@ -124,6 +124,6 @@ public class NetWorkActivity extends AppCompatActivity {
             public void onFailure(Call<PurchaseBag> call, Throwable t) {
 
             }
-        });
+        });*/
     }
 }
