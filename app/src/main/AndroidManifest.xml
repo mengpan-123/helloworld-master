@@ -30,7 +30,7 @@
         <!-- 学习基本布局和控件 -->
         <activity android:name=".OneActivity" />
         <!-- 2.学习简单的网络请求 -->
-        <activity android:name=".NetWorkActivity" >
+        <activity android:name=".InputGoodsActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />  <!--//这一句属性 的意思要设置其作为初始启动Activity-->
                 <action android:name="android.intent.action.VIEW" />

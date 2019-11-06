@@ -1,6 +1,7 @@
 package com.ceshi.helloworld.net;
 
 
+import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
@@ -151,4 +152,16 @@ public class RetrofitHelper {
         return mAPIService.getHyInfoEntityCall(sBindMobile,sCorpId,CommonData.lCorpId,sUserId);
     }
 
+
+    /***
+     * getgoodsinfo 是返回的结果
+     * @param barcode  商品条形码
+     * @param storeId   门店编号
+     * @param userId    设备编号
+     * @param goodsPrice    商品价格
+     * @return
+     */
+    public  Call<Addgoods> getgoodsinfo(String barcode, String storeId, String userId, String goodsPrice){
+        return  mAPIService.getgoodsinfo(barcode, storeId, userId,  goodsPrice);
+    }
 }

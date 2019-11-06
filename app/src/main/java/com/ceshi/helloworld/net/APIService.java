@@ -1,5 +1,6 @@
 package com.ceshi.helloworld.net;
 
+import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
@@ -79,5 +80,18 @@ public interface APIService {
             @Field("sCorpId")  String sCorpId,
             @Field("lCorpId")   String lCorpId,
             @Field("sUserId")  String sUserId
+    );
+
+
+    /**
+     * 获取录入的产品信息
+     */
+    @FormUrlEncoded
+    @POST("base/rest/v3/GoodsService/getgoodsinfo")
+    Call<Addgoods> getgoodsinfo(
+            @Field("barcode") String barcode,
+            @Field("storeId") String storeId,
+            @Field("userId") String userId,
+            @Field("goodsPrice") String goodsPrice
     );
 }
