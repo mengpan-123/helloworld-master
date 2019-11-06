@@ -54,12 +54,16 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginTop="100dp">
-        <ImageView
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/paywait" />-->
+        <pl.droidsonroids.gif.GifImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/paywait" />
-    </LinearLayout>
+            android:src="@drawable/timeout"/>
 
+    </LinearLayout>
     <!--支付等待文字-->
     <LinearLayout
         android:layout_width="match_parent"
