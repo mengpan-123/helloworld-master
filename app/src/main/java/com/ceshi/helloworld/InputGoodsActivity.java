@@ -1,24 +1,21 @@
 package com.ceshi.helloworld;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +25,6 @@ import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 import com.ceshi.helloworld.net.CommonData;
-import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.net.CreateAddAdapter;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
@@ -43,17 +39,18 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private LinearLayout top_bar;
     private ListView listview;
     private TextView price;
-    private TextView delete;
     private TextView tv_go_to_pay;
     private TextView shopcar_num;
+    private ImageView text_tip;
+
     View layout=null;
+    View layout_pay=null;
     private List<HashMap<String,String>> listmap=new ArrayList<>();
     private CreateAddAdapter adapter;
     HashMap<String,String> map=new HashMap<String,String>();
     private double totalPrice = 0.00;
     private int totalCount = 0;
     private Call<Addgoods> Addgoodsinfo;
-    private Call<PurchaseBag> GetBagsInfo;
    /* private List<OrderInfo> orderInfos;*/
     OrderInfo  orderInfos=new  OrderInfo();
 
@@ -66,44 +63,43 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private OrderInfo  neworderInfo=new OrderInfo();
 
-private  Handler mHandler=new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
         initView();
-
     }
 
     private void initView() {
         top_bar = (LinearLayout) findViewById(R.id.top_bar);
         listview = (ListView) findViewById(R.id.listview);
+        text_tip = (ImageView) findViewById(R.id.text_tip);
         price = (TextView) findViewById(R.id.tv_total_price);
         shopcar_num=findViewById(R.id.shopcar_num);
-
-
-        /**
-         * Created by zhoupan on 2019/11/6.
-         * 点击去支付时触发,优先选择支付方式，暂时默认使用微信把
-         */
+//        /**
+//         * Created by zhoupan on 2019/11/6.
+//         * 点击去支付时触发,优先选择支付方式，暂时默认使用微信把
+//         */
         tv_go_to_pay = (TextView) findViewById(R.id.tv_go_to_pay);
-        //tv_go_to_pay.setOnClickListener(this);
-        tv_go_to_pay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public  void  onClick(View view) {
-                //1.0 初始化所有的产品信息
-
-                //2.0 选取支付方式
-
-                //3.0 调起扫码枪的功能，获取支付的付款码。确认支付
-
-            }
-        });
+//        tv_go_to_pay.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public  void  onClick(View view) {
+//
+//
+//                //1.0 初始化所有的产品信息
+//
+//                //2.0 选取支付方式
+//
+//                //3.0 调起扫码枪的功能，获取支付的付款码。确认支付
+//
+//            }
+//        });
 
 
 
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
+        listview.setEmptyView(text_tip);
         adapter.setRefreshPriceInterface(this);
         priceControl(adapter.getPitchOnMap());
 
@@ -194,22 +190,6 @@ private  Handler mHandler=new Handler();
                 break;
         }
     }
-    /**
-     * 数据
-     */
-//    private void initDate() {
-//        for (int i =0;i<)
-//
-////        for(int i=0;i<10;i++){
-////            HashMap<String,String> map=new HashMap<>();
-////            map.put("id",i+"");
-////            map.put("name",i+"name");
-////            map.put("type",i+"type");
-////            map.put("price",i+"");
-////            map.put("count",i+"");
-////            listmap.add(map);
-////        }
-  //  }
 
     @Override
     public void refreshPrice(HashMap<String, Integer> pitchOnMap) {
@@ -270,6 +250,8 @@ private  Handler mHandler=new Handler();
 
         //取消
         TextView title2 = (TextView) layout.findViewById(R.id.close2);
+
+
 
         dialog.show();
         // 设置确定按钮的事件
@@ -381,102 +363,6 @@ private  Handler mHandler=new Handler();
 
     }
 
-
-    public  void  input_bags(View view){
-
-        final Dialog dialog = new Dialog(this,
-                R.style.myNewsDialogStyle);
-
-        // 自定义对话框布局
-        layout = View.inflate(this, R.layout.bagingo_one,
-                null);
-        dialog.setContentView(layout);
-
-        ListView listView=(ListView) layout.findViewById(R.id.lv_baginfo);
-        /*listView.setVisibility(View.VISIBLE);
-        listView.bringToFront();*/
-        List<Map<String, Object>> listitem=new ArrayList<Map<String,Object>>();
-
-        GetBagsInfo= RetrofitHelper.getInstance().getBagInfo("526374","S101");
-        GetBagsInfo.enqueue(new Callback<PurchaseBag>() {
-            @Override
-            public void onResponse(Call<PurchaseBag> call, Response<PurchaseBag> response) {
-
-                if (response.body()!=null){
-                    PurchaseBag getBagsInfo=response.body();
-
-                    int onCode=getBagsInfo.getReturnX().getNCode();
-                    if (onCode==0){
-                        PurchaseBag.ResponseBean responseBean=getBagsInfo.getResponse();
-                        List<PurchaseBag.ResponseBean.BagMapBean> maps=responseBean.getBagMap();
-                        int n=20;
-                        int[]  img_expense=new  int[n];
-                        String[] tv_bagname=new  String[n];
-                        String[] tv_bagpic=new String[n];
-                        String[] tv_goodsid=new  String[n];
-                        for (int m=0; m<maps.size();m++){
-
-                            Map<String,Object> map=new HashMap<String, Object>();
-                            map.put("img_expense",R.mipmap.gwd);
-                            map.put("tv_bagname", maps.get(m).getPluName());
-                            map.put("tv_bagpic", String.valueOf(maps.get(m).getPluPrice()));
-                            map.put("tv_goodsid", maps.get(m).getGoodsId());
-                            listitem.add(map);
-                        }
-
-                        /*int[]  img_expense=new  int[]{R.mipmap.icon_back,R.mipmap.login}; //存储图片
-                        String[] tv_bagname=new String[]{"大购物袋","小购物袋"};
-                        String[] tv_bagpic=new  String[]{"0.02","0.01"};*/
-                    /*    for (int i=0; i<img_expense.length;i++){
-                            Map<String,Object> map=new HashMap<String, Object>();
-                            map.put("img_expense",img_expense[i]);
-                            map.put("tv_bagname", tv_bagname[i]);
-                            map.put("tv_bagpic", tv_bagpic[i]);
-                            listitem.add(map);
-                        }*/
-                        SimpleAdapter adapter=new SimpleAdapter(InputGoodsActivity.this,listitem,R.layout.baginfo, new String[]{"tv_bagname","tv_bagpic","img_expense","tv_goodsid"},new int[]{R.id.tv_bagname,R.id.tv_bagpic,R.id.img_expense,R.id.tv_goodsid} );
-                        listView.setAdapter(adapter);
-                        dialog.show();
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                HashMap<String,String> map=(HashMap<String, String>) listView.getItemAtPosition(position);
-                                String title=map.get("tv_bagname");
-                                String bagpic=map.get("tv_bagpic");
-                                String bagsid=map.get("tv_goodsid");
-
-
-                            }
-                        });
-                    }
-                    else {
-
-                    }
-
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<PurchaseBag> call, Throwable t) {
-
-            }
-        });
-
-
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
-
-
-
-    }
     /**
      *
      * 数字键盘事件
@@ -511,6 +397,75 @@ private  Handler mHandler=new Handler();
             editText.setText(old_text.substring(0,old_text.length()-1));
             editText.setSelection(editText.getText().toString().length());
         }
+    }
+
+    /**
+     *
+     *返回首页
+     */
+    public  void return_home(View view){
+        Intent intent = new Intent(InputGoodsActivity.this, IndexActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     *
+     * deletecar
+     * 清空购物车
+     * */
+
+    public  void  deletecar(View view){
+    //清空listmap的值
+        listmap.clear();
+        //清空列表页面
+        adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
+        listview.setAdapter(adapter);
+        adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+        priceControl(adapter.getPitchOnMap());
+
+        //加载出空购物车页面
+        listview.setEmptyView(text_tip);
+
+    }
+
+
+    /**
+     * to_pay
+     * 去支付
+     * */
+
+    public  void  to_pay(View view){
+
+                final Dialog dialog1 = new Dialog(this, R.style.myNewsDialogStyle);
+               // 自定义对话框布局
+                layout_pay = View.inflate(this, R.layout.activity_chosepay, null);
+                dialog1.setContentView(layout_pay);
+                Window window = dialog1.getWindow();
+                window.setGravity(Gravity.BOTTOM);
+                dialog1.show();
+                View zfb = (View) layout_pay.findViewById(R.id.zfb);
+                View wx = (View) layout_pay.findViewById(R.id.wx);
+                View wx_face = (View) layout_pay.findViewById(R.id.wx_face);
+
+                zfb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                wx.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                wx_face.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
     }
 
 }

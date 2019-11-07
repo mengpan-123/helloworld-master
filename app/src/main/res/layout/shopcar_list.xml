@@ -71,6 +71,7 @@
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:textSize="16dp"
+                        android:textStyle="bold"
                         android:textColor="#DF1F11"
                         android:text="价格"/>
 
