@@ -66,7 +66,7 @@ public class CreateAddAdapter extends BaseAdapter {
         add = convertView.findViewById(R.id.tv_add);
 
         name.setText(list.get(position).get("name"));
-        price.setText("¥ " + (Integer.valueOf(list.get(position).get("price"))) * (Integer.valueOf(list.get(position).get("count"))));
+        price.setText("¥ " + (Double.valueOf(list.get(position).get("price"))) * (Integer.valueOf(list.get(position).get("count"))));
 
         num.setText(list.get(position).get("count"));
 

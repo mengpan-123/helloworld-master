@@ -1,6 +1,8 @@
 package com.ceshi.helloworld.net;
 
+import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 public class OrderInfo {
 
@@ -8,15 +10,15 @@ public class OrderInfo {
 
 
      //订单总价
-    public   String   totalPrice="";
+    public   double   totalPrice=0;
 
 
     //订单总数量
-    public   String   totalCount="";
+    public   int   totalCount=0;
 
 
     //订单总折扣
-    public   String   totalDisc="";
+    public   double   totalDisc=0;
 
 
 
@@ -25,6 +27,6 @@ public class OrderInfo {
 
 
     //产品的集合
-    public  List<SplnfoList>   spList= null;
+    public Map<String,List<SplnfoList>> spList= null;
 
 }

@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +51,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private Call<Addgoods> Addgoodsinfo;
    /* private List<OrderInfo> orderInfos;*/
     OrderInfo  orderInfos=new  OrderInfo();
-    List<SplnfoList>   spList  =new ArrayList<SplnfoList>() ;
+
+    private Map<String,List<SplnfoList>>   MapList=new  HashMap<String,List<SplnfoList>>();
 
 
     private Call<createPrepayIdEntity> createPrepayIdEntityCall;
@@ -64,8 +67,6 @@ private  Handler mHandler=new Handler();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
         initView();
-
-
 
     }
 
@@ -268,84 +269,89 @@ private  Handler mHandler=new Handler();
         dialog.show();
         // 设置确定按钮的事件
         title.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                orderInfos.spList=spList;
+
                 EditText editText1=layout.findViewById(R.id.username);
-                String  barcode=editText1.getText().toString();
-                Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo("6907992501468","S101","526374","0");
+                String  inputbarcode=editText1.getText().toString();
+                HashMap<String,String> map=new HashMap<>();
+
+                Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo(inputbarcode,"S101","526374","0");
                 Addgoodsinfo.enqueue(new Callback<Addgoods>() {
                     @Override
                     public void onResponse(Call<Addgoods> call, Response<Addgoods> response) {
-                        Addgoods addgoods=response.body();
 
-                        int onCode=addgoods.getReturnX().getNCode();
-                        Addgoods.ResponseBean responseBean=addgoods.getResponse();
-                        List<Addgoods.ResponseBean.GoodsListBean> maps=responseBean.getGoodsList();
-                        for (int i=0;i<maps.size(); i++){
-                          SplnfoList splnfoList=new SplnfoList();
-                          if (orderInfos.spList.size()!=0){
+                        if (response.body()!=null) {
+                            map.clear();
+                            Addgoods addgoods = response.body();
+                            int onCode = addgoods.getReturnX().getNCode();
+                            if (onCode == 0) {
+                                Addgoods.ResponseBean responseBean = addgoods.getResponse();
+                                List<Addgoods.ResponseBean.GoodsListBean> maps = responseBean.getGoodsList();
 
-                              for (int j=0;j<orderInfos.spList.size();j++){
-                                  if (orderInfos.spList.get(j).getGoodsId()!=maps.get(i).getGoodsId()){
-                                      splnfoList.setBarcode(maps.get(i).getBarcode());
-                                      splnfoList.setGoodsId(maps.get(i).getGoodsId());
-                                      splnfoList.setMainPrice(maps.get(i).getMainPrice());
-                                      splnfoList.setPackNum(maps.get(i).getPackNum());
-                                      splnfoList.setPluName(maps.get(i).getPluName());
-                                      splnfoList.setPluTypeId(maps.get(i).getPluTypeId());
-                                      splnfoList.setPluUnit(maps.get(i).getPluUnit());
-                                      splnfoList.setRealPrice(maps.get(i).getRealPrice());
-                                      double totalPrice=(maps.get(i).getPackNum()*maps.get(i).getRealPrice());
-                                      splnfoList.setTotalPrice(totalPrice);
-                                  }else {
-                                      splnfoList=orderInfos.spList.get(j);
-                                      splnfoList.setPackNum( splnfoList.getPackNum()+maps.get(i).getPackNum());
-                                  }
+                                //拿到产品编码
+                                String spcode = maps.get(0).getGoodsId();
+                                double price = maps.get(0).getRealPrice();
+                                double disc = 0;
 
-                              }
-                          }else {
-                              splnfoList.setBarcode(maps.get(i).getBarcode());
-                              splnfoList.setGoodsId(maps.get(i).getGoodsId());
-                              splnfoList.setMainPrice(maps.get(i).getMainPrice());
-                              splnfoList.setPackNum(maps.get(i).getPackNum());
-                              splnfoList.setPluName(maps.get(i).getPluName());
-                              splnfoList.setPluTypeId(maps.get(i).getPluTypeId());
-                              splnfoList.setPluUnit(maps.get(i).getPluUnit());
-                              splnfoList.setRealPrice(maps.get(i).getRealPrice());
-                              double totalPrice=(maps.get(i).getPackNum()*maps.get(i).getRealPrice());
-                              splnfoList.setTotalPrice(totalPrice);
-                          }
-                          orderInfos.spList.add(splnfoList);
-                        }
-                        for (int i=0;i<orderInfos.spList.size();i++){
+                                //没录入一次，都去增加总数量和总价
+                                neworderInfo.totalCount = neworderInfo.totalCount + 1;  //增加总数量
+                                neworderInfo.totalPrice = neworderInfo.totalPrice + price;  //增加总价
+                                neworderInfo.totalDisc = neworderInfo.totalDisc + disc;    //增加总折扣
 
-                            map.put("id",orderInfos.spList.get(i).getGoodsId());
-                            map.put("name",orderInfos.spList.get(i).getPluName());
-                            map.put("price",String.valueOf(orderInfos.spList.get(i).getRealPrice()));
-                            map.put("count",String.valueOf(orderInfos.spList.get(i).getPackNum()));
-                            listmap.add(map);
-                        }
+                                //1.0先判断 改产品集合中是否存在
+                                if (MapList.containsKey(spcode)) {
 
+                                    //如果存在，拿到集合，增加数量，总价，折扣
+                                    MapList.get(spcode).get(0).setPackNum(MapList.get(spcode).get(0).getPackNum() + 1);
+                                    MapList.get(spcode).get(0).setMainPrice(MapList.get(spcode).get(0).getMainPrice() + price);
 
-                      /*  final  List<HashMap<String,String>> result=listmap;
-                        InputGoodsActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                                    //更改 映射的 map的内容
+                                    for (int k = 0; k < listmap.size(); k++) {
+                                        if (listmap.get(k).get("id").equals(spcode)) {
+                                            listmap.get(k).put("count", String.valueOf(Integer.valueOf(listmap.get(k).get("count")) + 1));
+                                        }
+                                    }
+                                } else {
+                                    List<SplnfoList> uselist = new ArrayList<SplnfoList>();
+                                    SplnfoList usesplnfo = new SplnfoList();
 
-                                adapter = new CreateAddAdapter(InputGoodsActivity.this, result);
-                                listview.setAdapter(adapter);
-                                adapter.setRefreshPriceInterface(InputGoodsActivity.this);
-                                priceControl(adapter.getPitchOnMap());
-                            }
-                        });*/
+                                    usesplnfo.setBarcode(maps.get(0).getBarcode());
+                                    usesplnfo.setGoodsId(maps.get(0).getGoodsId());
+                                    usesplnfo.setMainPrice(maps.get(0).getMainPrice());
+                                    usesplnfo.setPackNum(maps.get(0).getPackNum());
+                                    usesplnfo.setPluName(maps.get(0).getPluName());
+                                    usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
+                                    usesplnfo.setPluUnit(maps.get(0).getPluUnit());
+                                    usesplnfo.setRealPrice(maps.get(0).getRealPrice());
+                                    double totalPrice = (maps.get(0).getPackNum() * maps.get(0).getRealPrice());
+                                    uselist.add(usesplnfo);
 
+                                    //说明产品不存在，直接增加进去
+                                    MapList.put(spcode, uselist);
+
+                                    //下面是只取几个字段去改变 界面显示的
+                                    map.put("id", maps.get(0).getGoodsId());
+                                    map.put("name", maps.get(0).getPluName());
+                                    map.put("price", String.valueOf(maps.get(0).getRealPrice()));
+                                    map.put("count", String.valueOf(maps.get(0).getPackNum()));
+
+                                    listmap.add(map);
+
+                                }
+
+                                //界面上实现 增加一个元素
                                 adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
                                 listview.setAdapter(adapter);
                                 adapter.setRefreshPriceInterface(InputGoodsActivity.this);
                                 priceControl(adapter.getPitchOnMap());
+                            }
+                            else{
+                                String result=addgoods.getReturnX().getStrText();
+                                Toast.makeText(InputGoodsActivity.this,result,Toast.LENGTH_SHORT).show();
+                            }
 
+                        }
 
                     }
 
@@ -354,10 +360,7 @@ private  Handler mHandler=new Handler();
 
                     }
                 });
-//                adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
-//                listview.setAdapter(adapter);
-//                adapter.setRefreshPriceInterface(InputGoodsActivity.this);
-//                priceControl(adapter.getPitchOnMap());
+
                 dialog.dismiss();
             }
         });

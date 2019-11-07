@@ -3,8 +3,6 @@ package com.ceshi.helloworld.net;
 public class  SplnfoList {
 
 
-
-
     //产品编码，用此键 来判断 产品是否存在
     private String goodsId = "";
 
@@ -103,5 +101,6 @@ public class  SplnfoList {
 
     //订单总价
     private double totalPrice;
+
 
 }
