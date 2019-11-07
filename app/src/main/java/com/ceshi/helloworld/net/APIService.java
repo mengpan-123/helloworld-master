@@ -68,11 +68,17 @@ public interface APIService {
             @Field("deviceId") String deviceId);
 
 
+    /**
+     * 获取购物袋信息
+     * @param storeId
+     * @param deviceId
+     * @return
+     */
     @FormUrlEncoded
-    @POST("base/rest/v3/cartService/cleanCartOfDevice")
+    @POST("base/rest/v3/goodsService/getBagInfo")
     Call<PurchaseBag> getBagInfo(
-            @Field("userId") String storeId,
-            @Field("storeId") String deviceId);
+            @Field("userId")  String storeId,
+            @Field("storeId")  String deviceId);
 
 
     /**

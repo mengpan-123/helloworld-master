@@ -3,14 +3,17 @@ package com.ceshi.helloworld;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 import com.ceshi.helloworld.net.CommonData;
+import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.net.CreateAddAdapter;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
@@ -49,6 +53,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private double totalPrice = 0.00;
     private int totalCount = 0;
     private Call<Addgoods> Addgoodsinfo;
+    private Call<PurchaseBag> GetBagsInfo;
    /* private List<OrderInfo> orderInfos;*/
     OrderInfo  orderInfos=new  OrderInfo();
 
@@ -376,6 +381,102 @@ private  Handler mHandler=new Handler();
 
     }
 
+
+    public  void  input_bags(View view){
+
+        final Dialog dialog = new Dialog(this,
+                R.style.myNewsDialogStyle);
+
+        // 自定义对话框布局
+        layout = View.inflate(this, R.layout.bagingo_one,
+                null);
+        dialog.setContentView(layout);
+
+        ListView listView=(ListView) layout.findViewById(R.id.lv_baginfo);
+        /*listView.setVisibility(View.VISIBLE);
+        listView.bringToFront();*/
+        List<Map<String, Object>> listitem=new ArrayList<Map<String,Object>>();
+
+        GetBagsInfo= RetrofitHelper.getInstance().getBagInfo("526374","S101");
+        GetBagsInfo.enqueue(new Callback<PurchaseBag>() {
+            @Override
+            public void onResponse(Call<PurchaseBag> call, Response<PurchaseBag> response) {
+
+                if (response.body()!=null){
+                    PurchaseBag getBagsInfo=response.body();
+
+                    int onCode=getBagsInfo.getReturnX().getNCode();
+                    if (onCode==0){
+                        PurchaseBag.ResponseBean responseBean=getBagsInfo.getResponse();
+                        List<PurchaseBag.ResponseBean.BagMapBean> maps=responseBean.getBagMap();
+                        int n=20;
+                        int[]  img_expense=new  int[n];
+                        String[] tv_bagname=new  String[n];
+                        String[] tv_bagpic=new String[n];
+                        String[] tv_goodsid=new  String[n];
+                        for (int m=0; m<maps.size();m++){
+
+                            Map<String,Object> map=new HashMap<String, Object>();
+                            map.put("img_expense",R.mipmap.gwd);
+                            map.put("tv_bagname", maps.get(m).getPluName());
+                            map.put("tv_bagpic", String.valueOf(maps.get(m).getPluPrice()));
+                            map.put("tv_goodsid", maps.get(m).getGoodsId());
+                            listitem.add(map);
+                        }
+
+                        /*int[]  img_expense=new  int[]{R.mipmap.icon_back,R.mipmap.login}; //存储图片
+                        String[] tv_bagname=new String[]{"大购物袋","小购物袋"};
+                        String[] tv_bagpic=new  String[]{"0.02","0.01"};*/
+                    /*    for (int i=0; i<img_expense.length;i++){
+                            Map<String,Object> map=new HashMap<String, Object>();
+                            map.put("img_expense",img_expense[i]);
+                            map.put("tv_bagname", tv_bagname[i]);
+                            map.put("tv_bagpic", tv_bagpic[i]);
+                            listitem.add(map);
+                        }*/
+                        SimpleAdapter adapter=new SimpleAdapter(InputGoodsActivity.this,listitem,R.layout.baginfo, new String[]{"tv_bagname","tv_bagpic","img_expense","tv_goodsid"},new int[]{R.id.tv_bagname,R.id.tv_bagpic,R.id.img_expense,R.id.tv_goodsid} );
+                        listView.setAdapter(adapter);
+                        dialog.show();
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                HashMap<String,String> map=(HashMap<String, String>) listView.getItemAtPosition(position);
+                                String title=map.get("tv_bagname");
+                                String bagpic=map.get("tv_bagpic");
+                                String bagsid=map.get("tv_goodsid");
+
+
+                            }
+                        });
+                    }
+                    else {
+
+                    }
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<PurchaseBag> call, Throwable t) {
+
+            }
+        });
+
+
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+
+
+    }
     /**
      *
      * 数字键盘事件

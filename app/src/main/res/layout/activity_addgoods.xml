@@ -110,6 +110,16 @@
         android:groupIndicator="@null" >
     </ListView>
 
+
+    <!--<ListView
+        android:id="@+id/listbag"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="240dp"
+        android:visibility="visible"
+        android:headerDividersEnabled="true"
+        android:stackFromBottom="true"></ListView>-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -168,7 +178,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="30dp">
+                android:layout_marginLeft="30dp"
+                android:onClick="input_bags">
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="40dp"
@@ -214,4 +225,5 @@
                 android:layout_marginTop="10dp"/>
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>
