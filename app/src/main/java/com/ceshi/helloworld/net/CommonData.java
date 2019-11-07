@@ -27,9 +27,6 @@ public  class CommonData  extends Application {
     //机器名称
     public static String    machine_name="";
 
-    //订单流水号
-    public static String    prepayId="";
-
     //微信支付商户号
     public static String    mch_id="";
 

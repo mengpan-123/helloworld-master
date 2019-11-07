@@ -152,11 +152,11 @@ public class RequestSignBean {
 
         private String goodsId;
         private String barcode;
-        private String pluQty;
-        private String pluPrice;
-        private int realPrice;
-        private int pluAmount;
-        private int pluDis;
+        private int pluQty;
+        private double pluPrice;
+        private double realPrice;
+        private double pluAmount;
+        private double pluDis;
 
         public String getGoodsId() {
             return goodsId;
@@ -174,31 +174,31 @@ public class RequestSignBean {
             this.barcode = barcode;
         }
 
-        public String getPluQty() {
+        public int getPluQty() {
             return pluQty;
         }
 
-        public void setPluQty(String pluQty) {
+        public void setPluQty(int pluQty) {
             this.pluQty = pluQty;
         }
 
-        public String getPluPrice() {
+        public double getPluPrice() {
             return pluPrice;
         }
 
-        public void setPluPrice(String pluPrice) {
+        public void setPluPrice(double pluPrice) {
             this.pluPrice = pluPrice;
         }
 
-        public int getRealPrice() {
+        public double getRealPrice() {
             return realPrice;
         }
 
-        public void setRealPrice(int realPrice) {
+        public void setRealPrice(double realPrice) {
             this.realPrice = realPrice;
         }
 
-        public int getPluAmount() {
+        public double getPluAmount() {
             return pluAmount;
         }
 
@@ -206,7 +206,7 @@ public class RequestSignBean {
             this.pluAmount = pluAmount;
         }
 
-        public int getPluDis() {
+        public double getPluDis() {
             return pluDis;
         }
 

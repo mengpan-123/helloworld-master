@@ -8,11 +8,13 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -22,6 +24,9 @@ import java.util.Map;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.Addgoods;
+import com.ceshi.helloworld.bean.PurchaseBag;
+import com.ceshi.helloworld.bean.RequestSignBean;
+import com.ceshi.helloworld.bean.ResponseSignBean;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 import com.ceshi.helloworld.net.CommonData;
@@ -63,11 +68,29 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private OrderInfo  neworderInfo=new OrderInfo();
 
+
+    private Call<PurchaseBag> GetBagsInfo;
+
+    //支付方式
+    private  String  payWay="WXPaymentCodePay";
+
+    //支付识别码
+    private  String  payAuthCode="";
+
+    private Call<ResponseSignBean> ResponseSignBeanCall;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
         initView();
+
+
+
+        //一进来就得执行。初始化会员支付，初始化订单号
+        Prepay();
     }
 
     private void initView() {
@@ -94,6 +117,84 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 //
 //            }
 //        });
+        //tv_go_to_pay.setOnClickListener(this);
+       /* tv_go_to_pay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public  void  onClick(View view) {
+
+
+                Toast.makeText(InputGoodsActivity.this,"点击去支付~",Toast.LENGTH_SHORT).show();
+
+
+                //1.0 初始化所有的产品信息,
+                List<RequestSignBean.PluMapBean> pluMap =new ArrayList<RequestSignBean.PluMapBean>();
+
+                try {
+
+
+                    for(Map.Entry<String,List<SplnfoList>> entry : MapList.entrySet()) {
+
+                        RequestSignBean.PluMapBean payMapcls = new RequestSignBean.PluMapBean();
+
+                        payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
+                        payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
+                        payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
+                        payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));
+                        pluMap.add(payMapcls);
+                    }
+                }
+                catch(Exception ex){
+
+                }
+
+
+
+
+
+                //2.0 选取支付方式 ,初始化支付信息
+                int PayTypeId=1;
+                if (payWay.equals("WXPaymentCodePay")){
+                    PayTypeId=5;
+                }else if(payWay.equals("AliPaymentCodePay")){
+                    PayTypeId=7;
+                }
+
+                List<RequestSignBean.PayMapBean> payMap=new ArrayList<RequestSignBean.PayMapBean>();
+                RequestSignBean.PayMapBean pmp=new   RequestSignBean.PayMapBean();
+                pmp.setPayTypeId(PayTypeId);
+                pmp.setPayVal(neworderInfo.totalPrice);
+                payMap.add(pmp);
+
+                //3.0 调起扫码枪的功能，获取支付的付款码。确认支付
+                payAuthCode="1111111111111111";
+
+                //调用确认支付接口
+                ResponseSignBeanCall =RetrofitHelper.getInstance().getSign(payWay,payAuthCode,pluMap,payMap);
+                ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
+                    @Override
+                    public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
+                        if (response!=null){
+                            ResponseSignBean body = response.body();
+
+                            if (body.getReturnX().getNCode()==0){
+
+                                ResponseSignBean.ResponseBean response1 = body.getResponse();
+
+                            }
+                            else{
+                                Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseSignBean> call, Throwable t) {
+
+                    }
+                });
+
+            }
+        });*/
 
 
 
@@ -113,8 +214,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     public   void  Prepay(){
         //预支付 相关的操作
-        if (CommonData.orderInfo==null){
 
+
+        if (CommonData.orderInfo==null){
             //调用接口拿到订单号
             createPrepayIdEntityCall=RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
 
@@ -130,9 +232,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                             //拿到预支付流水号
                             neworderInfo.prepayId=response1.getPrepayId();
+                            CommonData.orderInfo=neworderInfo;
                         }
-
-
+                        else{
+                            Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrInfo(),Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
 
@@ -168,6 +272,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
         }
 
+
     }
 
 
@@ -195,6 +300,106 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     public void refreshPrice(HashMap<String, Integer> pitchOnMap) {
         priceControl(pitchOnMap);
     }
+
+
+
+    /**
+     * Created by zhoupan on 2019/11/7.
+     * 扫码添加商品，封装方法
+     */
+
+    public   void  AddnewSpid(String  inputbarcode){
+
+        HashMap<String,String> map=new HashMap<>();
+
+        Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo(inputbarcode,CommonData.khid,"526374","0");
+        Addgoodsinfo.enqueue(new Callback<Addgoods>() {
+            @Override
+            public void onResponse(Call<Addgoods> call, Response<Addgoods> response) {
+
+                if (response.body()!=null) {
+                    map.clear();
+                    Addgoods addgoods = response.body();
+                    int onCode = addgoods.getReturnX().getNCode();
+                    if (onCode == 0) {
+                        Addgoods.ResponseBean responseBean = addgoods.getResponse();
+                        List<Addgoods.ResponseBean.GoodsListBean> maps = responseBean.getGoodsList();
+
+                        //拿到产品编码
+                        String spcode = maps.get(0).getGoodsId();
+                        double price = maps.get(0).getRealPrice();
+                        double disc = 0;
+
+                        //没录入一次，都去增加总数量和总价
+                        neworderInfo.totalCount = neworderInfo.totalCount + 1;  //增加总数量
+                        neworderInfo.totalPrice = neworderInfo.totalPrice + price;  //增加总价
+                        neworderInfo.totalDisc = neworderInfo.totalDisc + disc;    //增加总折扣
+
+                        //1.0先判断 改产品集合中是否存在
+                        if (MapList.containsKey(spcode)) {
+
+                            //如果存在，拿到集合，增加数量，总价，折扣
+                            MapList.get(spcode).get(0).setPackNum(MapList.get(spcode).get(0).getPackNum() + 1);
+                            MapList.get(spcode).get(0).setMainPrice(MapList.get(spcode).get(0).getMainPrice() + price);
+
+                            //更改 映射的 map的内容
+                            for (int k = 0; k < listmap.size(); k++) {
+                                if (listmap.get(k).get("id").equals(spcode)) {
+                                    listmap.get(k).put("count", String.valueOf(Integer.valueOf(listmap.get(k).get("count")) + 1));
+                                }
+                            }
+                        } else {
+                            List<SplnfoList> uselist = new ArrayList<SplnfoList>();
+                            SplnfoList usesplnfo = new SplnfoList();
+
+                            usesplnfo.setBarcode(maps.get(0).getBarcode());
+                            usesplnfo.setGoodsId(maps.get(0).getGoodsId());
+                            usesplnfo.setMainPrice(maps.get(0).getMainPrice());
+                            usesplnfo.setPackNum(maps.get(0).getPackNum());
+                            usesplnfo.setPluName(maps.get(0).getPluName());
+                            usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
+                            usesplnfo.setPluUnit(maps.get(0).getPluUnit());
+                            usesplnfo.setRealPrice(maps.get(0).getRealPrice());
+                            double totalPrice = (maps.get(0).getPackNum() * maps.get(0).getRealPrice());
+                            uselist.add(usesplnfo);
+
+                            //说明产品不存在，直接增加进去
+                            MapList.put(spcode, uselist);
+
+                            //下面是只取几个字段去改变 界面显示的
+                            map.put("id", maps.get(0).getGoodsId());
+                            map.put("name", maps.get(0).getPluName());
+                            map.put("price", String.valueOf(maps.get(0).getRealPrice()));
+                            map.put("count", String.valueOf(maps.get(0).getPackNum()));
+
+                            listmap.add(map);
+
+                        }
+
+                        //界面上实现 增加一个元素
+                        adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
+                        listview.setAdapter(adapter);
+                        adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+                        priceControl(adapter.getPitchOnMap());
+                    }
+                    else{
+                        String result=addgoods.getReturnX().getStrText();
+                        Toast.makeText(InputGoodsActivity.this,result,Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Addgoods> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
 
     /**
      * 控制价格展示总价
@@ -251,8 +456,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         //取消
         TextView title2 = (TextView) layout.findViewById(R.id.close2);
 
-
-
         dialog.show();
         // 设置确定按钮的事件
         title.setOnClickListener(new View.OnClickListener() {
@@ -261,92 +464,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                 EditText editText1=layout.findViewById(R.id.username);
                 String  inputbarcode=editText1.getText().toString();
-                HashMap<String,String> map=new HashMap<>();
-
-                Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo(inputbarcode,"S101","526374","0");
-                Addgoodsinfo.enqueue(new Callback<Addgoods>() {
-                    @Override
-                    public void onResponse(Call<Addgoods> call, Response<Addgoods> response) {
-
-                        if (response.body()!=null) {
-                            map.clear();
-                            Addgoods addgoods = response.body();
-                            int onCode = addgoods.getReturnX().getNCode();
-                            if (onCode == 0) {
-                                Addgoods.ResponseBean responseBean = addgoods.getResponse();
-                                List<Addgoods.ResponseBean.GoodsListBean> maps = responseBean.getGoodsList();
-
-                                //拿到产品编码
-                                String spcode = maps.get(0).getGoodsId();
-                                double price = maps.get(0).getRealPrice();
-                                double disc = 0;
-
-                                //没录入一次，都去增加总数量和总价
-                                neworderInfo.totalCount = neworderInfo.totalCount + 1;  //增加总数量
-                                neworderInfo.totalPrice = neworderInfo.totalPrice + price;  //增加总价
-                                neworderInfo.totalDisc = neworderInfo.totalDisc + disc;    //增加总折扣
-
-                                //1.0先判断 改产品集合中是否存在
-                                if (MapList.containsKey(spcode)) {
-
-                                    //如果存在，拿到集合，增加数量，总价，折扣
-                                    MapList.get(spcode).get(0).setPackNum(MapList.get(spcode).get(0).getPackNum() + 1);
-                                    MapList.get(spcode).get(0).setMainPrice(MapList.get(spcode).get(0).getMainPrice() + price);
-
-                                    //更改 映射的 map的内容
-                                    for (int k = 0; k < listmap.size(); k++) {
-                                        if (listmap.get(k).get("id").equals(spcode)) {
-                                            listmap.get(k).put("count", String.valueOf(Integer.valueOf(listmap.get(k).get("count")) + 1));
-                                        }
-                                    }
-                                } else {
-                                    List<SplnfoList> uselist = new ArrayList<SplnfoList>();
-                                    SplnfoList usesplnfo = new SplnfoList();
-
-                                    usesplnfo.setBarcode(maps.get(0).getBarcode());
-                                    usesplnfo.setGoodsId(maps.get(0).getGoodsId());
-                                    usesplnfo.setMainPrice(maps.get(0).getMainPrice());
-                                    usesplnfo.setPackNum(maps.get(0).getPackNum());
-                                    usesplnfo.setPluName(maps.get(0).getPluName());
-                                    usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
-                                    usesplnfo.setPluUnit(maps.get(0).getPluUnit());
-                                    usesplnfo.setRealPrice(maps.get(0).getRealPrice());
-                                    double totalPrice = (maps.get(0).getPackNum() * maps.get(0).getRealPrice());
-                                    uselist.add(usesplnfo);
-
-                                    //说明产品不存在，直接增加进去
-                                    MapList.put(spcode, uselist);
-
-                                    //下面是只取几个字段去改变 界面显示的
-                                    map.put("id", maps.get(0).getGoodsId());
-                                    map.put("name", maps.get(0).getPluName());
-                                    map.put("price", String.valueOf(maps.get(0).getRealPrice()));
-                                    map.put("count", String.valueOf(maps.get(0).getPackNum()));
-
-                                    listmap.add(map);
-
-                                }
-
-                                //界面上实现 增加一个元素
-                                adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
-                                listview.setAdapter(adapter);
-                                adapter.setRefreshPriceInterface(InputGoodsActivity.this);
-                                priceControl(adapter.getPitchOnMap());
-                            }
-                            else{
-                                String result=addgoods.getReturnX().getStrText();
-                                Toast.makeText(InputGoodsActivity.this,result,Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Addgoods> call, Throwable t) {
-
-                    }
-                });
+                AddnewSpid(inputbarcode);
 
                 dialog.dismiss();
             }
@@ -363,6 +481,96 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+
+    public  void  input_bags(View view){
+
+        final Dialog dialog = new Dialog(this,
+                R.style.myNewsDialogStyle);
+
+        // 自定义对话框布局
+        layout = View.inflate(this, R.layout.bagingo_one,
+                null);
+        dialog.setContentView(layout);
+
+        ListView listView=(ListView) layout.findViewById(R.id.lv_baginfo);
+        /*listView.setVisibility(View.VISIBLE);
+        listView.bringToFront();*/
+        List<Map<String, Object>> listitem=new ArrayList<Map<String,Object>>();
+
+        GetBagsInfo= RetrofitHelper.getInstance().getBagInfo("526374","S101");
+        GetBagsInfo.enqueue(new Callback<PurchaseBag>() {
+            @Override
+            public void onResponse(Call<PurchaseBag> call, Response<PurchaseBag> response) {
+
+                if (response.body()!=null){
+                    PurchaseBag getBagsInfo=response.body();
+
+                    int onCode=getBagsInfo.getReturnX().getNCode();
+                    if (onCode==0){
+                        PurchaseBag.ResponseBean responseBean=getBagsInfo.getResponse();
+                        List<PurchaseBag.ResponseBean.BagMapBean> maps=responseBean.getBagMap();
+                        int n=20;
+                        int[]  img_expense=new  int[n];
+                        String[] tv_bagname=new  String[n];
+                        String[] tv_bagpic=new String[n];
+                        String[] tv_goodsid=new  String[n];
+                        for (int m=0; m<maps.size();m++){
+
+                            Map<String,Object> map=new HashMap<String, Object>();
+                            map.put("img_expense",R.mipmap.gwd);
+                            map.put("tv_bagname", maps.get(m).getPluName());
+                            map.put("tv_bagpic", String.valueOf(maps.get(m).getPluPrice()));
+                            map.put("tv_goodsid", maps.get(m).getGoodsId());
+                            listitem.add(map);
+                        }
+
+                        SimpleAdapter adapter=new SimpleAdapter(InputGoodsActivity.this,listitem,R.layout.baginfo, new String[]{"tv_bagname","tv_bagpic","img_expense","tv_goodsid"},new int[]{R.id.tv_bagname,R.id.tv_bagpic,R.id.img_expense,R.id.tv_goodsid} );
+                        listView.setAdapter(adapter);
+                        dialog.show();
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                HashMap<String,String> map=(HashMap<String, String>) listView.getItemAtPosition(position);
+                                String title=map.get("tv_bagname");
+                                String bagpic=map.get("tv_bagpic");
+                                String bagsid=map.get("tv_goodsid");
+
+
+                                AddnewSpid(bagsid);
+
+
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                    else {
+
+                    }
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<PurchaseBag> call, Throwable t) {
+
+            }
+        });
+
+
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+
+
+    }
     /**
      *
      * 数字键盘事件

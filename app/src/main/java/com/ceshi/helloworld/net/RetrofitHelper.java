@@ -208,6 +208,7 @@ public class RetrofitHelper {
     }
 
     public Call<ResponseSignBean> getSign(String payWay,
+                                          String AuthCode,
                                           List<RequestSignBean.PluMapBean> pluMap,
                                           List<RequestSignBean.PayMapBean> payMap){
 
@@ -215,9 +216,15 @@ public class RetrofitHelper {
         requestSignBean.setStoreId(CommonData.khid);
 
         requestSignBean.setDeviceId("device");
-        requestSignBean.setUserId(CommonData.hyMessage.cardnumber);
+        if (CommonData.hyMessage==null) {
+            requestSignBean.setUserId("");
+        }
+        else
+        {
+            requestSignBean.setUserId(CommonData.hyMessage.cardnumber);
+        }
         requestSignBean.setPayWay(payWay);
-        requestSignBean.setAuthCode(payWay);
+        requestSignBean.setAuthCode(AuthCode);
         requestSignBean.setBizType(1);
         requestSignBean.setExtra("{'prepayId':'"+CommonData.orderInfo.prepayId+"','mydata':'testinfo'}");
         requestSignBean.setPluMap(pluMap);
