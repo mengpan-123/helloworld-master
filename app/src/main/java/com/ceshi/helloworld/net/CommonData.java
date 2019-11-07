@@ -41,4 +41,8 @@ public  class CommonData  extends Application {
     public static String    app_version="";
 
 
+    public static HyMessage  hyMessage=null;
+
+
+    public static OrderInfo orderInfo=null;
 }

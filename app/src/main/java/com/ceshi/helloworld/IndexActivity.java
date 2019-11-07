@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
@@ -29,6 +30,8 @@ public class IndexActivity extends Activity {
 
     private  Call<ClearCarEntity>  ClearCarEntityCall;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,21 +44,28 @@ public class IndexActivity extends Activity {
             @Override
             public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
                 if (response!=null){
+                    ClearCarEntity body = response.body();
 
+                    if (body.getReturnX().getNCode()==0){
+                        //购物车清空成功。那如果万一没网 ，清空失败 这种情况呢？
+
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<ClearCarEntity> call, Throwable t) {
-
+                Toast.makeText(IndexActivity.this, "请检查网络配置...", Toast.LENGTH_LONG).show();
             }
         });
 
 
-        HyMessage  hyMessage=null;
-        OrderInfo orderInfo=null;
+        CommonData.hyMessage=null;
+        CommonData.orderInfo=null;
 
     }
+
+
     /**
      *
      * MembersLogin 会员登录

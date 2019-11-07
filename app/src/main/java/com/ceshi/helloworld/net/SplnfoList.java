@@ -1,8 +1,6 @@
 package com.ceshi.helloworld.net;
 
-import android.renderscript.Int2;
-
-public class SplnfoList {
+public class  SplnfoList {
 
 
 

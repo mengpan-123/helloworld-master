@@ -5,14 +5,22 @@ import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
+import com.ceshi.helloworld.bean.RequestSignBean;
+import com.ceshi.helloworld.bean.ResponseSignBean;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.bean.UpdateVersionEntity;
+import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
+import com.ceshi.helloworld.bean.getpaysignnewEntity;
+import com.ceshi.helloworld.bean.upCardCacheEntity;
+import com.google.gson.Gson;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -22,7 +30,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by xuke on 2017/10/27.
+ * Created by zhoupan on 2019/11/04.
  * <p
  */
 
@@ -49,15 +57,9 @@ public class RetrofitHelper {
     }
 
     /**
-
-     * 多传一个参数，url作为动态的传入
-     */
-
-
-    /**
      * 这里的url必须时域名前的那段baseurl  比如
      * http://dvp.rongxwy.com/base/rest/v3/CartService/getMchIdByStoreId?storeId=S2101
-     * 取http://dvp.rongxwy.com/为他的baseurl,暂时给你写死，后面你去优化
+     * 取http://dvp.rongxwy.com/为他的baseurl
      */
 
     private void initRetrofit() {
@@ -175,6 +177,58 @@ public class RetrofitHelper {
      * */
     public Call<UpdateVersionEntity> UpdateVersion(String appName, String appId, String storeId){
         return mAPIService.UpdateVersion(appName,appId,storeId);
+    }
+
+    /***
+     * 预支付订单流水号
+     * storeId    门店编号
+     * */
+    public Call<createPrepayIdEntity> createPrepayId(String storeId){
+        return mAPIService.createPrepayId(storeId);
+    }
+
+
+    /***
+     * 会员卡预支付设置
+     *sMemberId 会员编号
+     * prepayId    预支付流水号
+
+     * */
+    public Call<upCardCacheEntity> upCardCache(String sMemberId,String prepayId){
+        return mAPIService.upCardCache(sMemberId,prepayId);
+    }
+
+
+    /***
+     * 订单支付接口
+     *请求方式 POST，数据格式application/json
+     * */
+    public Call<getpaysignnewEntity> getpaysignnew(String sMemberId, String prepayId){
+        return mAPIService.getpaysignnew(sMemberId,prepayId);
+    }
+
+    public Call<ResponseSignBean> getSign(String payWay,
+                                          List<RequestSignBean.PluMapBean> pluMap,
+                                          List<RequestSignBean.PayMapBean> payMap){
+
+        RequestSignBean requestSignBean = new RequestSignBean();
+        requestSignBean.setStoreId(CommonData.khid);
+
+        requestSignBean.setDeviceId("device");
+        requestSignBean.setUserId(CommonData.hyMessage.cardnumber);
+        requestSignBean.setPayWay(payWay);
+        requestSignBean.setAuthCode(payWay);
+        requestSignBean.setBizType(1);
+        requestSignBean.setExtra("{'prepayId':'"+CommonData.orderInfo.prepayId+"','mydata':'testinfo'}");
+        requestSignBean.setPluMap(pluMap);
+        requestSignBean.setPayMap(payMap);
+
+
+
+        String s = new Gson().toJson(requestSignBean); //将bean转为json
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return mAPIService.getSgin(requestBody);
+
     }
 
 

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
+import com.ceshi.helloworld.bean.ResponseSignBean;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.net.RetrofitHelper;
@@ -35,6 +36,9 @@ public class NetWorkActivity extends AppCompatActivity {
     private Call<ClearCarEntity> ClearCarEntityCall;
 
     private Call<PurchaseBag> PurchaseBagCall;
+
+
+    private Call<ResponseSignBean> ResponseSignBeanCall;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,5 +129,29 @@ public class NetWorkActivity extends AppCompatActivity {
 
             }
         });*/
+
+
+        /*ResponseSignBeanCall= RetrofitHelper.getInstance().getSign();
+
+        ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
+            @Override
+            public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
+
+                ResponseSignBean body = response.body();
+
+                int nCode= body.getReturnX().getNCode();
+
+                ResponseSignBean.ResponseBean  res=body.getResponse();
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseSignBean> call, Throwable t) {
+
+            }
+        });*/
+
+
+
     }
 }

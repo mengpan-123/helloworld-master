@@ -25,6 +25,6 @@ public class OrderInfo {
 
 
     //产品的集合
-    public List<SplnfoList>   spList= null;
+    public  List<SplnfoList>   spList= null;
 
 }

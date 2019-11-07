@@ -2,6 +2,7 @@ package com.ceshi.helloworld;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -19,6 +20,9 @@ import java.util.Map;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.Addgoods;
+import com.ceshi.helloworld.bean.createPrepayIdEntity;
+import com.ceshi.helloworld.bean.upCardCacheEntity;
+import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.CreateAddAdapter;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
@@ -46,12 +50,23 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
    /* private List<OrderInfo> orderInfos;*/
     OrderInfo  orderInfos=new  OrderInfo();
     List<SplnfoList>   spList  =new ArrayList<SplnfoList>() ;
+
+
+    private Call<createPrepayIdEntity> createPrepayIdEntityCall;
+
+    private Call<upCardCacheEntity> upCardCacheEntityCall;
+
+    private OrderInfo  neworderInfo=new OrderInfo();
+
 private  Handler mHandler=new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
         initView();
+
+
+
     }
 
     private void initView() {
@@ -59,8 +74,27 @@ private  Handler mHandler=new Handler();
         listview = (ListView) findViewById(R.id.listview);
         price = (TextView) findViewById(R.id.tv_total_price);
         shopcar_num=findViewById(R.id.shopcar_num);
+
+
+        /**
+         * Created by zhoupan on 2019/11/6.
+         * 点击去支付时触发,优先选择支付方式，暂时默认使用微信把
+         */
         tv_go_to_pay = (TextView) findViewById(R.id.tv_go_to_pay);
-        tv_go_to_pay.setOnClickListener(this);
+        //tv_go_to_pay.setOnClickListener(this);
+        tv_go_to_pay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public  void  onClick(View view) {
+                //1.0 初始化所有的产品信息
+
+                //2.0 选取支付方式
+
+                //3.0 调起扫码枪的功能，获取支付的付款码。确认支付
+
+            }
+        });
+
+
 
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
@@ -68,6 +102,73 @@ private  Handler mHandler=new Handler();
         priceControl(adapter.getPitchOnMap());
 
     }
+
+
+    /**
+     * Created by zhoupan on 2019/11/6.
+     * 预支付相关信息
+     */
+
+    public   void  Prepay(){
+        //预支付 相关的操作
+        if (CommonData.orderInfo==null){
+
+            //调用接口拿到订单号
+            createPrepayIdEntityCall=RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
+
+            createPrepayIdEntityCall.enqueue(new Callback<createPrepayIdEntity>() {
+                @Override
+                public void onResponse(Call<createPrepayIdEntity> call, Response<createPrepayIdEntity> response) {
+                    if (response!=null){
+                        createPrepayIdEntity body = response.body();
+
+                        if (body.getReturnX().getNCode()==0){
+
+                            createPrepayIdEntity.ResponseBean response1 = body.getResponse();
+
+                            //拿到预支付流水号
+                            neworderInfo.prepayId=response1.getPrepayId();
+                        }
+
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<createPrepayIdEntity> call, Throwable t) {
+
+                }
+            });
+
+        }
+
+        if (CommonData.hyMessage!=null){
+            //进行会员卡预支付设置
+            upCardCacheEntityCall=RetrofitHelper.getInstance().upCardCache(CommonData.khid,neworderInfo.prepayId);
+            upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
+                @Override
+                public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
+                    if (response!=null){
+                        upCardCacheEntity body = response.body();
+
+                        if (body.getReturnX().getNCode()==0){
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
+
+                }
+            });
+
+
+        }
+
+    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -146,7 +247,7 @@ private  Handler mHandler=new Handler();
 
     /**
      *
-     * 手动输入条码
+     * 手动输入条码tv_go_to_pay
      * input_tiaoma
      * **/
     public  void  input_tiaoma(View view){
