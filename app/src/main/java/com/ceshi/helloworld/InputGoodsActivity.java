@@ -1,7 +1,9 @@
 package com.ceshi.helloworld;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -44,8 +46,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
    /* private List<OrderInfo> orderInfos;*/
     OrderInfo  orderInfos=new  OrderInfo();
     List<SplnfoList>   spList  =new ArrayList<SplnfoList>() ;
-
-
+private  Handler mHandler=new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,12 +182,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         int onCode=addgoods.getReturnX().getNCode();
                         Addgoods.ResponseBean responseBean=addgoods.getResponse();
                         List<Addgoods.ResponseBean.GoodsListBean> maps=responseBean.getGoodsList();
-
-
-
                         for (int i=0;i<maps.size(); i++){
                           SplnfoList splnfoList=new SplnfoList();
-                          if (orderInfos.spList!=null){
+                          if (orderInfos.spList.size()!=0){
 
                               for (int j=0;j<orderInfos.spList.size();j++){
                                   if (orderInfos.spList.get(j).getGoodsId()!=maps.get(i).getGoodsId()){
@@ -219,26 +217,35 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                               splnfoList.setTotalPrice(totalPrice);
                           }
                           orderInfos.spList.add(splnfoList);
-
-////            map.put("id",i+"");
-////            map.put("name",i+"name");
-////            map.put("type",i+"type");
-////            map.put("price",i+"");
-////            map.put("count",i+"");
-////            listmap.add(map);
                         }
-                    for (int i=0;i<orderInfos.spList.size();i++){
+                        for (int i=0;i<orderInfos.spList.size();i++){
 
-                        map.put("id",orderInfos.spList.get(i).getGoodsId());
-                        map.put("name",orderInfos.spList.get(i).getPluName());
-                        map.put("price",String.valueOf(orderInfos.spList.get(i).getRealPrice()));
-                        map.put("count",String.valueOf(orderInfos.spList.get(i).getPackNum()));
-                        listmap.add(map);
-                    }
-                        adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
-                        listview.setAdapter(adapter);
-                        adapter.setRefreshPriceInterface(InputGoodsActivity.this);
-                        priceControl(adapter.getPitchOnMap());
+                            map.put("id",orderInfos.spList.get(i).getGoodsId());
+                            map.put("name",orderInfos.spList.get(i).getPluName());
+                            map.put("price",String.valueOf(orderInfos.spList.get(i).getRealPrice()));
+                            map.put("count",String.valueOf(orderInfos.spList.get(i).getPackNum()));
+                            listmap.add(map);
+                        }
+
+
+                      /*  final  List<HashMap<String,String>> result=listmap;
+                        InputGoodsActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                adapter = new CreateAddAdapter(InputGoodsActivity.this, result);
+                                listview.setAdapter(adapter);
+                                adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+                                priceControl(adapter.getPitchOnMap());
+                            }
+                        });*/
+
+                                adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
+                                listview.setAdapter(adapter);
+                                adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+                                priceControl(adapter.getPitchOnMap());
+
+
                     }
 
                     @Override
@@ -246,6 +253,10 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                     }
                 });
+//                adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
+//                listview.setAdapter(adapter);
+//                adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+//                priceControl(adapter.getPitchOnMap());
                 dialog.dismiss();
             }
         });
