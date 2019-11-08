@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toast_root"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="30dp"
+    android:background="#F0F0F0"
+   >
+    <TextView
+        android:id="@+id/toast_title"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="温 馨 提 示 "
+        android:background="#0FB6A4"
+        android:textColor="#F0F0F0"
+        android:textSize="18dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/toast_title">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/toast_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="我就是那个toast"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="#F0F0F0"
+                android:textColor="@android:color/background_dark"
+                android:textSize="14dp" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#F0F0F0"
+                android:background="#0FB6A4"
+                android:textSize="16dp"
+                android:text="确  认"
+                android:id="@+id/require_close"/>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

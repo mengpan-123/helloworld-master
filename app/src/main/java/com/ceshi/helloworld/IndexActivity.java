@@ -22,6 +22,7 @@ import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.HyMessage;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
+import com.ceshi.helloworld.net.ToastUtil;
 
 import java.util.HashMap;
 
@@ -200,5 +201,10 @@ public class IndexActivity extends Activity {
 
 
 
+    }
+
+    public  void gw_click(View view){
+
+        ToastUtil.showToast(IndexActivity.this, "这是一个toast", "我就是那个toast");
     }
 }
