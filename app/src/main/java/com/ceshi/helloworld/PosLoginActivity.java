@@ -127,7 +127,9 @@ public class PosLoginActivity extends AppCompatActivity {
                 getdeviceinfoEntityCall.enqueue(new Callback<getdeviceinfoEntity>() {
                     @Override
                     public void onResponse(Call<getdeviceinfoEntity> call, Response<getdeviceinfoEntity> response) {
+
                         if (response != null) {
+
                             getdeviceinfoEntity body = response.body();
 
                             int nCode= body.getReturnX().getNCode();
