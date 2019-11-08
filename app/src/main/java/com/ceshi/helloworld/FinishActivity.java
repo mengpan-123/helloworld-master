@@ -75,7 +75,8 @@ public class FinishActivity extends AppCompatActivity  {
                     message.arg1 = i;
                     mHandler.sendMessage(message);
                 }else {
-
+                    Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
+                    startActivity(intent);
                 }
             }
         };
