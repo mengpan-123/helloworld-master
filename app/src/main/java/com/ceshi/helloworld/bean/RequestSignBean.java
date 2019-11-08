@@ -202,7 +202,7 @@ public class RequestSignBean {
             return pluAmount;
         }
 
-        public void setPluAmount(int pluAmount) {
+        public void setPluAmount(double pluAmount) {
             this.pluAmount = pluAmount;
         }
 

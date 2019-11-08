@@ -15,7 +15,7 @@ android {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "SecTest.apk"
+                outputFileName = "zhoupan.apk"
             }
     }
     buildTypes {

@@ -545,6 +545,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     public  void  deletecar(View view){
     //清空listmap的值
         listmap.clear();
+        MapList.clear();
+
         //清空列表页面
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
@@ -565,7 +567,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     public  void  to_pay(View view){
 
         //首先要判断是否增加了产品
-        if (CommonData.orderInfo==null||CommonData.orderInfo.spList==null){
+        if (CommonData.orderInfo==null||MapList.size()==0){
             ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "请先录入要支付的商品");
             return;
         }
@@ -701,7 +703,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                 payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
                 payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
                 payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
-                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));
+                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));
+                payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));
+                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));
                 pluMap.add(payMapcls);
             }
         }
