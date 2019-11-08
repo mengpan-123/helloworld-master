@@ -35,6 +35,7 @@ import com.ceshi.helloworld.net.CreateAddAdapter;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
+import com.ceshi.helloworld.net.ToastUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,8 +61,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private double totalPrice = 0.00;
     private int totalCount = 0;
     private Call<Addgoods> Addgoodsinfo;
-   /* private List<OrderInfo> orderInfos;*/
-    OrderInfo  orderInfos=new  OrderInfo();
 
     private Map<String,List<SplnfoList>>   MapList=new  HashMap<String,List<SplnfoList>>();
 
@@ -127,7 +126,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      */
 
     public   void  Prepay(){
-        //预支付 相关的操作
+        //预支付 相关的操作，给公共订单类赋值
 
 
         if (CommonData.orderInfo==null){
@@ -290,7 +289,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                     }
                     else{
                         String result=addgoods.getReturnX().getStrText();
-                        Toast.makeText(InputGoodsActivity.this,result,Toast.LENGTH_SHORT).show();
+
+                        ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", result);
+                        //Toast.makeText(InputGoodsActivity.this,result,Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -562,6 +563,15 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      * */
 
     public  void  to_pay(View view){
+
+        //首先要判断是否增加了产品
+        if (CommonData.orderInfo==null||CommonData.orderInfo.spList==null){
+            ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "请先录入要支付的商品");
+            return;
+        }
+
+
+
         final Dialog dialog1 = new Dialog(this, R.style.myNewsDialogStyle);
        // 自定义对话框布局
         layout_pay = View.inflate(this, R.layout.activity_chosepay, null);
@@ -630,9 +640,16 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             public void onClick(View v) {
                 try {
                     String authcode = input_code.getText().toString();
-                    payAuthCode = authcode;
-                    //去支付
-                    Moneypay();
+
+                    if (authcode.length()<18){
+                        ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "请输入完整的18位支付码");
+                        return;
+                    }
+                    else {
+                        payAuthCode = authcode;
+                        //去支付
+                        Moneypay();
+                    }
                 }catch(Exception ex){
 
                 }
@@ -652,11 +669,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     public   void   Moneypay(){
 
-        Toast.makeText(InputGoodsActivity.this,"点击去支付~",Toast.LENGTH_SHORT).show();
-
         //获取 购物车 列表
 
-        getCartItemsEntityCall=RetrofitHelper.getInstance().getCartItems(CommonData.userId,CommonData.khid);
+        /*getCartItemsEntityCall=RetrofitHelper.getInstance().getCartItems(CommonData.userId,CommonData.khid);
         getCartItemsEntityCall.enqueue(new Callback<getCartItemsEntity>() {
             @Override
             public void onResponse(Call<getCartItemsEntity> call, Response<getCartItemsEntity> response) {
@@ -665,7 +680,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                     if (body.getReturnX().getNCode() == 0) {
 
-                        payWay="";
                     }
                 }
             }
@@ -674,7 +688,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             public void onFailure(Call<getCartItemsEntity> call, Throwable t) {
 
             }
-        });
+        });*/
 
         //1.0 初始化所有的产品信息,
         List<RequestSignBean.PluMapBean> pluMap =new ArrayList<RequestSignBean.PluMapBean>();
@@ -731,19 +745,21 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                         startActivity(intent);
 
-
-
                     }
                     else{
                         //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
+                        String  Result=body.getReturnX().getStrText();
 
-                        try {
+                        ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
+                        return;
+
+                      /*  try {
                             Intent newintent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
                             startActivity(newintent);
                         }
                         catch(Exception ex){
 
-                        }
+                        }*/
                     }
                 }
             }

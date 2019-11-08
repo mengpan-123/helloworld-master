@@ -41,7 +41,7 @@ public class IndexActivity extends Activity {
 
 
         /*需要在这里，第一。每次进入时，清空会员信息，清空订单信息,调用接口清空购物车*/
-        ClearCarEntityCall=RetrofitHelper.getInstance().ClearCar(CommonData.khid,CommonData.machine_number);
+        ClearCarEntityCall=RetrofitHelper.getInstance().ClearCar(CommonData.khid,CommonData.userId);
         ClearCarEntityCall.enqueue(new Callback<ClearCarEntity>() {
             @Override
             public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
@@ -128,6 +128,7 @@ public class IndexActivity extends Activity {
 
                                     }else {
                                         ToastUtil.showToast(IndexActivity.this,"登录提示","该会员不存在，请重新输入");
+                                    return;
                                     }
                                  }
                              }

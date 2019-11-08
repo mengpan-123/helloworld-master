@@ -27,6 +27,7 @@ import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.HttpSendRequest;
 import com.ceshi.helloworld.net.MyDatabaseHelper;
 import com.ceshi.helloworld.net.RetrofitHelper;
+import com.ceshi.helloworld.net.ToastUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -83,8 +84,10 @@ public class PosLoginActivity extends AppCompatActivity {
         }
         catch(Exception ex){
             //如果创建异常
-            Toast.makeText(PosLoginActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(PosLoginActivity.this, ex.toString(), Toast.LENGTH_LONG).show();
+            ToastUtil.showToast(PosLoginActivity.this, "异常通知", "初始化本地Sqlite信息失败");
             return;
+
         }
 
         InitData(querydb);
@@ -118,7 +121,7 @@ public class PosLoginActivity extends AppCompatActivity {
 
                 if (s_inputmachine.length()==0||s_inputkhid.length()==0)
                 {
-                    Toast.makeText(PosLoginActivity.this, "请输入门店号或者设备号", Toast.LENGTH_LONG).show();
+                    ToastUtil.showToast(PosLoginActivity.this, "输入消息通知", "请输入完整的门店号或者设备号");
                     return;
                 }
                 //传入门店编号和设备号，进行注册
@@ -136,13 +139,10 @@ public class PosLoginActivity extends AppCompatActivity {
 
                             int nCode= body.getReturnX().getNCode();
 
-                            Log.e("zhoupan","nCode = "+nCode);
-
                             if (nCode!=0) {
                                 String message = body.getReturnX().getStrText();
-                                Toast.makeText(PosLoginActivity.this, message, Toast.LENGTH_LONG).show();
 
-                                Log.e("本次返回失败", message);
+                                ToastUtil.showToast(PosLoginActivity.this, "输入消息通知", message);
                                 return;
                             }
 

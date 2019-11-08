@@ -220,13 +220,15 @@ public class RetrofitHelper {
         RequestSignBean requestSignBean = new RequestSignBean();
         requestSignBean.setStoreId(CommonData.khid);
 
-        requestSignBean.setDeviceId("device");
+        requestSignBean.setDeviceId(CommonData.userId);
         requestSignBean.setUserId(CommonData.userId);  //登陆/注册接口返回的 userId
 
         requestSignBean.setPayWay(payWay);
         requestSignBean.setAuthCode(AuthCode);
         requestSignBean.setBizType(1);
-        requestSignBean.setExtra("{'prepayId':'"+CommonData.orderInfo.prepayId+"','mydata':'testinfo'}");
+
+        String Pays="{'prepayId':'"+CommonData.orderInfo.prepayId+"','mydata':'testinfo'}";
+        requestSignBean.setExtra(""+Pays+"");
         requestSignBean.setPluMap(pluMap);
         requestSignBean.setPayMap(payMap);
 
