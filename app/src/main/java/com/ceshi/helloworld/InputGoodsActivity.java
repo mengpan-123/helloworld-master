@@ -47,6 +47,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private TextView tv_go_to_pay;
     private TextView shopcar_num;
     private ImageView text_tip;
+    private  TextView yhmoney;
+    private  TextView phone_view;
 
     View layout=null;
     View layout_pay=null;
@@ -87,8 +89,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
         initView();
-
-
+        if (CommonData.hyMessage==null){
+            phone_view.setText("");
+        }else {
+            phone_view.setText(CommonData.hyMessage.hytelphone);
+        }
 
         //一进来就得执行。初始化会员支付，初始化订单号
         Prepay();
@@ -99,105 +104,10 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
         price = (TextView) findViewById(R.id.tv_total_price);
+        phone_view=(TextView) findViewById(R.id.phone);
         shopcar_num=findViewById(R.id.shopcar_num);
-//        /**
-//         * Created by zhoupan on 2019/11/6.
-//         * 点击去支付时触发,优先选择支付方式，暂时默认使用微信把
-//         */
+        yhmoney=findViewById(R.id.yhmoney);
         tv_go_to_pay = (TextView) findViewById(R.id.tv_go_to_pay);
-//        tv_go_to_pay.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public  void  onClick(View view) {
-//
-//
-//                //1.0 初始化所有的产品信息
-//
-//                //2.0 选取支付方式
-//
-//                //3.0 调起扫码枪的功能，获取支付的付款码。确认支付
-//
-//            }
-//        });
-        //tv_go_to_pay.setOnClickListener(this);
-       /* tv_go_to_pay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public  void  onClick(View view) {
-
-
-                Toast.makeText(InputGoodsActivity.this,"点击去支付~",Toast.LENGTH_SHORT).show();
-
-
-                //1.0 初始化所有的产品信息,
-                List<RequestSignBean.PluMapBean> pluMap =new ArrayList<RequestSignBean.PluMapBean>();
-
-                try {
-
-
-                    for(Map.Entry<String,List<SplnfoList>> entry : MapList.entrySet()) {
-
-                        RequestSignBean.PluMapBean payMapcls = new RequestSignBean.PluMapBean();
-
-                        payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
-                        payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
-                        payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
-                        payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));
-                        pluMap.add(payMapcls);
-                    }
-                }
-                catch(Exception ex){
-
-                }
-
-
-
-
-
-                //2.0 选取支付方式 ,初始化支付信息
-                int PayTypeId=1;
-                if (payWay.equals("WXPaymentCodePay")){
-                    PayTypeId=5;
-                }else if(payWay.equals("AliPaymentCodePay")){
-                    PayTypeId=7;
-                }
-
-                List<RequestSignBean.PayMapBean> payMap=new ArrayList<RequestSignBean.PayMapBean>();
-                RequestSignBean.PayMapBean pmp=new   RequestSignBean.PayMapBean();
-                pmp.setPayTypeId(PayTypeId);
-                pmp.setPayVal(neworderInfo.totalPrice);
-                payMap.add(pmp);
-
-                //3.0 调起扫码枪的功能，获取支付的付款码。确认支付
-                payAuthCode="1111111111111111";
-
-                //调用确认支付接口
-                ResponseSignBeanCall =RetrofitHelper.getInstance().getSign(payWay,payAuthCode,pluMap,payMap);
-                ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
-                    @Override
-                    public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
-                        if (response!=null){
-                            ResponseSignBean body = response.body();
-
-                            if (body.getReturnX().getNCode()==0){
-
-                                ResponseSignBean.ResponseBean response1 = body.getResponse();
-
-                            }
-                            else{
-                                Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseSignBean> call, Throwable t) {
-
-                    }
-                });
-
-            }
-        });*/
-
-
 
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
@@ -266,18 +176,10 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                 @Override
                 public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
-
                 }
             });
-
-
         }
-
-
     }
-
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -414,6 +316,12 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             totalPrice=totalPrice+goodsPrice;
         }
         price.setText(" ¥ "+totalPrice);
+        if (CommonData.orderInfo==null){
+            yhmoney.setText("优惠 ￥ "+0.00);
+        }else {
+            yhmoney.setText("优惠 ￥ "+CommonData.orderInfo.totalDisc);
+        }
+
         shopcar_num.setText("共"+pitchOnMap.size()+"件商品");
         tv_go_to_pay.setText("付款("+totalPrice+")");
     }
