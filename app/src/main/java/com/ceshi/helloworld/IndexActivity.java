@@ -124,20 +124,18 @@ public class IndexActivity extends Activity {
                              if (response.isSuccessful()) {
                                  GetHyInfoEntity body = response.body();
                                  if (body != null) {
-                                     //就拿到后台返回的数据了, tasktitle  设置给我们自己的页面
-                                     String Info= body.getReturnX().getStrText();
-                                     Log.e("zhoupan","getSub_mch_id = "+response.message());
+                                    if (body.getReturnX().getNCode()==0){
 
+                                    }else {
+                                        ToastUtil.showToast(IndexActivity.this,"登录提示","该会员不存在，请重新输入");
+                                    }
                                  }
-
                              }
                          }
-
                          @Override
                          public void onFailure(Call<GetHyInfoEntity> call, Throwable t) {
                                 try{
                                     Log.e("zhoupan","getSub_mch_id = "+ call.execute().message());
-
                                 }catch (Exception e){
 
                                 }

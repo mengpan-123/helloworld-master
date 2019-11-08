@@ -58,7 +58,7 @@ public class ToastUtil {
 
         Window window = dialog_paycode.getWindow();
         window.setGravity(Gravity.CENTER);
-        window.setDimAmount(0f);
+//        window.setDimAmount(0f);
         title.setText(titles); //toast的标题
         text.setText(messages); //toast内容
         dialog_paycode.show();
