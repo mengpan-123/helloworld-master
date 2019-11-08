@@ -50,6 +50,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     View layout=null;
     View layout_pay=null;
+    View layout_paycode=null;
     private List<HashMap<String,String>> listmap=new ArrayList<>();
     private CreateAddAdapter adapter;
     HashMap<String,String> map=new HashMap<String,String>();
@@ -643,36 +644,66 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      * */
 
     public  void  to_pay(View view){
+        final Dialog dialog1 = new Dialog(this, R.style.myNewsDialogStyle);
+       // 自定义对话框布局
+        layout_pay = View.inflate(this, R.layout.activity_chosepay, null);
+        dialog1.setContentView(layout_pay);
+        Window window = dialog1.getWindow();
+        window.setGravity(Gravity.BOTTOM);
+        window.setDimAmount(0f);
+        dialog1.show();
+        View zfb = (View) layout_pay.findViewById(R.id.zfb);
+        View wx = (View) layout_pay.findViewById(R.id.wx);
+        View wx_face = (View) layout_pay.findViewById(R.id.wx_face);
 
-                final Dialog dialog1 = new Dialog(this, R.style.myNewsDialogStyle);
-               // 自定义对话框布局
-                layout_pay = View.inflate(this, R.layout.activity_chosepay, null);
-                dialog1.setContentView(layout_pay);
-                Window window = dialog1.getWindow();
-                window.setGravity(Gravity.BOTTOM);
-                dialog1.show();
-                View zfb = (View) layout_pay.findViewById(R.id.zfb);
-                View wx = (View) layout_pay.findViewById(R.id.wx);
-                View wx_face = (View) layout_pay.findViewById(R.id.wx_face);
+        zfb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog1.dismiss();
+                dialog_paycode(view);
 
-                zfb.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                    }
-                });
-                wx.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            }
+        });
+        wx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog1.dismiss();
+            }
+        });
+        wx_face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog1.dismiss();
+            }
+        });
+    }
+    /**
+     *
+     * 弹出输入支付码的页面
+     *
+     * */
 
-                    }
-                });
-                wx_face.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+    public  void  dialog_paycode(View view){
 
-                    }
-                });
+        final Dialog dialog_paycode = new Dialog(this, R.style.myNewsDialogStyle);
+        // 自定义对话框布局
+        layout_paycode = View.inflate(this, R.layout.input_paycode, null);
+        dialog_paycode.setContentView(layout_paycode);
+        Window window = dialog_paycode.getWindow();
+        window.setGravity(Gravity.CENTER);
+        window.setDimAmount(0f);
+        dialog_paycode.show();
+        Button require_code = (Button) layout_paycode.findViewById(R.id.require_code);
+
+        require_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+            }
+        });
 
     }
 
