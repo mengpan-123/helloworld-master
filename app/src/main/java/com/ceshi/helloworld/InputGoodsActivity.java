@@ -496,6 +496,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         ListView listView=(ListView) layout.findViewById(R.id.lv_baginfo);
         /*listView.setVisibility(View.VISIBLE);
         listView.bringToFront();*/
+        listView.setDividerHeight(20);
         List<Map<String, Object>> listitem=new ArrayList<Map<String,Object>>();
 
         GetBagsInfo= RetrofitHelper.getInstance().getBagInfo("526374","S101");

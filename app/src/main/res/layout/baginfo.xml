@@ -23,6 +23,7 @@
         android:layout_weight="1"
         android:padding="10dp"
         android:visibility="visible"
+        android:layout_marginTop="10dp"
         android:textColor="@color/colorgreen" />
     <TextView
         android:id="@+id/tv_bagname"
@@ -30,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/colorgreen" />
 
     <TextView
@@ -37,6 +39,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_bagpic"
         android:text="10.000"
+        android:layout_marginTop="10dp"
         android:textColor="@color/colorgreen"/>
 
 
