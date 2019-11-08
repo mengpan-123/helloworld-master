@@ -21,6 +21,9 @@ public  class CommonData  extends Application {
     public static String    khid="";
 
 
+    //门店注册登陆之后 返回的 userid，用于 支付时使用
+    public static String    userId="526374";
+
     //商户编号，是由接口返回的
     public static String    lCorpId="";
 
