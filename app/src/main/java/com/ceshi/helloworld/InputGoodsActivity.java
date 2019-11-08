@@ -28,6 +28,7 @@ import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestSignBean;
 import com.ceshi.helloworld.bean.ResponseSignBean;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
+import com.ceshi.helloworld.bean.getCartItemsEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.CreateAddAdapter;
@@ -68,6 +69,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private Call<createPrepayIdEntity> createPrepayIdEntityCall;
 
     private Call<upCardCacheEntity> upCardCacheEntityCall;
+
+    private Call<getCartItemsEntity> getCartItemsEntityCall;
 
     private OrderInfo  neworderInfo=new OrderInfo();
 
@@ -208,14 +211,14 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * Created by zhoupan on 2019/11/7.
-     * 扫码添加商品，封装方法
+     * 扫码添加商品，封装方法，用于单个添加商品，和添加购物袋
      */
 
     public   void  AddnewSpid(String  inputbarcode){
 
         HashMap<String,String> map=new HashMap<>();
 
-        Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo(inputbarcode,CommonData.khid,"526374","0");
+        Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo(inputbarcode,CommonData.khid,CommonData.userId,"0");
         Addgoodsinfo.enqueue(new Callback<Addgoods>() {
             @Override
             public void onResponse(Call<Addgoods> call, Response<Addgoods> response) {
@@ -347,7 +350,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     /**
      *
-     * 手动输入条码tv_go_to_pay
+     * 手动输入条码  和 取消
      * input_tiaoma
      * **/
     public  void  input_tiaoma(View view){
@@ -373,6 +376,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                 EditText editText1=layout.findViewById(R.id.username);
                 String  inputbarcode=editText1.getText().toString();
+
                 AddnewSpid(inputbarcode);
 
                 dialog.dismiss();
@@ -391,6 +395,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     }
 
 
+    /**
+     *
+     * 选择购物袋
+     * input_tiaoma
+     * **/
     public  void  input_bags(View view){
 
         final Dialog dialog = new Dialog(this,
@@ -549,7 +558,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * to_pay
-     * 去支付
+     * 去支付，首先选择去支付的支付方式
      * */
 
     public  void  to_pay(View view){
@@ -569,6 +578,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 dialog1.dismiss();
+                payWay="AliPaymentCodePay";
                 dialog_paycode(view);
 
 
@@ -578,12 +588,16 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 dialog1.dismiss();
+                payWay="WXPaymentCodePay";
+                dialog_paycode(view);
             }
         });
         wx_face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog1.dismiss();
+                payWay="WXFacePay";
+                dialog_paycode(view);
             }
         });
     }
@@ -605,11 +619,137 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         dialog_paycode.show();
         Button require_code = (Button) layout_paycode.findViewById(R.id.require_code);
 
+
+        //获取到支付码的控件
+        EditText input_code=layout_paycode.findViewById(R.id.pay_code);
+
+
+
         require_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    String authcode = input_code.getText().toString();
+                    payAuthCode = authcode;
+                    //去支付
+                    Moneypay();
+                }catch(Exception ex){
+
+                }
+
+            }
+        });
+
+    }
 
 
+
+    /**
+     * Moneypay
+     * Created by zhoupan on 2019/11/8.
+     * 选择支付方式之后进行支付
+     * */
+
+    public   void   Moneypay(){
+
+        Toast.makeText(InputGoodsActivity.this,"点击去支付~",Toast.LENGTH_SHORT).show();
+
+        //获取 购物车 列表
+
+        getCartItemsEntityCall=RetrofitHelper.getInstance().getCartItems(CommonData.userId,CommonData.khid);
+        getCartItemsEntityCall.enqueue(new Callback<getCartItemsEntity>() {
+            @Override
+            public void onResponse(Call<getCartItemsEntity> call, Response<getCartItemsEntity> response) {
+                if (response != null) {
+                    getCartItemsEntity body = response.body();
+
+                    if (body.getReturnX().getNCode() == 0) {
+
+                        payWay="";
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<getCartItemsEntity> call, Throwable t) {
+
+            }
+        });
+
+        //1.0 初始化所有的产品信息,
+        List<RequestSignBean.PluMapBean> pluMap =new ArrayList<RequestSignBean.PluMapBean>();
+
+        try {
+
+            for(Map.Entry<String,List<SplnfoList>> entry : MapList.entrySet()) {
+
+                RequestSignBean.PluMapBean payMapcls = new RequestSignBean.PluMapBean();
+                payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
+                payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
+                payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
+                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));
+                pluMap.add(payMapcls);
+            }
+        }
+        catch(Exception ex){
+
+        }
+
+        //2.0 选取支付方式 ,初始化支付信息
+        int PayTypeId=1;
+        if (payWay.equals("WXPaymentCodePay")){
+            PayTypeId=5;
+        }else if(payWay.equals("AliPaymentCodePay")){
+            PayTypeId=7;
+        }
+
+        List<RequestSignBean.PayMapBean> payMap=new ArrayList<RequestSignBean.PayMapBean>();
+        RequestSignBean.PayMapBean pmp=new   RequestSignBean.PayMapBean();
+        pmp.setPayTypeId(PayTypeId);
+        pmp.setPayVal(neworderInfo.totalPrice);
+        payMap.add(pmp);
+
+        //3.0 调起扫码枪的功能，获取支付的付款码。确认支付。
+        //payAuthCode="1111111111111111";
+
+
+
+        //调用确认支付接口
+        ResponseSignBeanCall =RetrofitHelper.getInstance().getSign(payWay,payAuthCode,pluMap,payMap);
+        ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
+            @Override
+            public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
+                if (response!=null){
+                    ResponseSignBean body = response.body();
+
+                    if (body.getReturnX().getNCode()==0){
+
+                        ResponseSignBean.ResponseBean response1 = body.getResponse();
+
+                        //说明当前支付时成功的，跳转到 支付等待界面
+                        Intent intent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
+
+                        startActivity(intent);
+
+
+
+                    }
+                    else{
+                        //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
+
+                        try {
+                            Intent newintent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
+                            startActivity(newintent);
+                        }
+                        catch(Exception ex){
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseSignBean> call, Throwable t) {
 
             }
         });

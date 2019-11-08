@@ -12,7 +12,7 @@ public  class CommonData  extends Application {
 
 
     //自定义一个全局变量，作为表名称，多个地方使用
-    public static String    tablename="BaseInfo";
+    public static String    tablename="BaseInfo2";
 
     //设备号deviceId
     public static String    machine_number="";
@@ -22,7 +22,7 @@ public  class CommonData  extends Application {
 
 
     //门店注册登陆之后 返回的 userid，用于 支付时使用
-    public static String    userId="526374";
+    public static String    userId="";
 
     //商户编号，是由接口返回的
     public static String    lCorpId="";
@@ -35,7 +35,6 @@ public  class CommonData  extends Application {
 
     //微信支付子商户号
     public static String    sub_mch_id="";
-
 
     //程序版本号
     public static String    app_version="";

@@ -62,6 +62,8 @@ public class PosLoginActivity extends AppCompatActivity {
     private String  sub_mch_id="";
 
     private  String lCorpId="";
+
+    private  String userId="";
     private  String app_version="";
 
     private   String   s_inputmachine="";
@@ -75,7 +77,7 @@ public class PosLoginActivity extends AppCompatActivity {
         //在这里需要检测，是否已经初始化过，即检查dblite是否存在，存在的话，直接跳转到首界面
         //首先创建出数据库  BaseInfo ，用于保存信息
         try {
-            dbHelper = new MyDatabaseHelper(this, "BaseInfo.db", null, 1);
+            dbHelper = new MyDatabaseHelper(this, "BaseInfo2.db", null, 1);
             querydb = dbHelper.getWritableDatabase();
 
         }
@@ -149,6 +151,8 @@ public class PosLoginActivity extends AppCompatActivity {
                             use_khid=response1.getStoreId();
                             storeName=response1.getStoreName();
                             lCorpId=response1.getCorpId();
+                            userId=response1.getUserId();
+
 
                             //然后根据获取到的 门店的值 ，进行下一次门店商户号的获取
                             StoreIdEntityCall= RetrofitHelper.getInstance().getStoreId(use_khid);
@@ -223,6 +227,9 @@ public class PosLoginActivity extends AppCompatActivity {
 
                     CommonData.mch_id= cursor.getString(cursor.getColumnIndex("mch_id"));
 
+                    //用户信息
+                    CommonData.userId= cursor.getString(cursor.getColumnIndex("userId"));
+
                     CommonData.machine_number=cursor.getString(cursor.getColumnIndex("machine_number"));
 
                     //然后获取到本地文件的版本，判断是否需要升级
@@ -292,11 +299,12 @@ public class PosLoginActivity extends AppCompatActivity {
             values.put("khid", use_khid);
             values.put("khsname", storeName);
             values.put("lCorpId", lCorpId);
+            values.put("userId", userId);
             values.put("machine_number", s_inputmachine);
             values.put("app_version", app_version);
             values.put("date_lr", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").toString());
             values.put("mch_id", mch_id);
-
+            values.put("sub_mch_id", sub_mch_id);
             db.insert(CommonData.tablename, null, values);
 
             values.clear();
@@ -309,6 +317,8 @@ public class PosLoginActivity extends AppCompatActivity {
         //写数据成功之后 ，跳转到主页.所有字段赋值便于以后使用
 
         CommonData.khid=use_khid;
+        CommonData.machine_name=storeName;
+        CommonData.userId=userId;
         CommonData.mch_id=mch_id;
         CommonData.sub_mch_id=sub_mch_id;
         CommonData.lCorpId=lCorpId;

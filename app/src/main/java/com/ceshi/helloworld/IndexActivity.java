@@ -50,7 +50,8 @@ public class IndexActivity extends Activity {
 
                     if (body.getReturnX().getNCode()==0){
                         //购物车清空成功。那如果万一没网 ，清空失败 这种情况呢？
-
+                        CommonData.hyMessage=null;
+                        CommonData.orderInfo=null;
                     }
                 }
             }
@@ -62,8 +63,7 @@ public class IndexActivity extends Activity {
         });
 
 
-        CommonData.hyMessage=null;
-        CommonData.orderInfo=null;
+
 
 
 

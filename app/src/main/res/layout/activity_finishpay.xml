@@ -63,6 +63,7 @@
         android:gravity="center"
         android:layout_marginTop="40dp">
         <TextView
+            android:id="@+id/totalmoney"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="￥576"
@@ -124,6 +125,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="10dp">
         <TextView
+            android:id="@+id/comback"
             android:layout_width="240dp"
             android:layout_height="50dp"
             android:text="立即返回首页"

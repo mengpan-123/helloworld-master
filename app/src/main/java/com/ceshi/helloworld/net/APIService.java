@@ -9,8 +9,9 @@ import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.bean.UpdateVersionEntity;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
+import com.ceshi.helloworld.bean.getCartItemsEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
-import com.ceshi.helloworld.bean.getpaysignnewEntity;
+import com.ceshi.helloworld.bean.PaysuccessofdeviceEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 
 import okhttp3.RequestBody;
@@ -140,15 +141,28 @@ public interface APIService {
 
 
     /**
-     * 下单支付接口
+     * 获取支付结果按钮
      */
     @FormUrlEncoded
-    @POST("base/rest/v3/CartService/getpaysignnew")
-    Call<getpaysignnewEntity> getpaysignnew(
-            @Field("sMemberId") String sMemberId,
+    @POST("base/rest/v3.1.0/cartService/paysuccessofdevice")
+    Call<PaysuccessofdeviceEntity> paysuccessofdevice(
+            @Field("storeId") String storeId,
             @Field("prepayId") String prepayId
     );
 
     @POST("base/rest/v3/CartService/getpaysignnew")
     Call<ResponseSignBean> getSgin(@Body RequestBody requestBody);
+
+
+    /**
+     * 获取购物车列表
+     */
+    @FormUrlEncoded
+    @POST("base/rest/v3/cartService/getCartItems")
+    Call<getCartItemsEntity> getCartItems(
+            @Field("userId") String userId,
+            @Field("storeId") String storeId,
+            @Field("nBizType") String nBizType
+
+    );
 }

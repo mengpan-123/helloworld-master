@@ -11,7 +11,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     private Context mContext;
 
-    //声明一个建表的语句，用于存储这个门店 和机器编号,和录入日期，app版本，微信支付商户号,门店商户id-》lCorpId
+    //声明一个建表的语句，用于存储这个门店 和机器编号,和录入日期，app版本，微信支付商户号,门店商户id-》lCorpId,个人id-》userId
     public static final String CREATE_SQL = "create table  "+CommonData.tablename+" ("
 
             + "khid text  primary key, "
@@ -24,9 +24,13 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
             + "app_version  text, "
 
+            + "userId  text, "
+
             + "date_lr date, "
 
-            + "mch_id text)";
+            + "sub_mch_id date, "
+
+            + "mch_id text )";
 
 
     //构造函数

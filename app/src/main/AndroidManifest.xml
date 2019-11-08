@@ -42,8 +42,15 @@
         <activity android:name=".LoginActivity">
 
         </activity>
+        <activity android:name=".FinishActivity">
 
+        </activity>
+        <activity android:name=".WaitingFinishActivity">
 
+        </activity>
+        <activity android:name=".PayFailActivity">
+
+        </activity>
         <activity android:name=".IndexActivity">
 
         </activity>

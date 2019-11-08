@@ -11,8 +11,9 @@ import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.bean.UpdateVersionEntity;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
+import com.ceshi.helloworld.bean.getCartItemsEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
-import com.ceshi.helloworld.bean.getpaysignnewEntity;
+import com.ceshi.helloworld.bean.PaysuccessofdeviceEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 import com.google.gson.Gson;
 
@@ -200,13 +201,17 @@ public class RetrofitHelper {
 
 
     /***
+     * 获取支付结果
+     * */
+    public Call<PaysuccessofdeviceEntity> paysuccessofdevice(String storeId, String prepayId){
+        return mAPIService.paysuccessofdevice(storeId,prepayId);
+    }
+
+
+    /***
      * 订单支付接口
      *请求方式 POST，数据格式application/json
      * */
-    public Call<getpaysignnewEntity> getpaysignnew(String sMemberId, String prepayId){
-        return mAPIService.getpaysignnew(sMemberId,prepayId);
-    }
-
     public Call<ResponseSignBean> getSign(String payWay,
                                           String AuthCode,
                                           List<RequestSignBean.PluMapBean> pluMap,
@@ -216,13 +221,8 @@ public class RetrofitHelper {
         requestSignBean.setStoreId(CommonData.khid);
 
         requestSignBean.setDeviceId("device");
-        if (CommonData.hyMessage==null) {
-            requestSignBean.setUserId("");
-        }
-        else
-        {
-            requestSignBean.setUserId(CommonData.hyMessage.cardnumber);
-        }
+        requestSignBean.setUserId(CommonData.userId);  //登陆/注册接口返回的 userId
+
         requestSignBean.setPayWay(payWay);
         requestSignBean.setAuthCode(AuthCode);
         requestSignBean.setBizType(1);
@@ -240,6 +240,11 @@ public class RetrofitHelper {
 
 
 
-
+    /***
+     * 获取 购物车列表
+     * */
+    public Call<getCartItemsEntity> getCartItems(String userId, String storeId){
+        return mAPIService.getCartItems(userId,storeId,"1");
+    }
 
 }

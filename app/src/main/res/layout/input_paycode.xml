@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <EditText
+            android:id="@+id/pay_code"
             android:layout_width="200dp"
             android:hint="请输入付款码"
             android:layout_height="wrap_content" />
