@@ -63,7 +63,6 @@
                 <action android:name="android.intent.action.HOME" />   <!--用于返回的首界面，和上面差不多-->
                 <category android:name="android.intent.category.LAUNCHER" />   <!--让 Activity 在顶层启动器中显示-->
             </intent-filter>
-
         </activity>
     </application>
 

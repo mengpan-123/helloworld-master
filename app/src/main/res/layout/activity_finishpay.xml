@@ -105,15 +105,16 @@
         android:orientation="horizontal"
         android:layout_marginTop="20dp">
         <TextView
+            android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="20S"
+            android:text="30"
             android:textSize="15dp"
             android:textColor="#E01111"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="后自动跳转回首页"
+            android:text="秒后自动跳转回首页"
             android:textSize="15dp"
             android:textColor="#575656"/>
     </LinearLayout>
