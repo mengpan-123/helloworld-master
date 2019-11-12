@@ -240,7 +240,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         String spcode = maps.get(0).getGoodsId();
                         double useprice = maps.get(0).getRealPrice();
                         double disc = 0;
-
                         //mainprice原价,extprice特价，vipprice会员价
                         //有会员登录，会员价低取会员价
                         //无会员登录，特价有就取特价，没有就是原价
@@ -254,9 +253,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                 //如果没有特价时，则取原价
                                 useprice=maps.get(0).getMainPrice();
                             }
-
                         }
-
                         //每录入一次，都去增加总数量和总价
                         neworderInfo.totalCount = neworderInfo.totalCount + 1;  //增加总数量
                         neworderInfo.totalPrice = neworderInfo.totalPrice + useprice;  //增加总价
@@ -279,7 +276,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         } else {
                             List<SplnfoList> uselist = new ArrayList<SplnfoList>();
                             SplnfoList usesplnfo = new SplnfoList();
-
                             usesplnfo.setBarcode(maps.get(0).getBarcode());
                             usesplnfo.setGoodsId(maps.get(0).getGoodsId());
                             usesplnfo.setMainPrice(maps.get(0).getMainPrice());
@@ -289,10 +285,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             usesplnfo.setPluUnit(maps.get(0).getPluUnit());
                             usesplnfo.setRealPrice(useprice);
                             uselist.add(usesplnfo);
-
                             //说明产品不存在，直接增加进去
                             MapList.put(spcode, uselist);
-
                             //下面是只取几个字段去改变 界面显示的
                             map.put("id", maps.get(0).getGoodsId());
                             map.put("name", maps.get(0).getPluName());
@@ -301,7 +295,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                             listmap.add(map);
                         }
-
                         //界面上实现  增加一个元素
                         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
                         listview.setAdapter(adapter);
@@ -310,22 +303,16 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                     }
                     else{
                         String result=addgoods.getReturnX().getStrText();
-
                         ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", result);
-
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<Addgoods> call, Throwable t) {
 
             }
         });
-
     }
-
-
 
     /**
      * 控制价格展示总价
