@@ -10,7 +10,7 @@ public class OrderInfo {
 
 
      //订单总价
-    public   double   totalPrice=0;
+    public   double   totalPrice=0.00;
 
 
     //订单总数量

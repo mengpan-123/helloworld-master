@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ceshi.helloworld"
     android:versionCode="1"
-    android:versionName="1.0.0"   >
-    <!-- 网络权限 -->
+    android:versionName="1.0.0"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!--&lt;!&ndash; 网络权限 &ndash;&gt;-->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" /><!-- 摄像头权限 -->
 
@@ -11,9 +12,6 @@
     <uses-feature android:name="android.hardware.camera" /> <!-- SD卡读写权限 -->
     <!-- <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" /> -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-
-
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
@@ -22,27 +20,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="icon, label,theme"
         android:name="com.ceshi.helloworld.net.CommonData" >
         <!-- 主页 -->
         <activity android:name=".MainActivity">
 
         </activity>
 
-        <!-- 学习基本布局和控件 -->
+        <!--&lt;!&ndash; 学习基本布局和控件 &ndash;&gt;-->
         <activity android:name=".OneActivity" >
+       </activity>
 
-           <!-- <intent-filter><action android:name="android.intent.action.MAIN" />
-            <action android:name="android.intent.action.VIEW" />
-            <action android:name="android.intent.action.HOME" />   &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;
-            <category android:name="android.intent.category.LAUNCHER" />  &lt;!&ndash; 让 Activity 在顶层启动器中显示&ndash;&gt;
-            </intent-filter>-->
-
-        </activity>
         <!-- 2.学习简单的网络请求 -->
         <activity android:name=".InputGoodsActivity" >
 
         </activity>
-        <!-- 3.权限控制相关的获取 -->
+        <!--&lt;!&ndash; 3.权限控制相关的获取 &ndash;&gt;-->
         <activity android:name=".ConTrolActivity" />
 
         <activity android:name=".SecondActivity">
@@ -76,19 +69,4 @@
         </activity>
     </application>
 
-
-    <!--  <data android:scheme="string"
-          android:host="string"
-          android:port="string"
-          android:path="string"
-          android:mimeType="string" />-->
-
-    <!--  <data> 标记用于向Action 提供要操作的数据。它可以是一个URI 对象或者数据类型（MIME 媒体类型）
-        android:scheme：用于指定所需要的特定协议；
-      ◆ android:host：用于指定一个有效的主机名；
-      ◆ android:port：用于指定主机的有效端口号；
-      ◆ android:path：用于指定有效的 URI 路径名；
-      ◆ android:mimeType：用于指定组件能处理的数据类型，支持使用“*”通配符来包含子类型（如 image/* 或者 audio/*）。在过滤器中，该属性比较常用。
-      例如：content://com.example.project:200/folder/subfolder/etc
-  -->
 </manifest>

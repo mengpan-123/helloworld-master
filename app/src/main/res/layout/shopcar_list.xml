@@ -17,36 +17,39 @@
                 android:id="@+id/tv_goods_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="20dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="商品商品商品"
-                android:textSize="14sp" />
+                android:textSize="18dp" />
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
                android:layout_below="@+id/tv_goods_name"
                 android:orientation="vertical" >
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="27dp"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="15dp"
+
                     android:orientation="horizontal" >
                     <TextView
                         android:id="@+id/tv_reduce"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:gravity="center"
                         android:background="@drawable/textview_border"
                         android:text="一"
-                        android:textSize="12sp" />
+                        android:textSize="12dp"
+                        android:layout_marginBottom="2dp"/>
                     <TextView
                         android:id="@+id/tv_num"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
                         android:gravity="center"
                         android:textSize="16dp"
                         android:singleLine="true"
@@ -54,8 +57,8 @@
 />
                     <TextView
                         android:id="@+id/tv_add"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:gravity="center"
                         android:text="十"
                         android:background="@drawable/textview_border"

@@ -10,15 +10,19 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -331,18 +335,24 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         totalPrice = 0.00;
         for(int i=0;i<listmap.size();i++){
             totalCount=totalCount+Integer.valueOf(listmap.get(i).get("count"));
-            double goodsPrice=Integer.valueOf(listmap.get(i).get("count"))*Double.valueOf(listmap.get(i).get("price"));
+            double goodsPrice=Integer.valueOf(listmap.get(i).get("count")) *  Double.valueOf(listmap.get(i).get("price"));
             totalPrice=totalPrice+goodsPrice;
         }
-        price.setText(" ¥ "+totalPrice);
+        price.setText("总计 ¥ "+ new BigDecimal(String.valueOf(totalPrice)).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         if (CommonData.orderInfo==null){
             yhmoney.setText("优惠 ￥ "+0.00);
         }else {
             yhmoney.setText("优惠 ￥ "+CommonData.orderInfo.totalDisc);
         }
+        if (CommonData.orderInfo!=null){
 
-        shopcar_num.setText("共"+pitchOnMap.size()+"件商品");
-        tv_go_to_pay.setText("付款("+totalPrice+")");
+            shopcar_num.setText("共"+CommonData.orderInfo.totalCount+"件商品");
+        }else {
+
+            shopcar_num.setText("共0件商品");
+        }
+
+        tv_go_to_pay.setText("去付款("+new BigDecimal(String.valueOf(totalPrice)).setScale(2, BigDecimal.ROUND_HALF_UP).toString()+")");
     }
 
     /**
@@ -377,13 +387,14 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         // 自定义对话框布局
         layout = View.inflate(this, R.layout.dialog,
                 null);
+
         dialog.setContentView(layout);
         //确定
         TextView title = (TextView) layout.findViewById(R.id.close1);
 
         //取消
         TextView title2 = (TextView) layout.findViewById(R.id.close2);
-
+        setDialogSize(layout);
         dialog.show();
         // 设置确定按钮的事件
         title.setOnClickListener(new View.OnClickListener() {
@@ -409,6 +420,32 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         });
 
     }
+    /**
+     * 动态控制弹出框的大小
+     * */
+    private void setDialogSize(final View mView){
+        mView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
+                                       int oldRight, int oldBottom) {
+                int heightNow = v.getHeight();//dialog当前的高度
+                int widthNow = v.getWidth();//dialog当前的宽度
+                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.55);//最小宽度为屏幕的0.7倍
+                int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
+                if (widthNow < needWidth || heightNow > needHeight){
+                    if (widthNow > needWidth){
+                        needWidth = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    if (heightNow < needHeight){
+                        needHeight = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    mView.setLayoutParams(new FrameLayout.LayoutParams(needWidth,
+                            needHeight));
+                }
+            }
+        });
+    }
+
 
 
     /**
