@@ -54,13 +54,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp">
+        android:layout_marginTop="50dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="自 助 收 银 系 统"
+            android:text="自  助  收  银  系  统"
             android:gravity="center"
-            android:textSize="25dp"
+            android:textSize="30dp"
             android:textStyle="bold"
             android:textColor="#0FB6A4"
             android:id="@+id/title_c"
@@ -70,13 +70,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="25dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome your patronage"
+            android:text="Welcome  your  patronage"
             android:gravity="center"
-            android:textSize="15dp"
+            android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="#2D667F"
             android:id="@+id/title_e"

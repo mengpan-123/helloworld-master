@@ -31,13 +31,13 @@
         <!-- 学习基本布局和控件 -->
         <activity android:name=".OneActivity" >
 
-         <intent-filter>
-            <!--  <action android:name="android.intent.action.MAIN" />  &lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;
-              <action android:name="android.intent.action.VIEW" />
-              <action android:name="android.intent.action.HOME" />   &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;
-              <category android:name="android.intent.category.LAUNCHER" />   让 Activity 在顶层启动器中显示-->
-          </intent-filter>
-       </activity>
+           <!-- <intent-filter><action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.VIEW" />
+            <action android:name="android.intent.action.HOME" />   &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;
+            <category android:name="android.intent.category.LAUNCHER" />  &lt;!&ndash; 让 Activity 在顶层启动器中显示&ndash;&gt;
+            </intent-filter>-->
+
+        </activity>
         <!-- 2.学习简单的网络请求 -->
         <activity android:name=".InputGoodsActivity" >
 
@@ -45,7 +45,9 @@
         <!-- 3.权限控制相关的获取 -->
         <activity android:name=".ConTrolActivity" />
 
-        <activity android:name=".SecondActivity"></activity>
+        <activity android:name=".SecondActivity">
+
+        </activity>
 
         <activity android:name=".LoginActivity">
 
@@ -60,11 +62,6 @@
 
         </activity>
         <activity android:name=".IndexActivity">
-
-        </activity>
-
-        <!--这里的intent-filter  MAIN表示进入的第一个页面  现在启动app进入的第一个页面就是这个-->
-        <activity android:name=".PosLoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />  <!--//这一句属性 的意思要设置其作为初始启动Activity-->
                 <action android:name="android.intent.action.VIEW" />
@@ -72,21 +69,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />   <!--让 Activity 在顶层启动器中显示-->
             </intent-filter>
         </activity>
+
+        <!--这里的intent-filter  MAIN表示进入的第一个页面  现在启动app进入的第一个页面就是这个-->
+        <activity android:name=".PosLoginActivity" >
+
+        </activity>
     </application>
 
 
-  <!--  <data android:scheme="string"
-        android:host="string"
-        android:port="string"
-        android:path="string"
-        android:mimeType="string" />-->
+    <!--  <data android:scheme="string"
+          android:host="string"
+          android:port="string"
+          android:path="string"
+          android:mimeType="string" />-->
 
-  <!--  <data> 标记用于向Action 提供要操作的数据。它可以是一个URI 对象或者数据类型（MIME 媒体类型）
-      android:scheme：用于指定所需要的特定协议；
-    ◆ android:host：用于指定一个有效的主机名；
-    ◆ android:port：用于指定主机的有效端口号；
-    ◆ android:path：用于指定有效的 URI 路径名；
-    ◆ android:mimeType：用于指定组件能处理的数据类型，支持使用“*”通配符来包含子类型（如 image/* 或者 audio/*）。在过滤器中，该属性比较常用。
-    例如：content://com.example.project:200/folder/subfolder/etc
--->
+    <!--  <data> 标记用于向Action 提供要操作的数据。它可以是一个URI 对象或者数据类型（MIME 媒体类型）
+        android:scheme：用于指定所需要的特定协议；
+      ◆ android:host：用于指定一个有效的主机名；
+      ◆ android:port：用于指定主机的有效端口号；
+      ◆ android:path：用于指定有效的 URI 路径名；
+      ◆ android:mimeType：用于指定组件能处理的数据类型，支持使用“*”通配符来包含子类型（如 image/* 或者 audio/*）。在过滤器中，该属性比较常用。
+      例如：content://com.example.project:200/folder/subfolder/etc
+  -->
 </manifest>

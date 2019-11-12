@@ -126,11 +126,11 @@
         <Button
             android:id="@+id/Login"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="55dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:layout_gravity="center"
-            android:background="@color/colorgreen"
+            android:background="@drawable/button_shape"
             android:text="确  定"
             android:textColor="#ffffff"
             android:textSize="22sp" />

@@ -38,8 +38,7 @@ import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
 import com.ceshi.helloworld.net.ToastUtil;
-import com.tencent.wxpayface.IWxPayfaceCallback;
-import com.tencent.wxpayface.WxPayFace;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
