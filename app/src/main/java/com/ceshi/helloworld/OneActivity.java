@@ -51,9 +51,22 @@ public class OneActivity extends AppCompatActivity {
                         ToastUtil.showToast(OneActivity.this, "温馨提示", "微信刷脸支付初始化完成");
                     }
                 });*/
+                try {
+                    WxPayFace.getInstance().initWxpayface(OneActivity.this, m1, new IWxPayfaceCallback() {
+                        @Override
+                        public void response(Map info) throws RemoteException {
+                            if (!isSuccessInfo(info)) {
+                                return;
+                            }
+                            ToastUtil.showToast(OneActivity.this, "温馨提示", "微信刷脸支付初始化完成");
+                        }
+                    });
+                }
+                catch(Exception ex){
+                    ToastUtil.showToast(OneActivity.this, "温馨提示", ex.toString());
+                }
             }
         });
-
 
 
 

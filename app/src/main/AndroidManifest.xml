@@ -12,6 +12,17 @@
     <uses-feature android:name="android.hardware.camera" /> <!-- SD卡读写权限 -->
     <!-- <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" /> -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
@@ -31,6 +42,17 @@
         <activity android:name=".OneActivity" >
        </activity>
 
+        <!-- 学习基本布局和控件 -->
+        <activity android:name=".OneActivity"
+                  android:screenOrientation="sensor">
+
+           <!-- <intent-filter><action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.VIEW" />
+            <action android:name="android.intent.action.HOME" />   &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;
+            <category android:name="android.intent.category.LAUNCHER" />  &lt;!&ndash; 让 Activity 在顶层启动器中显示&ndash;&gt;
+            </intent-filter>-->
+
+        </activity>
         <!-- 2.学习简单的网络请求 -->
         <activity android:name=".InputGoodsActivity" >
 

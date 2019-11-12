@@ -773,11 +773,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
         //2.0 选取支付方式 ,初始化支付信息
         int PayTypeId=1;
-        if (payWay.equals("WXPaymentCodePay")){
-            PayTypeId=5;
-        }else if(payWay.equals("AliPaymentCodePay")){
-            PayTypeId=7;
-        }
+//        if (payWay.equals("WXPaymentCodePay")){
+//            PayTypeId=5;
+//        }else if(payWay.equals("AliPaymentCodePay")){
+//            PayTypeId=7;
+//        }
 
         List<RequestSignBean.PayMapBean> payMap=new ArrayList<RequestSignBean.PayMapBean>();
         RequestSignBean.PayMapBean pmp=new   RequestSignBean.PayMapBean();
@@ -812,7 +812,10 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
                         String  Result=body.getReturnX().getStrText();
 
-                        if (Result.equals("支付等待")&&body.getReturnX().getNCode()==1) {
+                        //66是等待用户输入密码的过程。也会跳转到支付等待界面
+                        if ((Result.equals("支付等待")&&body.getReturnX().getNCode()==1)||
+                                body.getReturnX().getNCode()==66) {
+
                             Intent intent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
                             startActivity(intent);
                             return;
