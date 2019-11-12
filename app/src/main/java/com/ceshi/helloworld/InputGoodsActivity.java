@@ -88,7 +88,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private Call<ResponseSignBean> ResponseSignBeanCall;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -270,6 +269,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             for (int k = 0; k < listmap.size(); k++) {
                                 if (listmap.get(k).get("id").equals(spcode)) {
                                     listmap.get(k).put("count", String.valueOf(Integer.valueOf(listmap.get(k).get("count")) + 1));
+                                    listmap.get(k).put("price", String.valueOf(listmap.get(k).get("price") + useprice));
                                 }
                             }
                         } else {
@@ -283,7 +283,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             usesplnfo.setPluName(maps.get(0).getPluName());
                             usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
                             usesplnfo.setPluUnit(maps.get(0).getPluUnit());
-                            usesplnfo.setRealPrice(maps.get(0).getRealPrice());
+                            usesplnfo.setRealPrice(useprice);
                             uselist.add(usesplnfo);
 
                             //说明产品不存在，直接增加进去
@@ -371,7 +371,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      * **/
     public  void  input_tiaoma(View view){
         // 创建一个Dialog
-        final Dialog dialog = new Dialog(this,
+        final Dialog  dialog = new Dialog(this,
                 R.style.myNewsDialogStyle);
 
         // 自定义对话框布局
@@ -671,7 +671,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                     else {
                         payAuthCode = authcode;
                         //去支付
-                        Moneypay();
+                        Moneypay(dialog_paycode);
                     }
                 }catch(Exception ex){
 
@@ -690,7 +690,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      * 选择支付方式之后进行支付
      * */
 
-    public   void   Moneypay(){
+    public   void   Moneypay(Dialog dialog_paycode){
 
         //获取 购物车 列表
 
@@ -724,9 +724,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                 payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
                 payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
                 payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
-                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));
+                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));
                 payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));
-                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));
+                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getMainPrice()));
                 pluMap.add(payMapcls);
             }
         }
@@ -775,16 +775,15 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
                         String  Result=body.getReturnX().getStrText();
 
-                        ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
-                        return;
-
-                      /*  try {
-                            Intent newintent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
-                            startActivity(newintent);
+                        if (Result.equals("支付等待")&&body.getReturnX().getNCode()==1) {
+                            Intent intent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
+                            startActivity(intent);
+                            return;
                         }
-                        catch(Exception ex){
 
-                        }*/
+                        ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
+                        dialog_paycode.dismiss();
+                        return;
                     }
                 }
             }
