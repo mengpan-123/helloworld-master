@@ -27,6 +27,9 @@ public  class CommonData  extends Application {
     //商户编号，是由接口返回的
     public static String    lCorpId="";
 
+    public static String    corpId=""; //和上面的用于会员信息查询
+
+
     //机器名称
     public static String    machine_name="";
 

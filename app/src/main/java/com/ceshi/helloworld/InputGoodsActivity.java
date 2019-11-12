@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -36,6 +38,8 @@ import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
 import com.ceshi.helloworld.net.ToastUtil;
+import com.tencent.wxpayface.IWxPayfaceCallback;
+import com.tencent.wxpayface.WxPayFace;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -232,12 +236,28 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                         //拿到产品编码
                         String spcode = maps.get(0).getGoodsId();
-                        double price = maps.get(0).getRealPrice();
+                        double useprice = maps.get(0).getRealPrice();
                         double disc = 0;
 
-                        //没录入一次，都去增加总数量和总价
+                        //mainprice原价,extprice特价，vipprice会员价
+                        //有会员登录，会员价低取会员价
+                        //无会员登录，特价有就取特价，没有就是原价
+                        if(CommonData.hyMessage!=null){
+                            //说明有会员
+                            useprice =maps.get(0).getVipPrice();
+                        }
+                        else{
+                            useprice=maps.get(0).getExtPrice();
+                            if (useprice<=0){
+                                //如果没有特价时，则取原价
+                                useprice=maps.get(0).getMainPrice();
+                            }
+
+                        }
+
+                        //每录入一次，都去增加总数量和总价
                         neworderInfo.totalCount = neworderInfo.totalCount + 1;  //增加总数量
-                        neworderInfo.totalPrice = neworderInfo.totalPrice + price;  //增加总价
+                        neworderInfo.totalPrice = neworderInfo.totalPrice + useprice;  //增加总价
                         neworderInfo.totalDisc = neworderInfo.totalDisc + disc;    //增加总折扣
 
                         //1.0先判断 改产品集合中是否存在
@@ -245,7 +265,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                             //如果存在，拿到集合，增加数量，总价，折扣
                             MapList.get(spcode).get(0).setPackNum(MapList.get(spcode).get(0).getPackNum() + 1);
-                            MapList.get(spcode).get(0).setMainPrice(MapList.get(spcode).get(0).getMainPrice() + price);
+                            MapList.get(spcode).get(0).setMainPrice(MapList.get(spcode).get(0).getMainPrice() + useprice);
 
                             //更改 映射的 map的内容
                             for (int k = 0; k < listmap.size(); k++) {
@@ -265,7 +285,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
                             usesplnfo.setPluUnit(maps.get(0).getPluUnit());
                             usesplnfo.setRealPrice(maps.get(0).getRealPrice());
-                            double totalPrice = (maps.get(0).getPackNum() * maps.get(0).getRealPrice());
                             uselist.add(usesplnfo);
 
                             //说明产品不存在，直接增加进去
@@ -274,14 +293,13 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             //下面是只取几个字段去改变 界面显示的
                             map.put("id", maps.get(0).getGoodsId());
                             map.put("name", maps.get(0).getPluName());
-                            map.put("price", String.valueOf(maps.get(0).getRealPrice()));
+                            map.put("price", String.valueOf(useprice));
                             map.put("count", String.valueOf(maps.get(0).getPackNum()));
 
                             listmap.add(map);
-
                         }
 
-                        //界面上实现 增加一个元素
+                        //界面上实现  增加一个元素
                         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
                         listview.setAdapter(adapter);
                         adapter.setRefreshPriceInterface(InputGoodsActivity.this);
@@ -291,11 +309,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         String result=addgoods.getReturnX().getStrText();
 
                         ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", result);
-                        //Toast.makeText(InputGoodsActivity.this,result,Toast.LENGTH_SHORT).show();
+
                     }
-
                 }
-
             }
 
             @Override
@@ -417,7 +433,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         listView.setDividerHeight(20);
         List<Map<String, Object>> listitem=new ArrayList<Map<String,Object>>();
 
-        GetBagsInfo= RetrofitHelper.getInstance().getBagInfo("526374","S101");
+        GetBagsInfo= RetrofitHelper.getInstance().getBagInfo(CommonData.userId,CommonData.khid);
         GetBagsInfo.enqueue(new Callback<PurchaseBag>() {
             @Override
             public void onResponse(Call<PurchaseBag> call, Response<PurchaseBag> response) {
@@ -547,6 +563,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         listmap.clear();
         MapList.clear();
 
+        //清空给基础信息
+        neworderInfo=new  OrderInfo();
+
         //清空列表页面
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
@@ -609,6 +628,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             public void onClick(View v) {
                 dialog1.dismiss();
                 payWay="WXFacePay";
+
+
+
                 dialog_paycode(view);
             }
         });
@@ -775,5 +797,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         });
 
     }
+
+
 
 }

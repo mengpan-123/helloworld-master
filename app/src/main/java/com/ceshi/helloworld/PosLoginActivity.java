@@ -62,7 +62,9 @@ public class PosLoginActivity extends AppCompatActivity {
 
     private String  sub_mch_id="";
 
-    private  String lCorpId="";
+    private  String lCorpId="";  //这个用户会员的验证信息
+
+    private  String corpId="";   //用于用户会员的验证信息
 
     private  String userId="";
     private  String app_version="";
@@ -70,6 +72,9 @@ public class PosLoginActivity extends AppCompatActivity {
     private   String   s_inputmachine="";
 
     private   String  s_inputkhid="";
+
+
+    private   int  click_num=0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,7 +155,8 @@ public class PosLoginActivity extends AppCompatActivity {
                             getdeviceinfoEntity.ResponseBean response1 = body.getResponse();
                             use_khid=response1.getStoreId();
                             storeName=response1.getStoreName();
-                            lCorpId=response1.getCorpId();
+                            lCorpId=response1.getLCorpId();
+                            corpId=response1.getCorpId();
                             userId=response1.getUserId();
 
 
@@ -173,6 +179,9 @@ public class PosLoginActivity extends AppCompatActivity {
                                            sub_mch_id=response1.getSub_mch_id();
 
                                            //因为请求是异步的。以上基础信息写完之后 在进行操作
+
+
+
                                            WirttenDataToSqlite();
                                        }
                                     }
@@ -195,7 +204,8 @@ public class PosLoginActivity extends AppCompatActivity {
                 });
 
                 app_version=getAppVersion(PosLoginActivity.this);
-
+                //Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
+                //startActivity(intent);
             }
         });
     }
@@ -222,6 +232,8 @@ public class PosLoginActivity extends AppCompatActivity {
                     CommonData.app_version = cursor.getString(cursor.getColumnIndex("app_version"));
 
                     CommonData.lCorpId= cursor.getString(cursor.getColumnIndex("lCorpId"));
+
+                    CommonData.corpId= cursor.getString(cursor.getColumnIndex("corpId"));
 
                     CommonData.machine_name = cursor.getString(cursor.getColumnIndex("khsname"));
 
@@ -298,6 +310,7 @@ public class PosLoginActivity extends AppCompatActivity {
 
             values.put("khid", use_khid);
             values.put("khsname", storeName);
+            values.put("corpId", corpId);
             values.put("lCorpId", lCorpId);
             values.put("userId", userId);
             values.put("machine_number", s_inputmachine);
@@ -322,6 +335,7 @@ public class PosLoginActivity extends AppCompatActivity {
         CommonData.mch_id=mch_id;
         CommonData.sub_mch_id=sub_mch_id;
         CommonData.lCorpId=lCorpId;
+        CommonData.corpId=corpId;
         CommonData.machine_number=s_inputmachine;
         CommonData.app_version=app_version;
 

@@ -69,7 +69,8 @@
     <!--自助收银系统英文显示-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,65 +83,77 @@
             />
     </LinearLayout>
     <!--加入购物车->手机扫码->支付成功-->
+
+
+    <!--必须要做成适配的，不能固定图片或者按钮的大小，
+     2019-11-11zhoupan修改-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="40dp">
+        android:layout_marginTop="50dp">
+
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp">
+            android:layout_marginLeft="40dp"
+            android:layout_weight="1" >
             <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/saoma"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@drawable/jiantou"
-                android:gravity="center" />
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
             <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/saoma2"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/jiantou"
-                android:gravity="center" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/jiantou" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="40dp">
             <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
                 android:background="@drawable/saoma3"/>
         </LinearLayout>
+
+
     </LinearLayout>
     <!--文字显示-->
     <LinearLayout
@@ -148,58 +161,76 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="10dp">
-    <TextView
-        android:layout_width="100dp"
+        <TextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginLeft="20dp"
-        android:text="扫描商品条形码加入购物车"/>
+        android:layout_marginLeft="50dp"
+        android:text="扫描商品条形码加入购物车"
+        android:layout_weight="1"/>
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginLeft="40dp"
-            android:text="手机扫码或刷码支付订单"/>
+            android:text=""
+            android:layout_weight="1"/>
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginLeft="40dp"
-            android:text="支付成功走专属通道"/>
+            android:text="手机扫码或刷码支付订单"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text=""
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginRight="50dp"
+            android:text="支付成功走专属通道"
+            android:layout_weight="1"/>
     </LinearLayout>
     <!--开始购物-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="80dp">
         <Button
             android:id="@+id/shopping"
             android:background="@drawable/button_shape"
-            android:layout_width="280dp"
-            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:layout_marginRight="90dp"
+            android:layout_marginLeft="90dp"
             android:text="开 始 购 物 "
             android:textColor="#F0F0F0"
-            android:textSize="18dp"/>
+            android:textSize="22dp"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="16dp">
         <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@drawable/huiyuan"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="会员登录 >"
+            android:textSize="18dp"
             android:onClick="MembersLogin"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

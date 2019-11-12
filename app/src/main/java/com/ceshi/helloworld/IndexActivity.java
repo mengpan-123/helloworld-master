@@ -112,12 +112,12 @@ public class IndexActivity extends Activity {
                 EditText hyedit=(EditText)layout.findViewById(R.id.phoneorhyNum);
 
                 String hynum=hyedit.getText().toString();
-                String sCorpId=CommonData.lCorpId;
+                String sCorpId=CommonData.corpId;
                 String sUserId="";
 
                 if (!TextUtils.isEmpty(hynum)){
 
-                    Call<GetHyInfoEntity> hyInfoEntityCall= RetrofitHelper.getInstance().getHyInfoEntityCall(hynum,sCorpId,"0",sUserId);
+                    Call<GetHyInfoEntity> hyInfoEntityCall= RetrofitHelper.getInstance().getHyInfoEntityCall(hynum,sCorpId,CommonData.lCorpId,sUserId);
                      hyInfoEntityCall.enqueue(new Callback<GetHyInfoEntity>() {
                          @Override
                          public void onResponse(Call<GetHyInfoEntity> call, Response<GetHyInfoEntity> response) {
@@ -125,6 +125,18 @@ public class IndexActivity extends Activity {
                                  GetHyInfoEntity body = response.body();
                                  if (body != null) {
                                     if (body.getReturnX().getNCode()==0){
+                                        GetHyInfoEntity.ResponseBean response1 = body.getResponse();
+                                        HyMessage   hyinfo=new  HyMessage();
+                                        hyinfo.cardnumber=response1.getCdoData().getSMemberId();
+                                        hyinfo.hySname=response1.getCdoData().getStrName();
+                                        hyinfo.hytelphone=response1.getCdoData().getSBindMobile();
+
+                                        //给会员信息赋值
+                                        CommonData.hyMessage=hyinfo;
+
+                                        //然后跳转到 购物界面
+                                        Intent intent = new Intent(IndexActivity.this, InputGoodsActivity  .class);
+                                        startActivity(intent);
 
                                     }else {
                                         ToastUtil.showToast(IndexActivity.this,"登录提示","该会员不存在，请重新输入");

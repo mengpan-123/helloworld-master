@@ -29,7 +29,15 @@
         </activity>
 
         <!-- 学习基本布局和控件 -->
-        <activity android:name=".OneActivity" />
+        <activity android:name=".OneActivity" >
+
+         <intent-filter>
+            <!--  <action android:name="android.intent.action.MAIN" />  &lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;
+              <action android:name="android.intent.action.VIEW" />
+              <action android:name="android.intent.action.HOME" />   &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;
+              <category android:name="android.intent.category.LAUNCHER" />   让 Activity 在顶层启动器中显示-->
+          </intent-filter>
+       </activity>
         <!-- 2.学习简单的网络请求 -->
         <activity android:name=".InputGoodsActivity" >
 

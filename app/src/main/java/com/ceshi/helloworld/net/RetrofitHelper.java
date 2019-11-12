@@ -228,6 +228,10 @@ public class RetrofitHelper {
         requestSignBean.setBizType(1);
 
         String Pays="{'prepayId':'"+CommonData.orderInfo.prepayId+"','mydata':'testinfo'}";
+
+
+
+
         requestSignBean.setExtra(""+Pays+"");
         requestSignBean.setPluMap(pluMap);
         requestSignBean.setPayMap(payMap);

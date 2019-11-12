@@ -7,12 +7,13 @@ import java.io.Serializable;
 public class getdeviceinfoEntity implements Serializable {
 
 
+
     /**
      * return : {"nCode":0,"strText":"OK","strInfo":"OK"}
-     * response : {"server_timestamp":1572952563194,"corpId":"C101","storeId":"S101","storeName":"如e测试店(220)","sCorpName":"融讯伟业","userId":"526374","userCount":1,"sStorePicPath":"http://file1.rongxwy.com//img/logo.png","token":"c367cf9d89767aa698afdd2e26f1829645aca7c8f6e1ad4d0afd5f2ffbf773f3","tokenGataWay":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnZW5lcmF0aW9uVGltZSAiOiJUdWUgTm92IDA1IDE5OjE2OjAzIENTVCAyMDE5IiwiZXhwIjoxNTczNTU3MzYzLCJ1c2VySWQiOiI1MjYzNzQifQ.p3pVtGk0KEaN4cjFrCzpnKEMzQ1KCToSBQB8Pk3064M"}
+     * response : {"server_timestamp":1573442114939,"corpId":"C1501","storeId":"S1501","storeName":"佳惠超市黔江大十字店","sCorpName":"佳惠超市","lStoreId":78,"lCorpId":16,"userId":"526374","userCount":1,"sStorePicPath":"http://file1.rongxwy.com//img/logo.png","token":"c367cf9d89767aa698afdd2e26f18296d17fb9ef07b62a27e06f07d8eca5d793","tokenGataWay":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnZW5lcmF0aW9uVGltZSAiOiJNb24gTm92IDExIDExOjE1OjE1IENTVCAyMDE5IiwiZXhwIjoxNTc0MDQ2OTE1LCJ1c2VySWQiOiI1MjYzNzQifQ.eJzixn2WZSqmQzDm20_lp32-E2lX6D0vLNfV2vEVgU8"}
      */
 
-    @SerializedName("return")
+    @com.google.gson.annotations.SerializedName("return")
     private ReturnBean returnX;
     private ResponseBean response;
 
@@ -52,7 +53,7 @@ public class getdeviceinfoEntity implements Serializable {
         }
 
         public String getStrText() {
-            return  strText;
+            return strText;
         }
 
         public void setStrText(String strText) {
@@ -70,16 +71,18 @@ public class getdeviceinfoEntity implements Serializable {
 
     public static class ResponseBean {
         /**
-         * server_timestamp : 1572952563194
-         * corpId : C101
-         * storeId : S101
-         * storeName : 如e测试店(220)
-         * sCorpName : 融讯伟业
+         * server_timestamp : 1573442114939
+         * corpId : C1501
+         * storeId : S1501
+         * storeName : 佳惠超市黔江大十字店
+         * sCorpName : 佳惠超市
+         * lStoreId : 78
+         * lCorpId : 16
          * userId : 526374
          * userCount : 1
          * sStorePicPath : http://file1.rongxwy.com//img/logo.png
-         * token : c367cf9d89767aa698afdd2e26f1829645aca7c8f6e1ad4d0afd5f2ffbf773f3
-         * tokenGataWay : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnZW5lcmF0aW9uVGltZSAiOiJUdWUgTm92IDA1IDE5OjE2OjAzIENTVCAyMDE5IiwiZXhwIjoxNTczNTU3MzYzLCJ1c2VySWQiOiI1MjYzNzQifQ.p3pVtGk0KEaN4cjFrCzpnKEMzQ1KCToSBQB8Pk3064M
+         * token : c367cf9d89767aa698afdd2e26f18296d17fb9ef07b62a27e06f07d8eca5d793
+         * tokenGataWay : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnZW5lcmF0aW9uVGltZSAiOiJNb24gTm92IDExIDExOjE1OjE1IENTVCAyMDE5IiwiZXhwIjoxNTc0MDQ2OTE1LCJ1c2VySWQiOiI1MjYzNzQifQ.eJzixn2WZSqmQzDm20_lp32-E2lX6D0vLNfV2vEVgU8
          */
 
         private long server_timestamp;
@@ -87,8 +90,10 @@ public class getdeviceinfoEntity implements Serializable {
         private String storeId;
         private String storeName;
         private String sCorpName;
+        private String lStoreId;
+        private String lCorpId;
         private String userId;
-        private int userCount;
+        private String userCount;
         private String sStorePicPath;
         private String token;
         private String tokenGataWay;
@@ -133,6 +138,22 @@ public class getdeviceinfoEntity implements Serializable {
             this.sCorpName = sCorpName;
         }
 
+        public String getLStoreId() {
+            return lStoreId;
+        }
+
+        public void setLStoreId(String lStoreId) {
+            this.lStoreId = lStoreId;
+        }
+
+        public String getLCorpId() {
+            return lCorpId;
+        }
+
+        public void setLCorpId(String lCorpId) {
+            this.lCorpId = lCorpId;
+        }
+
         public String getUserId() {
             return userId;
         }
@@ -141,11 +162,11 @@ public class getdeviceinfoEntity implements Serializable {
             this.userId = userId;
         }
 
-        public int getUserCount() {
+        public String getUserCount() {
             return userCount;
         }
 
-        public void setUserCount(int userCount) {
+        public void setUserCount(String userCount) {
             this.userCount = userCount;
         }
 

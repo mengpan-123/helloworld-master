@@ -16,6 +16,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
             + "khid text  primary key, "
 
+            + "corpId text   , "
+
             + "lCorpId  text , "
 
             + "khsname  text , "
