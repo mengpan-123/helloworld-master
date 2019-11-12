@@ -8,6 +8,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.net.ToastUtil;
+import com.tencent.wxpayface.IWxPayfaceCallback;
+import com.tencent.wxpayface.WxPayFace;
 //import com.tencent.wxpayface.IWxPayfaceCallback;
 //import com.tencent.wxpayface.WxPayFace;
 //import com.tencent.wxpayface.WxfacePayCommonCode;
@@ -39,18 +41,10 @@ public class OneActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //微信刷脸初始化
-              /*  Map<String, String> m1 = new HashMap<>();
-//                m1.put("ip", "192.168.1.1"); //若没有代理,则不需要此行
-//                m1.put("port", "8888");//若没有代理,则不需要此行
-                WxPayFace.getInstance().initWxpayface(OneActivity.this, m1, new IWxPayfaceCallback() {
-                    @Override
-                    public void response(Map info) throws RemoteException {
-                        if (!isSuccessInfo(info)) {
-                            return;
-                        }
-                        ToastUtil.showToast(OneActivity.this, "温馨提示", "微信刷脸支付初始化完成");
-                    }
-                });*/
+
+                Map<String, String> m1 = new HashMap<>();
+                m1.put("ip", "192.168.1.1"); //若没有代理,则不需要此行
+                m1.put("port", "8888");//若没有代理,则不需要此行*/
                 try {
                     WxPayFace.getInstance().initWxpayface(OneActivity.this, m1, new IWxPayfaceCallback() {
                         @Override
