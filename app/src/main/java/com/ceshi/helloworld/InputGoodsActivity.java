@@ -43,6 +43,9 @@ import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
 import com.ceshi.helloworld.net.ToastUtil;
+import com.tencent.wxpayface.IWxPayfaceCallback;
+import com.tencent.wxpayface.WxPayFace;
+import com.tencent.wxpayface.WxfacePayCommonCode;
 
 
 import retrofit2.Call;
@@ -55,7 +58,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private ListView listview;
     private TextView price;
     private TextView tv_go_to_pay;
-    private TextView shopcar_num;
+    public  TextView shopcar_num;
     private ImageView text_tip;
     private  TextView yhmoney;
     private  TextView phone_view;
@@ -91,6 +94,13 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private  String  payAuthCode="";
 
     private Call<ResponseSignBean> ResponseSignBeanCall;
+
+
+    public static final String RETURN_CODE = "return_code";
+    public static final String RETURN_SUCCESS = "SUCCESS";
+    public static final String RETURN_FAILE = "SUCCESS";
+    public static final String RETURN_MSG = "return_msg";
+
 
 
     @Override
@@ -328,6 +338,10 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             map.put("price", String.valueOf(useprice));
                             map.put("count", String.valueOf(maps.get(0).getPackNum()));
 
+                            CommonData.orderInfo=neworderInfo;
+                            CommonData.orderInfo.spList=MapList;
+
+
                             listmap.add(map);
                         }
                         //界面上实现  增加一个元素
@@ -338,7 +352,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                     }
                     else{
                         String result=addgoods.getReturnX().getStrText();
-                        ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", result);
+                        ToastUtil.showToast(InputGoodsActivity.this, "商品查询通知", result);
                     }
                 }
             }
@@ -352,7 +366,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     /**
      * 控制价格展示总价
      */
-    private void priceControl(Map<String, Integer> pitchOnMap){
+    public  void priceControl(Map<String, Integer> pitchOnMap){
         totalCount = 0;
         totalPrice = 0.00;
         for(int i=0;i<listmap.size();i++){
@@ -437,8 +451,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                 String  inputbarcode=editText1.getText().toString();
 
                 AddnewSpid(inputbarcode);
-
                 dialog.dismiss();
+
             }
         });
         // 设置取消按钮的事件
@@ -639,6 +653,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
         adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+
         priceControl(adapter.getPitchOnMap());
         shopcar_num.setText("共0件商品");
         //加载出空购物车页面
@@ -695,12 +710,10 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         wx_face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog1.dismiss();
+
                 payWay="WXFacePay";
 
-
-
-                dialog_paycode(view);
+                wxFacepay();
             }
         });
     }
@@ -870,5 +883,102 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     }
 
 
+
+    //刷脸支付初始化
+    public  void wxFacepay(){
+        Map<String, String> m1 = new HashMap<>();
+        //m1.put("ip", "192.168.1.1"); //若没有代理,则不需要此行
+        //m1.put("port", "8888");//若没有代理,则不需要此行*/
+        try {
+            WxPayFace.getInstance().initWxpayface(InputGoodsActivity.this, m1, new IWxPayfaceCallback() {
+                @Override
+                public void response(Map info) throws RemoteException {
+                    if (!isSuccessInfo(info)) {
+                        return;
+                    }
+                    ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", "微信刷脸支付初始化完成");
+
+                    //然后调用首先获取  facecode。用于人脸支付
+                    Map<String, String> m1 = new HashMap<String, String>();
+                    m1.put("appid", CommonData.appId); // 公众号，必填
+                    m1.put("mch_id", CommonData.appKey); // 商户号，必填
+                    m1.put("store_id", CommonData.khid); // 门店编号，必填
+                    m1.put("out_trade_no", CommonData.orderInfo.prepayId); // 商户订单号， 必填
+                    m1.put("total_fee", "100"); // 订单金额（数字），单位：分，必填
+                    m1.put("face_authtype", "FACEPAY"); // FACEPAY：人脸凭证，常用于人脸支付    FACEPAY_DELAY：延迟支付   必填
+                    m1.put("ask_face_permit", "0"); // 展开人脸识别授权项，详情见上方接口参数，必填
+                    m1.put("ask_ret_page", "1"); // 是否展示微信支付成功页，可选值："0"，不展示；"1"，展示，非必填
+
+                    WxPayFace.getInstance().getWxpayfaceCode(m1, new IWxPayfaceCallback() {
+                        @Override
+                        public void response(final Map info) throws RemoteException {
+                            if (info == null) {
+                                new RuntimeException("调用返回为空").printStackTrace();
+                                return;
+                            }
+                            String code = (String) info.get("return_code"); // 错误码
+                            String msg = (String) info.get("return_msg"); // 错误码描述
+                            String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
+                            if(!code.equals("SUCCESS")){
+
+                                ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", msg);
+                                return;
+                            }
+                            String openid = info.get("openid").toString(); // openid
+                            String sub_openid = ""; // 子商户号下的openid(服务商模式)
+                            int telephone_used = 0; // 获取的`face_code`，是否使用了请求参数中的`telephone`
+                            int underage_state = 0; // 用户年龄信息（需联系微信支付开通权限）
+                            if (info.get("sub_openid") != null) sub_openid = info.get("sub_openid").toString();
+                            if (info.get("telephone_used") != null) telephone_used = Integer.parseInt(info.get("telephone_used").toString());
+                            if (info.get("underage_state") != null) underage_state = Integer.parseInt(info.get("underage_state").toString());
+                            if (code == null || faceCode == null || openid == null || !code.equals("SUCCESS")) {
+                                new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                return ;
+                            }
+       	        /*
+       	        在这里处理您自己的业务逻辑
+       	        解释：您在上述中已经获得了支付凭证或者用户的信息，您可以使用这些信息通过调用支付接口来完成支付的业务逻辑
+       	        需要注意的是：
+       	            1、上述注释中的内容并非是一定会返回的，它们是否返回取决于相应的条件
+       	            2、当您确保要解开上述注释的时候，请您做好空指针的判断，不建议直接调用
+       	         */
+
+                            //handleFaceNotice(faceCode);
+
+                        }
+                    });
+
+
+
+
+                }
+            });
+        }
+        catch(Exception ex){
+            ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", ex.toString());
+        }
+    }
+
+
+
+    private boolean isSuccessInfo(Map info) {
+        if (info == null) {
+
+            ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", "调用返回为空");
+            new RuntimeException("调用返回为空").printStackTrace();
+            return false;
+        }
+        String code = (String)info.get(RETURN_CODE);
+        String msg = (String)info.get(RETURN_MSG);
+
+
+       if (code == null || !code.equals(WxfacePayCommonCode.VAL_RSP_PARAMS_SUCCESS)) {
+           ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", "调用返回非成功信息, 请查看日志");
+            new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
+           return false;
+        }
+
+        return true;
+    }
 
 }

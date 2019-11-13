@@ -15,10 +15,10 @@ public  class CommonData  extends Application {
     public static String    tablename="BaseInfo2";
 
     //设备号deviceId
-    public static String    machine_number="";
+    public static String    machine_number="526374";
 
     //门店编号
-    public static String    khid="";
+    public static String    khid="1501";
 
 
     //门店注册登陆之后 返回的 userid，用于 支付时使用
@@ -31,10 +31,21 @@ public  class CommonData  extends Application {
 
 
     //机器名称
-    public static String    machine_name="";
+    public static String    machine_name="1221";
+
+    //微信支付微信端appid
+    public static String    appId="wxcb3df0aa8b0dd6f6";
+
+    //子商户的appid
+    public static String    sub_appId="wx2d784531bbb9a017";
+
+    //微信支付商户密钥
+    public static String    appKey="aiinbiaiinbiaiinbiaiinbiaiinbiai";
+
+
 
     //微信支付商户号
-    public static String    mch_id="";
+    public static String    mch_id="1559562481";
 
     //微信支付子商户号
     public static String    sub_mch_id="";

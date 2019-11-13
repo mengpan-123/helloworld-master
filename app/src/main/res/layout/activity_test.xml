@@ -94,7 +94,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp">
 
         <TextView
             android:id="@+id/faceinit"
@@ -117,23 +118,54 @@
             android:layout_weight="1"
             android:layout_height="65dp"
             android:layout_marginLeft="22dp"
-            android:text="获取数据"
+            android:text="获取数据和调用凭证"
             android:textColor="#FFFFFF"
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/facegetcommit"
+            android:id="@+id/getuserinfo"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="65dp"
             android:gravity="center"
             android:layout_marginLeft="22dp"
             android:layout_marginRight="22dp"
-            android:text="获取调用凭证"
+            android:text="获取用户信息,不做支付的"
             android:textColor="#FFFFFF"
             android:textSize="15sp" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp">
 
+
+
+        <TextView
+            android:id="@+id/facecard"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:layout_marginLeft="22dp"
+            android:text="人脸准备支付"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:gravity="center"
+            android:layout_marginLeft="22dp"
+            android:layout_marginRight="22dp"
+            android:text="实际结果"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+
+    </LinearLayout>
 </LinearLayout>

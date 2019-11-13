@@ -9,9 +9,11 @@ import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestSignBean;
 import com.ceshi.helloworld.bean.RequestDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseSignBean;
+import com.ceshi.helloworld.bean.ReturnXMLParser;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.bean.UpdateVersionEntity;
+import com.ceshi.helloworld.bean.XMLParseEntity;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.getCartItemsEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
@@ -44,8 +46,24 @@ public class RetrofitHelper {
     private APIService mAPIService;
 
 
+    private RetrofitHelper(String Url) {
+        initRetrofit(Url);
+    }
+
+
     private RetrofitHelper() {
         initRetrofit();
+    }
+
+    public static RetrofitHelper getInstance(String Url) {
+        if (mInstance == null) {
+            synchronized (RetrofitHelper.class) {
+                if (mInstance == null) {
+                    mInstance = new RetrofitHelper(Url);
+                }
+            }
+        }
+        return mInstance;
     }
 
     public static RetrofitHelper getInstance() {
@@ -58,13 +76,23 @@ public class RetrofitHelper {
         }
         return mInstance;
     }
-
     /**
      * 这里的url必须时域名前的那段baseurl  比如
      * http://dvp.rongxwy.com/base/rest/v3/CartService/getMchIdByStoreId?storeId=S2101
      * 取http://dvp.rongxwy.com/为他的baseurl
      */
 
+    private void initRetrofit(String Url) {
+        Retrofit retrofit = new Retrofit
+                .Builder()
+                .baseUrl(Url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(getBuilder().build())
+                .build();
+        mAPIService = retrofit.create(APIService.class);
+    }
+
+    //没有参数的时候默认使用此地址，重写一个有参数的
     private void initRetrofit() {
         Retrofit retrofit = new Retrofit
                 .Builder()
@@ -262,5 +290,22 @@ public class RetrofitHelper {
     public Call<getCartItemsEntity> getCartItems(String userId, String storeId){
         return mAPIService.getCartItems(userId,storeId,"1");
     }
+
+
+
+    /***
+     * 订单支付接口
+     *请求方式 POST，数据格式XML
+     * */
+    public Call<String> PostWxPay(String  XML){
+
+        CommonData.CommonUrl="https://payapp.weixin.qq.com/";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("text/xml; charset=utf-8"), XML);
+        return mAPIService.PostWxPay(requestBody);
+
+    }
+
 
 }

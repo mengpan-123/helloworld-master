@@ -7,9 +7,11 @@ import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseSignBean;
+import com.ceshi.helloworld.bean.ReturnXMLParser;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.bean.UpdateVersionEntity;
+import com.ceshi.helloworld.bean.XMLParseEntity;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.getCartItemsEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
@@ -154,6 +156,12 @@ public interface APIService {
 
     @POST("base/rest/v3/CartService/getpaysignnew")
     Call<ResponseSignBean> getSgin(@Body RequestBody requestBody);
+
+
+
+    @POST("face/get_wxpayface_authinfo")
+    Call<String> PostWxPay(@Body RequestBody requestBody);
+
 
 
     /**

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelloWorld</string>
+    <string name="app_name">自助购物</string>
     <string name="app_width">65dp</string>
     <string name="app_table">khda</string>
 </resources>
