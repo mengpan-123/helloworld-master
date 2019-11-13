@@ -112,12 +112,14 @@ public class IndexActivity extends Activity {
                 EditText hyedit=(EditText)layout.findViewById(R.id.phoneorhyNum);
 
                 String hynum=hyedit.getText().toString();
+
                 String sCorpId=CommonData.corpId;
+                sCorpId="C1501";
                 String sUserId="";
 
                 if (!TextUtils.isEmpty(hynum)){
 
-                    Call<GetHyInfoEntity> hyInfoEntityCall= RetrofitHelper.getInstance().getHyInfoEntityCall(hynum,sCorpId,CommonData.lCorpId,sUserId);
+                    Call<GetHyInfoEntity> hyInfoEntityCall= RetrofitHelper.getInstance().getHyInfoEntityCall(hynum,sCorpId,"16",sUserId);
                      hyInfoEntityCall.enqueue(new Callback<GetHyInfoEntity>() {
                          @Override
                          public void onResponse(Call<GetHyInfoEntity> call, Response<GetHyInfoEntity> response) {
