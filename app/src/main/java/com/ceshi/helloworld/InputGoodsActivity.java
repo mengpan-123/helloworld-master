@@ -8,6 +8,7 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -209,20 +210,41 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+
+
     @Override
     public void refreshPrice(HashMap<String, Integer> pitchOnMap) {
         priceControl(pitchOnMap);
     }
 
+    String barcode ="";
+    @Override
+    public  boolean dispatchKeyEvent(KeyEvent event) {
+        if(event.getAction()== KeyEvent.ACTION_DOWN){
+            char pressedKey = (char) event.getUnicodeChar();
+            barcode += pressedKey;
+        }
+        if (event.getAction()==KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+           // ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", barcode);
+            if (!TextUtils.isEmpty(barcode)){
+                if (barcode.contains("\n")){
+                    barcode=barcode.substring(0,barcode.length()-1);
+                }
+                AddnewSpid(barcode);
+                barcode="";
+            }
 
+        }
+        return true;
 
+    }
     /**
      * Created by zhoupan on 2019/11/7.
+     *
      * 扫码添加商品，封装方法，用于单个添加商品，和添加购物袋
      */
 
     public   void  AddnewSpid(String  inputbarcode){
-
         HashMap<String,String> map=new HashMap<>();
 
         Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo(inputbarcode,CommonData.khid,CommonData.userId,"0");
@@ -272,7 +294,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             for (int k = 0; k < listmap.size(); k++) {
                                 if (listmap.get(k).get("id").equals(spcode)) {
                                     listmap.get(k).put("count", String.valueOf(Integer.valueOf(listmap.get(k).get("count")) + 1));
-                                    listmap.get(k).put("price", String.valueOf(listmap.get(k).get("price") + useprice));
+                                    //listmap.get(k).put("price", String.valueOf( Double.valueOf(listmap.get(k).get("price"))+ useprice));
+                                    listmap.get(k).put("price", String.valueOf( Double.valueOf(listmap.get(k).get("price"))));
                                 }
                             }
                         } else {
@@ -325,6 +348,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         for(int i=0;i<listmap.size();i++){
             totalCount=totalCount+Integer.valueOf(listmap.get(i).get("count"));
             double goodsPrice=Integer.valueOf(listmap.get(i).get("count")) *  Double.valueOf(listmap.get(i).get("price"));
+            //double goodsPrice=Double.valueOf(listmap.get(i).get("price"));
             totalPrice=totalPrice+goodsPrice;
         }
         price.setText("总计 ¥ "+ new BigDecimal(String.valueOf(totalPrice)).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
@@ -587,16 +611,17 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     //清空listmap的值
         listmap.clear();
         MapList.clear();
-
         //清空给基础信息
-        neworderInfo=new  OrderInfo();
-
+        map.clear();
+        MapList.clear();
+        neworderInfo=new OrderInfo();
+        CommonData.orderInfo=neworderInfo;
         //清空列表页面
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
         adapter.setRefreshPriceInterface(InputGoodsActivity.this);
         priceControl(adapter.getPitchOnMap());
-
+        shopcar_num.setText("共0件商品");
         //加载出空购物车页面
         listview.setEmptyView(text_tip);
 
@@ -674,7 +699,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         dialog_paycode.setContentView(layout_paycode);
         Window window = dialog_paycode.getWindow();
         window.setGravity(Gravity.CENTER);
-        window.setDimAmount(0f);
+       // window.setDimAmount(0f);
         dialog_paycode.show();
         Button require_code = (Button) layout_paycode.findViewById(R.id.require_code);
 
