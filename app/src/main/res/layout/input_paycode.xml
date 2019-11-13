@@ -13,13 +13,13 @@ android:background="#F0F0F0"
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:text="付  款  码"
-    android:background="#0FB6A4"
-    android:textColor="#F0F0F0"
+    android:background="#CCCCCC"
+    android:textColor="#2B2A2A"
     android:textSize="18dp" />
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="260dp"
     android:layout_below="@+id/toast_title">
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +32,9 @@ android:background="#F0F0F0"
             android:layout_weight="1"/>
         <EditText
             android:id="@+id/pay_code"
-            android:layout_width="230dp"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:hint="请输入付款码"
             android:layout_height="wrap_content" />
         <TextView

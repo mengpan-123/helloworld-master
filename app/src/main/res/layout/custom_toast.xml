@@ -19,7 +19,7 @@
         android:textSize="22dp" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="320dp"
         android:layout_below="@+id/toast_title"
         >
         <LinearLayout
@@ -37,7 +37,7 @@
                 android:gravity="center"
                 android:background="#FCFCFC"
                 android:textColor="@android:color/background_dark"
-                android:textSize="14dp" />
+                android:textSize="16dp" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

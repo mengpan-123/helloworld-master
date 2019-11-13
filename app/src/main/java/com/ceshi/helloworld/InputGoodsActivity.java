@@ -154,7 +154,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             CommonData.orderInfo=neworderInfo;
                         }
                         else{
-                            Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrInfo(),Toast.LENGTH_SHORT).show();
+                            ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", body.getReturnX().getStrInfo());
+                            //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrInfo(),Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -201,6 +202,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                 if(totalCount<=0){
                     Toast.makeText(this,"请选择要付款的商品~",Toast.LENGTH_SHORT).show();
                 }else{
+
                     Toast.makeText(this,"付款成功",Toast.LENGTH_SHORT).show();
                 }
                 break;
