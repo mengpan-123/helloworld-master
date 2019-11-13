@@ -109,6 +109,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void initView() {
+
         top_bar = (LinearLayout) findViewById(R.id.top_bar);
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
@@ -117,13 +118,12 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         shopcar_num=findViewById(R.id.shopcar_num);
         yhmoney=findViewById(R.id.yhmoney);
         tv_go_to_pay = (TextView) findViewById(R.id.tv_go_to_pay);
-
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
         listview.setEmptyView(text_tip);
         adapter.setRefreshPriceInterface(this);
         priceControl(adapter.getPitchOnMap());
-
+        CommonData.list_adaptor=adapter;
     }
 
 
@@ -207,8 +207,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this,"付款成功",Toast.LENGTH_SHORT).show();
                 }
                 break;
+
         }
     }
+
+
 
 
 
@@ -245,6 +248,13 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      */
 
     public   void  AddnewSpid(String  inputbarcode){
+
+        if (CommonData.orderInfo!=null){
+           if (CommonData.orderInfo.spList!=null){
+               MapList=CommonData.orderInfo.spList;
+           }
+        }
+
         HashMap<String,String> map=new HashMap<>();
 
         Addgoodsinfo= RetrofitHelper.getInstance().getgoodsinfo(inputbarcode,CommonData.khid,CommonData.userId,"0");
@@ -372,9 +382,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      * 删除 控制价格展示总价
      * @param map
      */
-    private void checkDelete(Map<String,Integer> map){
+    public  void checkDelete(){
         List<HashMap<String,String>> waitDeleteList=new ArrayList<>();
         Map<String,Integer> waitDeleteMap =new HashMap<>();
+        Map<String, Integer> map=new HashMap<>();
+        map=adapter.getPitchOnMap();
         for(int i=0;i<listmap.size();i++){
             if(map.get(listmap.get(i).get("id"))==1){
                 waitDeleteList.add(listmap.get(i));
@@ -383,8 +395,15 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         }
         listmap.removeAll(waitDeleteList);
         map.remove(waitDeleteMap);
-        priceControl(map);
-        adapter.notifyDataSetChanged();
+
+        adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
+
+        listview.setAdapter(adapter);
+        adapter.setRefreshPriceInterface(InputGoodsActivity.this);
+        priceControl(adapter.getPitchOnMap());
+        CommonData.list_adaptor=adapter;
+       /* priceControl(map);
+        adapter.notifyDataSetChanged();*/
     }
 
     /**

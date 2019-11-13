@@ -4,6 +4,8 @@ import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
+import com.ceshi.helloworld.bean.RequestDeleteGoods;
+import com.ceshi.helloworld.bean.ResponseDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseSignBean;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
@@ -152,6 +154,15 @@ public interface APIService {
 
     @POST("base/rest/v3/CartService/getpaysignnew")
     Call<ResponseSignBean> getSgin(@Body RequestBody requestBody);
+
+
+    /**
+     * 删除购物车产品
+     * @param requestBody
+     * @return
+     */
+    @POST("base/rest/v3/CartService/reduceCartItems")
+    Call<ResponseDeleteGoods> deleteGoods(@Body RequestBody  requestBody);
 
 
     /**

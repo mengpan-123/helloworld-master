@@ -3,9 +3,11 @@ package com.ceshi.helloworld.net;
 
 import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.ResponseDeleteGoods;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestSignBean;
+import com.ceshi.helloworld.bean.RequestDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseSignBean;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
@@ -244,7 +246,15 @@ public class RetrofitHelper {
 
     }
 
-
+    public Call<ResponseDeleteGoods> responseDeleteGoods(List<RequestDeleteGoods.ItemMapBean> itemMap ){
+        RequestDeleteGoods requestDeleteGoods=new RequestDeleteGoods();
+        requestDeleteGoods.setStoreId(CommonData.khid);
+        requestDeleteGoods.setUserId(CommonData.userId);
+        requestDeleteGoods.setItemMap(itemMap);
+        String s=new Gson().toJson(requestDeleteGoods);
+        RequestBody requestBody=RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        return  mAPIService.deleteGoods(requestBody);
+    }
 
     /***
      * 获取 购物车列表

@@ -45,6 +45,8 @@ public  class CommonData  extends Application {
 
     public static HyMessage  hyMessage=null;
 
+    public static CreateAddAdapter list_adaptor=null;
+
 
     public static OrderInfo orderInfo=null;
 }

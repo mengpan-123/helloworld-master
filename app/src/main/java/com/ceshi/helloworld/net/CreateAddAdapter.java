@@ -6,20 +6,29 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ceshi.helloworld.InputGoodsActivity;
 import com.ceshi.helloworld.R;
+import com.ceshi.helloworld.bean.RequestDeleteGoods;
+import com.ceshi.helloworld.bean.ResponseDeleteGoods;
 
+import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateAddAdapter extends BaseAdapter {
     private Context context;
     private List<HashMap<String, String>> list;
     private HashMap<String, Integer> pitchOnMap;
+    public Call<ResponseDeleteGoods> ResponseDeleteGoodsCall;
     private OnItemRemoveListener adapterListener;
     public HashMap<String, Integer> getPitchOnMap() {
         return pitchOnMap;
@@ -56,7 +65,10 @@ public class CreateAddAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-         convertView = View.inflate(context,  R.layout.shopcar_list, null);
+        convertView = View.inflate(context,  R.layout.activity_addgoods, null);
+        final ListView listView1;
+        listView1=convertView.findViewById(R.id.listview);
+        convertView = View.inflate(context,  R.layout.shopcar_list, null);
         final CheckBox checkBox;
         ImageView icon;
         final TextView name, price, num, type, reduce, add;
@@ -77,36 +89,61 @@ public class CreateAddAdapter extends BaseAdapter {
         }else{
 
         }
+
+
+
         //商品数量减
         reduce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ToastUtil.showToast(context, "商品数量删减功能", "功能正在开发");
-                if (Integer.valueOf(list.get(position).get("count")) <= 1) {
 
 
+              /*  CommonData.list_adaptor = new CreateAddAdapter(InputGoodsActivity.this, list);
+                listView.setAdapter(CommonData.list_adaptor);*/
 
-                } else {
-                    list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) - 1) + "");
-                    notifyDataSetChanged();
-                }
-                //list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) - 1) + "");
-//               if (Integer.valueOf(list.get(position).get("count")) <= 1) {
-//
-//                   list.get(position).clear();
-//                   mrefreshPriceInterface.refreshPrice(pitchOnMap);
-//
-//               }else {
-//                    list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) - 1) + "");
-//                    notifyDataSetChanged();
-//                   mrefreshPriceInterface.refreshPrice(pitchOnMap);
-//                }
+                List<RequestDeleteGoods.ItemMapBean> itemMap =new ArrayList<RequestDeleteGoods.ItemMapBean>();
+                RequestDeleteGoods.ItemMapBean itemMapcls = new RequestDeleteGoods.ItemMapBean();
+                itemMapcls.setBarcode(list.get(position).get("id"));
+                itemMap.add(itemMapcls);
+                ResponseDeleteGoodsCall=RetrofitHelper.getInstance().responseDeleteGoods(itemMap);
+                ResponseDeleteGoodsCall.enqueue(new Callback<ResponseDeleteGoods>() {
+                    @Override
+                    public void onResponse(Call<ResponseDeleteGoods> call, Response<ResponseDeleteGoods> response) {
+                        if (response!=null){
+                            ResponseDeleteGoods body=response.body();
+                            if (body.getReturnX().getNCode()==0){
+                                ResponseDeleteGoods.ResponseBean response1 = body.getResponse();
+                                if (Integer.valueOf(list.get(position).get("count")) <= 1) {
+                                    // Toast.makeText(context, "数量不能再减啦,只能删除!", Toast.LENGTH_SHORT).show();
+                                    list.remove(position);
+                                    CommonData.orderInfo.spList.remove(list.get(position).get("id"));
 
+                                } else {
+                                    list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) - 1) + "");
 
+                                }
+
+                                  CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
+                                listView1.setAdapter(CommonData.list_adaptor);
+                                 //   CommonData.list_adaptor.setRefreshPriceInterface(CreateAddAdapter.this);
+                                 notifyDataSetChanged();
+                            }else {
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseDeleteGoods> call, Throwable t) {
+
+                    }
+                });
+
+                mrefreshPriceInterface.refreshPrice(pitchOnMap);
             }
         });
         //商品数量加
-//        add.setOnClickListener(new View.OnClickListener() {
+       // add.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) + 1) + "");
@@ -114,8 +151,8 @@ public class CreateAddAdapter extends BaseAdapter {
 //                mrefreshPriceInterface.refreshPrice(pitchOnMap);
 //
 //            }
-//
-//        });
+
+     //   });
 
         return convertView;
     }
