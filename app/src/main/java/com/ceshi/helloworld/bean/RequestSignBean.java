@@ -6,83 +6,36 @@ public class RequestSignBean {
 
 
     /**
-     * storeId : S101
-     * sSourceType : device
-     * userId : 526374
-     * storeLng : 0
-     * storeLat : 0
-     * payWay : WXPaymentCodePay
-     * authCode : 18位支付码
+     * authCode :
      * bizType : 1
-     * vipNo :
-     * extra : {'prepayId':'12345678912345678912345678912346','mydata':'hahah'}
-     * deviceId : 1111
-     * pluMap : [{"goodsId":"56550","barcode":"6906907113246","pluQty":"1","pluPrice":"48","realPrice":70,"pluAmount":70,"pluDis":70}]
-     * payMap : [{"paySn":"","payTypeId":1,"payVal":0.01}]
+     * deviceId : 5266354
+     * extra : {'prepayId':'cdb033e85e9049f692c2ee0d94826974958','mydata':'testinfo'}
+     * faceCode : c1281f0f-d1ba-4c87-93da-9d314c463a2f
+     * openid : 1111111
+     * payMap : [{"payTypeId":1,"payVal":0.01}]
+     * payWay : WXFacePay
+     * pluMap : [{"barcode":"1","goodsId":"1","pluAmount":0.01,"pluDis":0,"pluPrice":0.01,"pluQty":1,"realPrice":0.01}]
+     * sPayTypeExt : devicewxface
+     * storeId : S1500
+     * storeLat : 0
+     * storeLng : 0
+     * userId : 5266354
      */
 
-    private String storeId;
-    private String sSourceType;
-    private String userId;
-    private int storeLng;
-    private int storeLat;
-    private String payWay;
     private String authCode;
-    private String faceCode;
     private int bizType;
-    private String vipNo;
-    private String extra;
     private String deviceId;
-    private List<PluMapBean> pluMap;
+    private String extra;
+    private String faceCode;
+    private String openid;
+    private String payWay;
+    private String sPayTypeExt;
+    private String storeId;
+    private int storeLat;
+    private int storeLng;
+    private String userId;
     private List<PayMapBean> payMap;
-
-    public String getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(String storeId) {
-        this.storeId = storeId;
-    }
-
-    public String getSSourceType() {
-        return sSourceType;
-    }
-
-    public void setSSourceType(String sSourceType) {
-        this.sSourceType = sSourceType;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public int getStoreLng() {
-        return storeLng;
-    }
-
-    public void setStoreLng(int storeLng) {
-        this.storeLng = storeLng;
-    }
-
-    public int getStoreLat() {
-        return storeLat;
-    }
-
-    public void setStoreLat(int storeLat) {
-        this.storeLat = storeLat;
-    }
-
-    public String getPayWay() {
-        return payWay;
-    }
-
-    public void setPayWay(String payWay) {
-        this.payWay = payWay;
-    }
+    private List<PluMapBean> pluMap;
 
     public String getAuthCode() {
         return authCode;
@@ -90,15 +43,6 @@ public class RequestSignBean {
 
     public void setAuthCode(String authCode) {
         this.authCode = authCode;
-    }
-
-
-    public String getfaceCode() {
-        return faceCode;
-    }
-
-    public void setfaceCode(String faceCode) {
-        this.faceCode = faceCode;
     }
 
     public int getBizType() {
@@ -109,12 +53,12 @@ public class RequestSignBean {
         this.bizType = bizType;
     }
 
-    public String getVipNo() {
-        return vipNo;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setVipNo(String vipNo) {
-        this.vipNo = vipNo;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getExtra() {
@@ -125,20 +69,68 @@ public class RequestSignBean {
         this.extra = extra;
     }
 
-    public String getDeviceId() {
-        return deviceId;
+    public String getFaceCode() {
+        return faceCode;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public void setFaceCode(String faceCode) {
+        this.faceCode = faceCode;
     }
 
-    public List<PluMapBean> getPluMap() {
-        return pluMap;
+    public String getOpenid() {
+        return openid;
     }
 
-    public void setPluMap(List<PluMapBean> pluMap) {
-        this.pluMap = pluMap;
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    public String getPayWay() {
+        return payWay;
+    }
+
+    public void setPayWay(String payWay) {
+        this.payWay = payWay;
+    }
+
+    public String getSPayTypeExt() {
+        return sPayTypeExt;
+    }
+
+    public void setSPayTypeExt(String sPayTypeExt) {
+        this.sPayTypeExt = sPayTypeExt;
+    }
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
+
+    public int getStoreLat() {
+        return storeLat;
+    }
+
+    public void setStoreLat(int storeLat) {
+        this.storeLat = storeLat;
+    }
+
+    public int getStoreLng() {
+        return storeLng;
+    }
+
+    public void setStoreLng(int storeLng) {
+        this.storeLng = storeLng;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public List<PayMapBean> getPayMap() {
@@ -149,100 +141,22 @@ public class RequestSignBean {
         this.payMap = payMap;
     }
 
-    public static class PluMapBean {
-        /**
-         * goodsId : 56550
-         * barcode : 6906907113246
-         * pluQty : 1
-         * pluPrice : 48
-         * realPrice : 70
-         * pluAmount : 70
-         * pluDis : 70
-         */
+    public List<PluMapBean> getPluMap() {
+        return pluMap;
+    }
 
-        private String goodsId;
-        private String barcode;
-        private int pluQty;
-        private double pluPrice;
-        private double realPrice;
-        private double pluAmount;
-        private double pluDis;
-
-        public String getGoodsId() {
-            return goodsId;
-        }
-
-        public void setGoodsId(String goodsId) {
-            this.goodsId = goodsId;
-        }
-
-        public String getBarcode() {
-            return barcode;
-        }
-
-        public void setBarcode(String barcode) {
-            this.barcode = barcode;
-        }
-
-        public int getPluQty() {
-            return pluQty;
-        }
-
-        public void setPluQty(int pluQty) {
-            this.pluQty = pluQty;
-        }
-
-        public double getPluPrice() {
-            return pluPrice;
-        }
-
-        public void setPluPrice(double pluPrice) {
-            this.pluPrice = pluPrice;
-        }
-
-        public double getRealPrice() {
-            return realPrice;
-        }
-
-        public void setRealPrice(double realPrice) {
-            this.realPrice = realPrice;
-        }
-
-        public double getPluAmount() {
-            return pluAmount;
-        }
-
-        public void setPluAmount(double pluAmount) {
-            this.pluAmount = pluAmount;
-        }
-
-        public double getPluDis() {
-            return pluDis;
-        }
-
-        public void setPluDis(int pluDis) {
-            this.pluDis = pluDis;
-        }
+    public void setPluMap(List<PluMapBean> pluMap) {
+        this.pluMap = pluMap;
     }
 
     public static class PayMapBean {
         /**
-         * paySn :
          * payTypeId : 1
          * payVal : 0.01
          */
 
-        private String paySn;
         private int payTypeId;
         private double payVal;
-
-        public String getPaySn() {
-            return paySn;
-        }
-
-        public void setPaySn(String paySn) {
-            this.paySn = paySn;
-        }
 
         public int getPayTypeId() {
             return payTypeId;
@@ -258,6 +172,82 @@ public class RequestSignBean {
 
         public void setPayVal(double payVal) {
             this.payVal = payVal;
+        }
+    }
+
+    public static class PluMapBean {
+        /**
+         * barcode : 1
+         * goodsId : 1
+         * pluAmount : 0.01
+         * pluDis : 0
+         * pluPrice : 0.01
+         * pluQty : 1
+         * realPrice : 0.01
+         */
+
+        private String barcode;
+        private String goodsId;
+        private double pluAmount;
+        private int pluDis;
+        private double pluPrice;
+        private int pluQty;
+        private double realPrice;
+
+        public String getBarcode() {
+            return barcode;
+        }
+
+        public void setBarcode(String barcode) {
+            this.barcode = barcode;
+        }
+
+        public String getGoodsId() {
+            return goodsId;
+        }
+
+        public void setGoodsId(String goodsId) {
+            this.goodsId = goodsId;
+        }
+
+        public double getPluAmount() {
+            return pluAmount;
+        }
+
+        public void setPluAmount(double pluAmount) {
+            this.pluAmount = pluAmount;
+        }
+
+        public int getPluDis() {
+            return pluDis;
+        }
+
+        public void setPluDis(int pluDis) {
+            this.pluDis = pluDis;
+        }
+
+        public double getPluPrice() {
+            return pluPrice;
+        }
+
+        public void setPluPrice(double pluPrice) {
+            this.pluPrice = pluPrice;
+        }
+
+        public int getPluQty() {
+            return pluQty;
+        }
+
+        public void setPluQty(int pluQty) {
+            this.pluQty = pluQty;
+        }
+
+        public double getRealPrice() {
+            return realPrice;
+        }
+
+        public void setRealPrice(double realPrice) {
+            this.realPrice = realPrice;
         }
     }
 }

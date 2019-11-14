@@ -246,6 +246,8 @@ public class RetrofitHelper {
      * */
     public Call<ResponseSignBean> getSign(String payWay,
                                           String AuthCode,
+                                          String sPayTypeExt,
+                                          String  openid,
                                           List<RequestSignBean.PluMapBean> pluMap,
                                           List<RequestSignBean.PayMapBean> payMap){
 
@@ -257,7 +259,7 @@ public class RetrofitHelper {
 
         requestSignBean.setPayWay(payWay);
         if (payWay.equals("WXFacePay")){
-            requestSignBean.setfaceCode(AuthCode);
+            requestSignBean.setFaceCode(AuthCode);
             requestSignBean.setAuthCode("");
         }
         else
@@ -265,6 +267,9 @@ public class RetrofitHelper {
             requestSignBean.setAuthCode(AuthCode);
         }
 
+        requestSignBean.setSPayTypeExt(sPayTypeExt);//新增加的，支付来源
+
+        requestSignBean.setOpenid(openid);//用户的 微信用户号
 
         requestSignBean.setBizType(1);
 

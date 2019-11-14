@@ -61,9 +61,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private TextView tv_go_to_pay;
     public TextView shopcar_num;
     private ImageView text_tip;
-    private  TextView yhmoney;
-    private  TextView phone_view;
-    private  TextView storename;
+    private TextView yhmoney;
+    private TextView phone_view;
 
     View layout = null;
     View layout_pay = null;
@@ -94,8 +93,21 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private Call<PurchaseBag> GetBagsInfo;
 
+
+    private String responseAppid;
+
+
+    private String responnse_subAppid;
+
+    private String responsemachid;
+
+
+    private String responnse_submachid;
+
     //支付方式
     private String payWay = "WXPaymentCodePay";
+
+    private String sPayTypeExt = "";
 
     //支付识别码
     private String payAuthCode = "";
@@ -104,7 +116,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private String mAuthInfo;   //获取的个人用户信息
     private String openid;
-
+    private String out_trade_no;
 
     public static final String RETURN_CODE = "return_code";
     public static final String RETURN_SUCCESS = "SUCCESS";
@@ -134,13 +146,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
         price = (TextView) findViewById(R.id.tv_total_price);
-        phone_view=(TextView) findViewById(R.id.phone);
-        shopcar_num=findViewById(R.id.shopcar_num);
-        yhmoney=findViewById(R.id.yhmoney);
-        storename=findViewById(R.id.storename);
-        if (null!=CommonData.machine_name){
-            storename.setText(CommonData.machine_name);
-        }
         phone_view = (TextView) findViewById(R.id.phone);
         shopcar_num = findViewById(R.id.shopcar_num);
         yhmoney = findViewById(R.id.yhmoney);
@@ -471,7 +476,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         TextView title = (TextView) layout.findViewById(R.id.close1);
 
         //取消
-       TextView title2 = (TextView) layout.findViewById(R.id.close2);
+        TextView title2 = (TextView) layout.findViewById(R.id.close2);
         setDialogSize(layout);
         dialog.show();
         // 设置确定按钮的事件
@@ -487,7 +492,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
             }
         });
-         //设置取消按钮的事件
+        // 设置取消按钮的事件
         title2.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -525,21 +530,12 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-//    TextView closegwd=layout.findViewById(R.id.closegwd);
-//
-//        closegwd.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//
-//            dialog.dismiss();
-//
-//        }
-//    });
+
     /**
      * 选择购物袋
      * input_tiaoma
      **/
-    public  void  input_bags(View view){
+    public void input_bags(View view) {
 
 
         final Dialog dialog = new Dialog(this,
@@ -550,62 +546,49 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                 null);
         dialog.setContentView(layout);
 
-        ListView listView=(ListView) layout.findViewById(R.id.lv_baginfo);
+        ListView listView = (ListView) layout.findViewById(R.id.lv_baginfo);
         /*listView.setVisibility(View.VISIBLE);
         listView.bringToFront();*/
-        listView.setDividerHeight(5);
+        listView.setDividerHeight(20);
+        List<Map<String, Object>> listitem = new ArrayList<Map<String, Object>>();
 
-            TextView closegwd=layout.findViewById(R.id.closegwd);
-
-        closegwd.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            dialog.dismiss();
-
-        }
-    });
-        List<Map<String, Object>> listitem=new ArrayList<Map<String,Object>>();
-
-
-
-        GetBagsInfo= RetrofitHelper.getInstance().getBagInfo(CommonData.userId,CommonData.khid);
+        GetBagsInfo = RetrofitHelper.getInstance().getBagInfo(CommonData.userId, CommonData.khid);
         GetBagsInfo.enqueue(new Callback<PurchaseBag>() {
             @Override
             public void onResponse(Call<PurchaseBag> call, Response<PurchaseBag> response) {
 
-                if (response.body()!=null){
-                    PurchaseBag getBagsInfo=response.body();
+                if (response.body() != null) {
+                    PurchaseBag getBagsInfo = response.body();
 
-                    int onCode=getBagsInfo.getReturnX().getNCode();
-                    if (onCode==0){
-                        PurchaseBag.ResponseBean responseBean=getBagsInfo.getResponse();
-                        List<PurchaseBag.ResponseBean.BagMapBean> maps=responseBean.getBagMap();
-                        int n=20;
-                        int[]  img_expense=new  int[n];
-                        String[] tv_bagname=new  String[n];
-                        String[] tv_bagpic=new String[n];
-                        String[] tv_goodsid=new  String[n];
-                        for (int m=0; m<maps.size();m++){
+                    int onCode = getBagsInfo.getReturnX().getNCode();
+                    if (onCode == 0) {
+                        PurchaseBag.ResponseBean responseBean = getBagsInfo.getResponse();
+                        List<PurchaseBag.ResponseBean.BagMapBean> maps = responseBean.getBagMap();
+                        int n = 20;
+                        int[] img_expense = new int[n];
+                        String[] tv_bagname = new String[n];
+                        String[] tv_bagpic = new String[n];
+                        String[] tv_goodsid = new String[n];
+                        for (int m = 0; m < maps.size(); m++) {
 
-                            Map<String,Object> map=new HashMap<String, Object>();
-                            map.put("img_expense",R.mipmap.gwd);
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("img_expense", R.mipmap.gwd);
                             map.put("tv_bagname", maps.get(m).getPluName());
                             map.put("tv_bagpic", String.valueOf(maps.get(m).getPluPrice()));
                             map.put("tv_goodsid", maps.get(m).getGoodsId());
                             listitem.add(map);
                         }
 
-                        SimpleAdapter adapter=new SimpleAdapter(InputGoodsActivity.this,listitem,R.layout.baginfo, new String[]{"tv_bagname","tv_bagpic","img_expense","tv_goodsid"},new int[]{R.id.tv_bagname,R.id.tv_bagpic,R.id.img_expense,R.id.tv_goodsid} );
+                        SimpleAdapter adapter = new SimpleAdapter(InputGoodsActivity.this, listitem, R.layout.baginfo, new String[]{"tv_bagname", "tv_bagpic", "img_expense", "tv_goodsid"}, new int[]{R.id.tv_bagname, R.id.tv_bagpic, R.id.img_expense, R.id.tv_goodsid});
                         listView.setAdapter(adapter);
                         dialog.show();
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                HashMap<String,String> map=(HashMap<String, String>) listView.getItemAtPosition(position);
-                                String title=map.get("tv_bagname");
-                                String bagpic=map.get("tv_bagpic");
-                                String bagsid=map.get("tv_goodsid");
+                                HashMap<String, String> map = (HashMap<String, String>) listView.getItemAtPosition(position);
+                                String title = map.get("tv_bagname");
+                                String bagpic = map.get("tv_bagpic");
+                                String bagsid = map.get("tv_goodsid");
 
 
                                 AddnewSpid(bagsid);
@@ -614,8 +597,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                 dialog.dismiss();
                             }
                         });
-                    }
-                    else {
+                    } else {
 
                     }
 
@@ -626,6 +608,14 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(Call<PurchaseBag> call, Throwable t) {
+
+            }
+        });
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             }
         });
@@ -731,6 +721,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             public void onClick(View v) {
                 dialog1.dismiss();
                 payWay = "AliPaymentCodePay";
+                sPayTypeExt="devicealimicropay";
                 dialog_paycode(view);
 
 
@@ -741,13 +732,14 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             public void onClick(View v) {
                 dialog1.dismiss();
                 payWay = "WXPaymentCodePay";
+                sPayTypeExt="devicewxmicropay";
                 dialog_paycode(view);
             }
         });
         wx_face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                sPayTypeExt="devicewxface";
                 payWay = "WXFacePay";
 
                 wxFacepay();
@@ -894,7 +886,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
 
         //调用确认支付接口
-        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, pluMap, payMap);
+        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,pluMap, payMap);
         ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
             @Override
             public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
@@ -982,7 +974,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
             });
         }
         catch(Exception ex){
-            ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", ex.toString());
+            ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", "当前系统未安装微信刷脸程序");
         }
     }
 
@@ -1027,18 +1019,27 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                         if (mAuthInfo == null) {
 
+                            ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "设备认证信息获取失败");
                             return;
                         }
+                        out_trade_no=response1.getOut_trade_no();
+                        responseAppid=response1.getAppid();
+                        responnse_subAppid=response1.getSubAppid();
+                        responsemachid=response1.getMch_id();
+                        responnse_submachid=response1.getSubMchId();
+
+                        double a = CommonData.orderInfo.totalPrice*10*10;
+                        int total_fee= new Double(a).intValue();
 
                         //3.0 然后调用首先获取  facecode。用于人脸支付
                         Map<String, String> m1 = new HashMap<String, String>();
-                        m1.put("appid", CommonData.appId); // 公众号，必填
-                        m1.put("mch_id", CommonData.mch_id); // 商户号，必填
-                        m1.put("sub_appid", CommonData.sub_appId); // 商户号，必填
-                        m1.put("sub_mch_id", CommonData.sub_mch_id); // 商户号，必填
+                        m1.put("appid", responseAppid); // 公众号，必填
+                        m1.put("mch_id", responsemachid); // 商户号，必填
+                        m1.put("sub_appid", responnse_subAppid); // 商户号，必填
+                        m1.put("sub_mch_id", responnse_submachid); // 商户号，必填
                         m1.put("store_id", CommonData.khid); // 门店编号，必填
-                        m1.put("out_trade_no", CommonData.orderInfo.prepayId); // 商户订单号， 必填
-                        m1.put("total_fee", "100"); // 订单金额（数字），单位：分，必填
+                        m1.put("out_trade_no", out_trade_no); // 商户订单号， 必填
+                        m1.put("total_fee", String.valueOf(total_fee)); // 订单金额（数字），单位：分，必填
                         m1.put("face_authtype", "FACEPAY"); // FACEPAY：人脸凭证，常用于人脸支付    FACEPAY_DELAY：延迟支付   必填
                         m1.put("authinfo", mAuthInfo);
                         m1.put("ask_face_permit", "0"); // 展开人脸识别授权项，详情见上方接口参数，必填
@@ -1054,6 +1055,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                 String code = (String) info.get("return_code"); // 错误码
                                 String msg = (String) info.get("return_msg"); // 错误码描述
                                 String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
+                                openid = info.get("openid").toString(); // 人脸凭证，用于刷脸支付
+
+
                                 if (!code.equals("SUCCESS")) {
 
                                     //没有成功需要关掉 人脸支付
@@ -1148,7 +1152,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         payMap.add(pmp);
 
         //调用确认支付接口
-        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, pluMap, payMap);
+        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,pluMap, payMap);
 
         ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
             @Override
@@ -1157,7 +1161,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                     ResponseSignBean body = response.body();
                     if (payWay.equals("WXFacePay")){
                         //首先要关闭微信人脸识别支付的接口
-                        HashMap<String, String> map = new HashMap<String, String>();
+                        /*HashMap<String, String> map = new HashMap<String, String>();
                         map.put("authinfo", mAuthInfo); // 调用凭证，必填
                         WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
                             @Override
@@ -1173,7 +1177,35 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                     return ;
                                 }
                             }
+                        });*/
+
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put("appid", responseAppid); // 公众号，必填
+                        map.put("mch_id", responsemachid); // 商户号，必填
+                        map.put("store_id", CommonData.khid); // 门店编号，必填
+                        map.put("authinfo", mAuthInfo); // 调用凭证，必填
+                        map.put("payresult", "SUCCESS"); // 支付结果，SUCCESS:支付成功   ERROR:支付失败   必填
+                        WxPayFace.getInstance().updateWxpayfacePayResult(map, new IWxPayfaceCallback() {
+                            @Override
+                            public void response(Map info) throws RemoteException {
+                                if (info == null) {
+                                    new RuntimeException("调用返回为空").printStackTrace();
+                                    return;
+                                }
+                                String code = (String) info.get("return_code"); // 错误码
+                                String msg = (String) info.get("return_msg"); // 错误码描述
+                                if (code == null || !code.equals("SUCCESS")) {
+                                    new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                    return ;
+                                }
+                /*
+                在这里处理您自己的业务逻辑：
+                执行到这里说明用户已经确认支付结果且成功了，此时刷脸支付界面关闭，您可以在这里选择跳转到其它界面
+                 */
+                            }
                         });
+
+
                     }
 
 
