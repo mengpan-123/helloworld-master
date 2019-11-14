@@ -61,8 +61,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private TextView tv_go_to_pay;
     public TextView shopcar_num;
     private ImageView text_tip;
-    private TextView yhmoney;
-    private TextView phone_view;
+    private  TextView yhmoney;
+    private  TextView phone_view;
+    private  TextView storename;
 
     View layout = null;
     View layout_pay = null;
@@ -133,6 +134,13 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
         price = (TextView) findViewById(R.id.tv_total_price);
+        phone_view=(TextView) findViewById(R.id.phone);
+        shopcar_num=findViewById(R.id.shopcar_num);
+        yhmoney=findViewById(R.id.yhmoney);
+        storename=findViewById(R.id.storename);
+        if (null!=CommonData.machine_name){
+            storename.setText(CommonData.machine_name);
+        }
         phone_view = (TextView) findViewById(R.id.phone);
         shopcar_num = findViewById(R.id.shopcar_num);
         yhmoney = findViewById(R.id.yhmoney);
@@ -463,7 +471,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         TextView title = (TextView) layout.findViewById(R.id.close1);
 
         //取消
-        TextView title2 = (TextView) layout.findViewById(R.id.close2);
+       TextView title2 = (TextView) layout.findViewById(R.id.close2);
         setDialogSize(layout);
         dialog.show();
         // 设置确定按钮的事件
@@ -479,7 +487,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
             }
         });
-        // 设置取消按钮的事件
+         //设置取消按钮的事件
         title2.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -517,12 +525,21 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-
+//    TextView closegwd=layout.findViewById(R.id.closegwd);
+//
+//        closegwd.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//
+//            dialog.dismiss();
+//
+//        }
+//    });
     /**
      * 选择购物袋
      * input_tiaoma
      **/
-    public void input_bags(View view) {
+    public  void  input_bags(View view){
 
         final Dialog dialog = new Dialog(this,
                 R.style.myNewsDialogStyle);
@@ -532,49 +549,62 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                 null);
         dialog.setContentView(layout);
 
-        ListView listView = (ListView) layout.findViewById(R.id.lv_baginfo);
+        ListView listView=(ListView) layout.findViewById(R.id.lv_baginfo);
         /*listView.setVisibility(View.VISIBLE);
         listView.bringToFront();*/
-        listView.setDividerHeight(20);
-        List<Map<String, Object>> listitem = new ArrayList<Map<String, Object>>();
+        listView.setDividerHeight(5);
 
-        GetBagsInfo = RetrofitHelper.getInstance().getBagInfo(CommonData.userId, CommonData.khid);
+            TextView closegwd=layout.findViewById(R.id.closegwd);
+
+        closegwd.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            dialog.dismiss();
+
+        }
+    });
+        List<Map<String, Object>> listitem=new ArrayList<Map<String,Object>>();
+
+
+
+        GetBagsInfo= RetrofitHelper.getInstance().getBagInfo(CommonData.userId,CommonData.khid);
         GetBagsInfo.enqueue(new Callback<PurchaseBag>() {
             @Override
             public void onResponse(Call<PurchaseBag> call, Response<PurchaseBag> response) {
 
-                if (response.body() != null) {
-                    PurchaseBag getBagsInfo = response.body();
+                if (response.body()!=null){
+                    PurchaseBag getBagsInfo=response.body();
 
-                    int onCode = getBagsInfo.getReturnX().getNCode();
-                    if (onCode == 0) {
-                        PurchaseBag.ResponseBean responseBean = getBagsInfo.getResponse();
-                        List<PurchaseBag.ResponseBean.BagMapBean> maps = responseBean.getBagMap();
-                        int n = 20;
-                        int[] img_expense = new int[n];
-                        String[] tv_bagname = new String[n];
-                        String[] tv_bagpic = new String[n];
-                        String[] tv_goodsid = new String[n];
-                        for (int m = 0; m < maps.size(); m++) {
+                    int onCode=getBagsInfo.getReturnX().getNCode();
+                    if (onCode==0){
+                        PurchaseBag.ResponseBean responseBean=getBagsInfo.getResponse();
+                        List<PurchaseBag.ResponseBean.BagMapBean> maps=responseBean.getBagMap();
+                        int n=20;
+                        int[]  img_expense=new  int[n];
+                        String[] tv_bagname=new  String[n];
+                        String[] tv_bagpic=new String[n];
+                        String[] tv_goodsid=new  String[n];
+                        for (int m=0; m<maps.size();m++){
 
-                            Map<String, Object> map = new HashMap<String, Object>();
-                            map.put("img_expense", R.mipmap.gwd);
+                            Map<String,Object> map=new HashMap<String, Object>();
+                            map.put("img_expense",R.mipmap.gwd);
                             map.put("tv_bagname", maps.get(m).getPluName());
                             map.put("tv_bagpic", String.valueOf(maps.get(m).getPluPrice()));
                             map.put("tv_goodsid", maps.get(m).getGoodsId());
                             listitem.add(map);
                         }
 
-                        SimpleAdapter adapter = new SimpleAdapter(InputGoodsActivity.this, listitem, R.layout.baginfo, new String[]{"tv_bagname", "tv_bagpic", "img_expense", "tv_goodsid"}, new int[]{R.id.tv_bagname, R.id.tv_bagpic, R.id.img_expense, R.id.tv_goodsid});
+                        SimpleAdapter adapter=new SimpleAdapter(InputGoodsActivity.this,listitem,R.layout.baginfo, new String[]{"tv_bagname","tv_bagpic","img_expense","tv_goodsid"},new int[]{R.id.tv_bagname,R.id.tv_bagpic,R.id.img_expense,R.id.tv_goodsid} );
                         listView.setAdapter(adapter);
                         dialog.show();
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                HashMap<String, String> map = (HashMap<String, String>) listView.getItemAtPosition(position);
-                                String title = map.get("tv_bagname");
-                                String bagpic = map.get("tv_bagpic");
-                                String bagsid = map.get("tv_goodsid");
+                                HashMap<String,String> map=(HashMap<String, String>) listView.getItemAtPosition(position);
+                                String title=map.get("tv_bagname");
+                                String bagpic=map.get("tv_bagpic");
+                                String bagsid=map.get("tv_goodsid");
 
 
                                 AddnewSpid(bagsid);
@@ -583,7 +613,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                 dialog.dismiss();
                             }
                         });
-                    } else {
+                    }
+                    else {
 
                     }
 
@@ -594,14 +625,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onFailure(Call<PurchaseBag> call, Throwable t) {
-
-            }
-        });
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             }
         });

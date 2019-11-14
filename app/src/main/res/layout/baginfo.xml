@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="#FFFFFF">
-
-
     <ImageView
         android:id="@+id/img_expense"
         android:layout_width="wrap_content"
@@ -15,14 +13,15 @@
         android:paddingBottom="10dp"
         android:adjustViewBounds="true"
         android:maxWidth="72dp"
-        android:maxHeight="72dp"/>
+        android:maxHeight="72dp"
+        android:layout_marginLeft="10dp"/>
     <TextView
         android:id="@+id/tv_goodsid"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="10dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorgreen" />
     <TextView
@@ -41,7 +40,4 @@
         android:text="10.000"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorgreen"/>
-
-
-
 </LinearLayout>
