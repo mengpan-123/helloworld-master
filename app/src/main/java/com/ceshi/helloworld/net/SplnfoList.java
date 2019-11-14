@@ -62,6 +62,15 @@ public class  SplnfoList {
         this.packNum = packNum;
     }
 
+    public double getpluPrice() {
+        return pluPrice;
+    }
+
+    public void setpluPrice(double pluPrice) {
+        this.pluPrice = pluPrice;
+    }
+
+
     public double getRealPrice() {
         return realPrice;
     }
@@ -69,6 +78,10 @@ public class  SplnfoList {
     public void setRealPrice(double realPrice) {
         this.realPrice = realPrice;
     }
+
+
+
+
 
     public double getTotalPrice() {
         return totalPrice;
@@ -98,6 +111,9 @@ public class  SplnfoList {
 
     //实际售价
     private double realPrice;
+
+    //实际售价
+    private double pluPrice;
 
     //订单总价
     private double totalPrice;

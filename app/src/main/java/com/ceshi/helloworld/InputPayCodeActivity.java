@@ -32,6 +32,7 @@ public class InputPayCodeActivity  extends AppCompatActivity {
                 if (barcode.contains("\n")){
                     barcode=barcode.substring(0,barcode.length()-1);
                 }
+
                 editText.setText(barcode);
                 barcode="";
             }
