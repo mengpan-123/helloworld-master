@@ -541,6 +541,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      **/
     public  void  input_bags(View view){
 
+
         final Dialog dialog = new Dialog(this,
                 R.style.myNewsDialogStyle);
 
