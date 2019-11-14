@@ -75,7 +75,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private Map<String,List<SplnfoList>>   MapList=new  HashMap<String,List<SplnfoList>>();
 
-
+    private LinearLayout listtop;
     private Call<createPrepayIdEntity> createPrepayIdEntityCall;
 
     private Call<upCardCacheEntity> upCardCacheEntityCall;
@@ -119,7 +119,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void initView() {
-
+        listtop=findViewById(R.id.listtop);
         top_bar = (LinearLayout) findViewById(R.id.top_bar);
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
@@ -390,6 +390,17 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         }
 
         tv_go_to_pay.setText("去付款("+new BigDecimal(String.valueOf(totalPrice)).setScale(2, BigDecimal.ROUND_HALF_UP).toString()+")");
+        if (totalPrice==0){
+            listtop.setVisibility(View.GONE);
+            tv_go_to_pay.setText("去付款");
+            tv_go_to_pay.setBackgroundResource(R.drawable.button_shape_black); // 使用Color类转换
+            tv_go_to_pay.setEnabled(false);
+        }else {
+            listtop.setVisibility(View.VISIBLE);
+            tv_go_to_pay.setEnabled(true);
+            tv_go_to_pay.setBackgroundResource(R.drawable.button_shape);
+
+        }
     }
 
     /**
