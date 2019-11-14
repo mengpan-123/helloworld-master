@@ -14,6 +14,7 @@ import com.ceshi.helloworld.bean.UpdateVersionEntity;
 import com.ceshi.helloworld.bean.XMLParseEntity;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.getCartItemsEntity;
+import com.ceshi.helloworld.bean.getWXFacepayAuthInfo;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 import com.ceshi.helloworld.bean.PaysuccessofdeviceEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
@@ -183,5 +184,20 @@ public interface APIService {
             @Field("storeId") String storeId,
             @Field("nBizType") String nBizType
 
+    );
+
+
+
+    /**
+     * 获取 authinfo
+     * @param
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("base/rest/v3.1.0/cartService/getWXFacepayAuthInfo")
+    Call<getWXFacepayAuthInfo> getWXFacepayAuthInfo(
+            @Field("storeId") String storeId,
+            @Field("deviceId") String deviceId,
+            @Field("rawdata") String nBizType
     );
 }

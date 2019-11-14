@@ -23,6 +23,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +35,14 @@ import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestSignBean;
 import com.ceshi.helloworld.bean.ResponseSignBean;
+import com.ceshi.helloworld.bean.ReturnXMLParser;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.getCartItemsEntity;
+import com.ceshi.helloworld.bean.getWXFacepayAuthInfo;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.CreateAddAdapter;
+import com.ceshi.helloworld.net.GenerateXMLData;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
@@ -48,6 +52,13 @@ import com.tencent.wxpayface.WxPayFace;
 import com.tencent.wxpayface.WxfacePayCommonCode;
 
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,6 +86,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private Map<String,List<SplnfoList>>   MapList=new  HashMap<String,List<SplnfoList>>();
 
+    private   Call<getWXFacepayAuthInfo>  getWXFacepayAuthInfoCall;
 
     private Call<createPrepayIdEntity> createPrepayIdEntityCall;
 
@@ -94,6 +106,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private  String  payAuthCode="";
 
     private Call<ResponseSignBean> ResponseSignBeanCall;
+
+    private String mAuthInfo;   //获取的个人用户信息
+    private String openid;
 
 
     public static final String RETURN_CODE = "return_code";
@@ -120,6 +135,21 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private void initView() {
 
+        //如果他不等于空，说明没有经过首页,可能是从付款失败界面跳转过来，则给他保留产品
+        if (null!=CommonData.orderInfo){
+            if (CommonData.orderInfo.spList.size()>0) {
+                for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
+                    map.clear();
+                    map.put("id", entry.getValue().get(0).getGoodsId());
+                    map.put("name", entry.getValue().get(0).getPluName());
+                    map.put("price", String.valueOf(entry.getValue().get(0).getRealPrice()));
+                    map.put("count", String.valueOf(entry.getValue().get(0).getPackNum()));
+
+                    listmap.add(map);
+                }
+            }
+        }
+
         top_bar = (LinearLayout) findViewById(R.id.top_bar);
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
@@ -128,6 +158,8 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         shopcar_num=findViewById(R.id.shopcar_num);
         yhmoney=findViewById(R.id.yhmoney);
         tv_go_to_pay = (TextView) findViewById(R.id.tv_go_to_pay);
+
+
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
         listview.setEmptyView(text_tip);
@@ -323,12 +355,13 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             SplnfoList usesplnfo = new SplnfoList();
                             usesplnfo.setBarcode(maps.get(0).getBarcode());
                             usesplnfo.setGoodsId(maps.get(0).getGoodsId());
-                            usesplnfo.setMainPrice(maps.get(0).getMainPrice());
+                            usesplnfo.setMainPrice(useprice);
                             usesplnfo.setPackNum(maps.get(0).getPackNum());
                             usesplnfo.setPluName(maps.get(0).getPluName());
                             usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
                             usesplnfo.setPluUnit(maps.get(0).getPluUnit());
                             usesplnfo.setRealPrice(useprice);
+
                             uselist.add(usesplnfo);
                             //说明产品不存在，直接增加进去
                             MapList.put(spcode, uselist);
@@ -884,72 +917,41 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
 
 
-    //刷脸支付初始化
+
     public  void wxFacepay(){
         Map<String, String> m1 = new HashMap<>();
-        //m1.put("ip", "192.168.1.1"); //若没有代理,则不需要此行
-        //m1.put("port", "8888");//若没有代理,则不需要此行*/
         try {
+            //1.0 刷脸支付初始化成功
             WxPayFace.getInstance().initWxpayface(InputGoodsActivity.this, m1, new IWxPayfaceCallback() {
                 @Override
                 public void response(Map info) throws RemoteException {
                     if (!isSuccessInfo(info)) {
                         return;
                     }
-                    ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", "微信刷脸支付初始化完成");
+                    // 2.0微信刷脸  获取rawdata和AuthInfo 数据
+                    try {
+                        WxPayFace.getInstance().getWxpayfaceRawdata(new IWxPayfaceCallback() {
+                            @Override
+                            public void response(Map info) throws RemoteException {
+                                if (!isSuccessInfo(info)) {
+                                    return;
+                                }
 
-                    //然后调用首先获取  facecode。用于人脸支付
-                    Map<String, String> m1 = new HashMap<String, String>();
-                    m1.put("appid", CommonData.appId); // 公众号，必填
-                    m1.put("mch_id", CommonData.appKey); // 商户号，必填
-                    m1.put("store_id", CommonData.khid); // 门店编号，必填
-                    m1.put("out_trade_no", CommonData.orderInfo.prepayId); // 商户订单号， 必填
-                    m1.put("total_fee", "100"); // 订单金额（数字），单位：分，必填
-                    m1.put("face_authtype", "FACEPAY"); // FACEPAY：人脸凭证，常用于人脸支付    FACEPAY_DELAY：延迟支付   必填
-                    m1.put("ask_face_permit", "0"); // 展开人脸识别授权项，详情见上方接口参数，必填
-                    m1.put("ask_ret_page", "1"); // 是否展示微信支付成功页，可选值："0"，不展示；"1"，展示，非必填
+                                String rawdata = info.get("rawdata").toString();
+                                try {
+                                    //selfgetAuthInfo(rawdata);
 
-                    WxPayFace.getInstance().getWxpayfaceCode(m1, new IWxPayfaceCallback() {
-                        @Override
-                        public void response(final Map info) throws RemoteException {
-                            if (info == null) {
-                                new RuntimeException("调用返回为空").printStackTrace();
-                                return;
+                                    InterfaceGetAuthInfo(rawdata);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                            String code = (String) info.get("return_code"); // 错误码
-                            String msg = (String) info.get("return_msg"); // 错误码描述
-                            String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
-                            if(!code.equals("SUCCESS")){
-
-                                ToastUtil.showToast(InputGoodsActivity.this, "温馨提示", msg);
-                                return;
-                            }
-                            String openid = info.get("openid").toString(); // openid
-                            String sub_openid = ""; // 子商户号下的openid(服务商模式)
-                            int telephone_used = 0; // 获取的`face_code`，是否使用了请求参数中的`telephone`
-                            int underage_state = 0; // 用户年龄信息（需联系微信支付开通权限）
-                            if (info.get("sub_openid") != null) sub_openid = info.get("sub_openid").toString();
-                            if (info.get("telephone_used") != null) telephone_used = Integer.parseInt(info.get("telephone_used").toString());
-                            if (info.get("underage_state") != null) underage_state = Integer.parseInt(info.get("underage_state").toString());
-                            if (code == null || faceCode == null || openid == null || !code.equals("SUCCESS")) {
-                                new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
-                                return ;
-                            }
-       	        /*
-       	        在这里处理您自己的业务逻辑
-       	        解释：您在上述中已经获得了支付凭证或者用户的信息，您可以使用这些信息通过调用支付接口来完成支付的业务逻辑
-       	        需要注意的是：
-       	            1、上述注释中的内容并非是一定会返回的，它们是否返回取决于相应的条件
-       	            2、当您确保要解开上述注释的时候，请您做好空指针的判断，不建议直接调用
-       	         */
-
-                            //handleFaceNotice(faceCode);
-
-                        }
-                    });
-
-
-
+                        });
+                    }
+                    catch(Exception ex){
+                        //ToastUtil.showToast(OneActivity.this, "温馨提示", ex.toString());
+                    }
 
                 }
             });
@@ -979,6 +981,369 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         }
 
         return true;
+    }
+
+
+    private   void  selfgetAuthInfo(String rawdata){
+
+       //3.0根据 微信接口返回的 rowdata ,调用接口获取到 authinfo、
+
+        //利用 roadata初始化请求参数
+        String noncer= GenerateXMLData.GenerateNonceStr();
+
+        //CommonData.mch_id="1559562481";
+        GenerateXMLData.treeMap.clear();
+        GenerateXMLData.AddNewvalue("nonce_str",noncer);
+        GenerateXMLData.AddNewvalue("store_id", CommonData.khid);
+        GenerateXMLData.AddNewvalue("store_name",CommonData.machine_name);
+        GenerateXMLData.AddNewvalue("device_id",CommonData.machine_number);
+        GenerateXMLData.AddNewvalue("rawdata",rawdata);
+        GenerateXMLData.AddNewvalue("appid",CommonData.appId);
+        GenerateXMLData.AddNewvalue("mch_id",CommonData.mch_id);
+        GenerateXMLData.AddNewvalue("sub_mch_id",CommonData.sub_mch_id);
+        GenerateXMLData.AddNewvalue("now",GenerateXMLData.GeneratetimeStamp());
+        GenerateXMLData.AddNewvalue("version",1);
+        GenerateXMLData.AddNewvalue("sign_type","MD5");
+        //然后计算签名
+        String  sign=GenerateXMLData.GetSign();
+
+        GenerateXMLData.AddNewvalue("sign",sign);
+
+        String  XML=GenerateXMLData.ToXml();
+
+        try {
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .hostnameVerifier(new HostnameVerifier() {
+                        @Override
+                        public boolean verify(String hostname, SSLSession session) {
+                            return true;
+                        }
+                    })
+                    .build();
+
+            RequestBody body = RequestBody.create(MediaType.parse("text/xml; charset=utf-8"),XML);
+
+            Request request = new Request.Builder()
+                    .url("https://payapp.weixin.qq.com/face/get_wxpayface_authinfo")
+                    .post(body)
+                    .build();
+
+            client.newCall(request)
+                    .enqueue(new okhttp3.Callback() {
+                        @Override
+                        public void onFailure(okhttp3.Call call, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                            try {
+                                mAuthInfo = ReturnXMLParser.parseGetAuthInfoXML(response.body().byteStream());
+                                if(mAuthInfo==null){
+                                    ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "获取个人信息授权失败");
+                                    return;
+                                }
+
+                                //因为是一个异步操作，所以必须获取到了再执行下一步
+
+                                //3.0 然后调用首先获取  facecode。用于人脸支付
+                                Map<String, String> m1 = new HashMap<String, String>();
+                                m1.put("appid", CommonData.appId); // 公众号，必填
+                                m1.put("mch_id", CommonData.mch_id); // 商户号，必填
+                                m1.put("sub_appid", CommonData.sub_appId); // 商户号，必填
+                                m1.put("sub_mch_id", CommonData.sub_mch_id); // 商户号，必填
+                                m1.put("store_id", CommonData.khid); // 门店编号，必填
+                                m1.put("out_trade_no", CommonData.orderInfo.prepayId); // 商户订单号， 必填
+                                m1.put("total_fee", "100"); // 订单金额（数字），单位：分，必填
+                                m1.put("face_authtype", "FACEPAY"); // FACEPAY：人脸凭证，常用于人脸支付    FACEPAY_DELAY：延迟支付   必填
+                                m1.put("authinfo", mAuthInfo);
+                                m1.put("ask_face_permit", "0"); // 展开人脸识别授权项，详情见上方接口参数，必填
+                                m1.put("ask_ret_page", "0"); // 是否展示微信支付成功页，可选值："0"，不展示；"1"，展示，非必填
+
+                                WxPayFace.getInstance().getWxpayfaceCode(m1, new IWxPayfaceCallback() {
+                                    @Override
+                                    public void response(final Map info) throws RemoteException {
+                                        if (info == null) {
+                                            new RuntimeException("调用返回为空").printStackTrace();
+                                            return;
+                                        }
+                                        String code = (String) info.get("return_code"); // 错误码
+                                        String msg = (String) info.get("return_msg"); // 错误码描述
+                                        String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
+                                        if(!code.equals("SUCCESS")){
+
+                                            //没有成功需要关掉 人脸支付
+                                            HashMap<String, String> map = new HashMap<String, String>();
+                                            map.put("authinfo", mAuthInfo); // 调用凭证，必填
+                                            WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
+                                                @Override
+                                                public void response(Map info) throws RemoteException {
+                                                    if (info == null) {
+                                                        new RuntimeException("调用返回为空").printStackTrace();
+                                                        return;
+                                                    }
+                                                    String code = (String) info.get("return_code"); // 错误码
+                                                    String msg = (String) info.get("return_msg"); // 错误码描述
+                                                    if (code == null || !code.equals("SUCCESS")) {
+                                                        new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                                        return ;
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        /*String openid = info.get("openid").toString(); // openid
+                                        String sub_openid = ""; // 子商户号下的openid(服务商模式)
+                                        int telephone_used = 0; // 获取的`face_code`，是否使用了请求参数中的`telephone`
+                                        int underage_state = 0; // 用户年龄信息（需联系微信支付开通权限）
+                                        if (info.get("sub_openid") != null) sub_openid = info.get("sub_openid").toString();
+                                        if (info.get("telephone_used") != null) telephone_used = Integer.parseInt(info.get("telephone_used").toString());
+                                        if (info.get("underage_state") != null) underage_state = Integer.parseInt(info.get("underage_state").toString());
+                                        if (code == null || faceCode == null || openid == null || !code.equals("SUCCESS")) {
+                                            new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                            return ;
+                                        }*/
+       	                              //在这里处理您自己的业务逻辑
+                                        payAuthCode=faceCode;//将刷脸支付返回码进行订单调用
+
+
+                                        wxFaceMoneypay();
+
+                                    }
+                                });
+
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            //Log.d(TAG, "onResponse | getAuthInfo " + mAuthInfo);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    /**
+     * Moneypay
+     * Created by zhoupan on 2019/11/8.
+     * 选择支付方式之后进行支付
+     * */
+
+    public   void   wxFaceMoneypay(){
+
+        //1.0 初始化所有的产品信息,
+        List<RequestSignBean.PluMapBean> pluMap =new ArrayList<RequestSignBean.PluMapBean>();
+
+        try {
+
+            for(Map.Entry<String,List<SplnfoList>> entry : MapList.entrySet()) {
+
+                RequestSignBean.PluMapBean payMapcls = new RequestSignBean.PluMapBean();
+                payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
+                payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
+                payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
+                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));  //单项实付金额
+                payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));  //单品单价
+                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getMainPrice()));   //单项小计
+                pluMap.add(payMapcls);
+            }
+        }
+        catch(Exception ex){
+
+        }
+
+        //2.0 选取支付方式 ,初始化支付信息
+        int PayTypeId=1;
+
+
+        List<RequestSignBean.PayMapBean> payMap=new ArrayList<RequestSignBean.PayMapBean>();
+        RequestSignBean.PayMapBean pmp=new   RequestSignBean.PayMapBean();
+        pmp.setPayTypeId(PayTypeId);
+        pmp.setPayVal(neworderInfo.totalPrice);
+        payMap.add(pmp);
+
+        //调用确认支付接口
+        ResponseSignBeanCall =RetrofitHelper.getInstance().getSign(payWay,payAuthCode,pluMap,payMap);
+        ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
+            @Override
+            public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
+                if (response!=null){
+                    ResponseSignBean body = response.body();
+                    if (payWay.equals("WXFacePay")){
+                        //首先要关闭微信人脸识别支付的接口
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put("authinfo", mAuthInfo); // 调用凭证，必填
+                        WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
+                            @Override
+                            public void response(Map info) throws RemoteException {
+                                if (info == null) {
+                                    new RuntimeException("调用返回为空").printStackTrace();
+                                    return;
+                                }
+                                String code = (String) info.get("return_code"); // 错误码
+                                String msg = (String) info.get("return_msg"); // 错误码描述
+                                if (code == null || !code.equals("SUCCESS")) {
+                                    new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                    return ;
+                                }
+                            }
+                        });
+                    }
+
+
+                    if (body.getReturnX().getNCode()==0){
+
+                        ResponseSignBean.ResponseBean response1 = body.getResponse();
+                        //说明当前支付时成功的，跳转到 支付等待界面
+                        Intent intent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
+
+                        startActivity(intent);
+
+                    }
+                    else{
+                        //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
+                        String  Result=body.getReturnX().getStrText();
+
+                        //返回标识 66 是等待用户输入密码的过程。也会跳转到支付等待界面
+                        if ((Result.equals("支付等待")&&body.getReturnX().getNCode()==1)||
+                                body.getReturnX().getNCode()==66) {
+
+                            Intent intent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
+                            startActivity(intent);
+                            return;
+                        }
+
+                        ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
+
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseSignBean> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
+
+
+
+    private   void  InterfaceGetAuthInfo(String  rowdata){
+
+        getWXFacepayAuthInfoCall =RetrofitHelper.getInstance().getWXFacepayAuthInfo(CommonData.khid,CommonData.userId,rowdata);
+
+        getWXFacepayAuthInfoCall.enqueue(new Callback<getWXFacepayAuthInfo>() {
+            @Override
+            public void onResponse(Call<getWXFacepayAuthInfo> call, Response<getWXFacepayAuthInfo> response) {
+
+                if (response!=null) {
+                    getWXFacepayAuthInfo body = response.body();
+
+                    if (body.getReturnX().getNCode() == 0) {
+
+                        getWXFacepayAuthInfo.ResponseBean response1 = body.getResponse();
+                        mAuthInfo=response1.getAuthinfo();
+
+                        if (mAuthInfo==null){
+
+                            return ;
+                        }
+
+
+                        //3.0 然后调用首先获取  facecode。用于人脸支付
+                        Map<String, String> m1 = new HashMap<String, String>();
+                        m1.put("appid", CommonData.appId); // 公众号，必填
+                        m1.put("mch_id", CommonData.mch_id); // 商户号，必填
+                        m1.put("sub_appid", CommonData.sub_appId); // 商户号，必填
+                        m1.put("sub_mch_id", CommonData.sub_mch_id); // 商户号，必填
+                        m1.put("store_id", CommonData.khid); // 门店编号，必填
+                        m1.put("out_trade_no", CommonData.orderInfo.prepayId); // 商户订单号， 必填
+                        m1.put("total_fee", "100"); // 订单金额（数字），单位：分，必填
+                        m1.put("face_authtype", "FACEPAY"); // FACEPAY：人脸凭证，常用于人脸支付    FACEPAY_DELAY：延迟支付   必填
+                        m1.put("authinfo", mAuthInfo);
+                        m1.put("ask_face_permit", "0"); // 展开人脸识别授权项，详情见上方接口参数，必填
+                        m1.put("ask_ret_page", "0"); // 是否展示微信支付成功页，可选值："0"，不展示；"1"，展示，非必填
+
+                        WxPayFace.getInstance().getWxpayfaceCode(m1, new IWxPayfaceCallback() {
+                            @Override
+                            public void response(final Map info) throws RemoteException {
+                                if (info == null) {
+                                    new RuntimeException("调用返回为空").printStackTrace();
+                                    return;
+                                }
+                                String code = (String) info.get("return_code"); // 错误码
+                                String msg = (String) info.get("return_msg"); // 错误码描述
+                                String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
+                                if(!code.equals("SUCCESS")){
+
+                                    //没有成功需要关掉 人脸支付
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put("authinfo", mAuthInfo); // 调用凭证，必填
+                                    WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
+                                        @Override
+                                        public void response(Map info) throws RemoteException {
+                                            if (info == null) {
+                                                new RuntimeException("调用返回为空").printStackTrace();
+                                                return;
+                                            }
+                                            String code = (String) info.get("return_code"); // 错误码
+                                            String msg = (String) info.get("return_msg"); // 错误码描述
+                                            if (code == null || !code.equals("SUCCESS")) {
+                                                new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                                return ;
+                                            }
+                                        }
+                                    });
+                                }
+                                        /*String openid = info.get("openid").toString(); // openid
+                                        String sub_openid = ""; // 子商户号下的openid(服务商模式)
+                                        int telephone_used = 0; // 获取的`face_code`，是否使用了请求参数中的`telephone`
+                                        int underage_state = 0; // 用户年龄信息（需联系微信支付开通权限）
+                                        if (info.get("sub_openid") != null) sub_openid = info.get("sub_openid").toString();
+                                        if (info.get("telephone_used") != null) telephone_used = Integer.parseInt(info.get("telephone_used").toString());
+                                        if (info.get("underage_state") != null) underage_state = Integer.parseInt(info.get("underage_state").toString());
+                                        if (code == null || faceCode == null || openid == null || !code.equals("SUCCESS")) {
+                                            new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                            return ;
+                                        }*/
+                                //在这里处理您自己的业务逻辑
+                                payAuthCode=faceCode;//将刷脸支付返回码进行订单调用
+
+
+                                wxFaceMoneypay();
+
+                            }
+                        });
+
+
+
+                    }else{
+
+                        ToastUtil.showToast(InputGoodsActivity.this, "支付通知", body.getReturnX().getStrInfo());
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<getWXFacepayAuthInfo> call, Throwable t) {
+
+            }
+        });
+
+
+
+
     }
 
 }

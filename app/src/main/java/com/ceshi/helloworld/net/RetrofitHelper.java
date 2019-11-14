@@ -1,6 +1,7 @@
 package com.ceshi.helloworld.net;
 
 
+import com.alibaba.fastjson.JSON;
 import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.ResponseDeleteGoods;
@@ -16,6 +17,7 @@ import com.ceshi.helloworld.bean.UpdateVersionEntity;
 import com.ceshi.helloworld.bean.XMLParseEntity;
 import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.getCartItemsEntity;
+import com.ceshi.helloworld.bean.getWXFacepayAuthInfo;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
 import com.ceshi.helloworld.bean.PaysuccessofdeviceEntity;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
@@ -254,21 +256,37 @@ public class RetrofitHelper {
         requestSignBean.setUserId(CommonData.userId);  //登陆/注册接口返回的 userId
 
         requestSignBean.setPayWay(payWay);
-        requestSignBean.setAuthCode(AuthCode);
+        if (payWay.equals("WXFacePay")){
+            requestSignBean.setfaceCode(AuthCode);
+            requestSignBean.setAuthCode("");
+        }
+        else
+        {
+            requestSignBean.setAuthCode(AuthCode);
+        }
+
+
         requestSignBean.setBizType(1);
+
+
 
         String Pays="{'prepayId':'"+CommonData.orderInfo.prepayId+"','mydata':'testinfo'}";
 
 
 
 
-        requestSignBean.setExtra(""+Pays+"");
+        requestSignBean.setExtra(Pays);
         requestSignBean.setPluMap(pluMap);
         requestSignBean.setPayMap(payMap);
 
 
 
-        String s = new Gson().toJson(requestSignBean); //将bean转为json
+        //String s = new Gson().toJson(requestSignBean); //将bean转为json
+
+        String s= JSON.toJSONString(requestSignBean);
+
+
+
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
         return mAPIService.getSgin(requestBody);
 
@@ -299,13 +317,18 @@ public class RetrofitHelper {
      * */
     public Call<String> PostWxPay(String  XML){
 
-        CommonData.CommonUrl="https://payapp.weixin.qq.com/";
-
-
         RequestBody requestBody = RequestBody.create(MediaType.parse("text/xml; charset=utf-8"), XML);
         return mAPIService.PostWxPay(requestBody);
 
     }
 
+
+
+    //获取微信刷脸SDK调用凭证getWXFacepayAuthInfo
+    public Call<getWXFacepayAuthInfo> getWXFacepayAuthInfo(String storeId, String deviceId, String rawdata){
+
+        return mAPIService.getWXFacepayAuthInfo(storeId,deviceId,rawdata);
+
+    }
 
 }

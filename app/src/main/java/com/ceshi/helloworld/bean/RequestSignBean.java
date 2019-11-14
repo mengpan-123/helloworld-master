@@ -28,6 +28,7 @@ public class RequestSignBean {
     private int storeLat;
     private String payWay;
     private String authCode;
+    private String faceCode;
     private int bizType;
     private String vipNo;
     private String extra;
@@ -89,6 +90,15 @@ public class RequestSignBean {
 
     public void setAuthCode(String authCode) {
         this.authCode = authCode;
+    }
+
+
+    public String getfaceCode() {
+        return faceCode;
+    }
+
+    public void setfaceCode(String faceCode) {
+        this.faceCode = faceCode;
     }
 
     public int getBizType() {
