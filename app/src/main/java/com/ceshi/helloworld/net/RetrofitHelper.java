@@ -248,6 +248,7 @@ public class RetrofitHelper {
                                           String AuthCode,
                                           String sPayTypeExt,
                                           String  openid,
+                                          String  transId,
                                           List<RequestSignBean.PluMapBean> pluMap,
                                           List<RequestSignBean.PayMapBean> payMap){
 
@@ -261,6 +262,7 @@ public class RetrofitHelper {
         if (payWay.equals("WXFacePay")){
             requestSignBean.setFaceCode(AuthCode);
             requestSignBean.setAuthCode("");
+            requestSignBean.setTransId(transId);
         }
         else
         {

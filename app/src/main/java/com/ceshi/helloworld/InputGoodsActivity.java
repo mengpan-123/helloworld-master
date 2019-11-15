@@ -115,13 +115,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
     private Call<ResponseSignBean> ResponseSignBeanCall;
 
-    private String mAuthInfo;   //获取的个人用户信息
-    private String openid;
-    private String out_trade_no;
+    private String mAuthInfo;   //刷脸支付 获取的个人授权信息，从接口获取
+    private String openid;      //刷脸支付获取微信openid
+    private String out_trade_no;   //获取的交易流水号，用于刷脸支付
 
     public static final String RETURN_CODE = "return_code";
-    public static final String RETURN_SUCCESS = "SUCCESS";
-    public static final String RETURN_FAILE = "SUCCESS";
     public static final String RETURN_MSG = "return_msg";
 
 
@@ -172,7 +170,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     public void Prepay() {
         //预支付 相关的操作，给公共订单类赋值
 
-
         if (CommonData.orderInfo == null) {
             //调用接口拿到订单号
             createPrepayIdEntityCall = RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
@@ -190,9 +187,34 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             //拿到预支付流水号
                             neworderInfo.prepayId = response1.getPrepayId();
                             CommonData.orderInfo = neworderInfo;
+
+
+                            //会员预支付必须要等到 拿到上面的 订单流水号才可以支付
+                            if (CommonData.hyMessage != null) {
+                                //进行会员卡预支付设置
+                                upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, neworderInfo.prepayId);
+                                upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
+                                    @Override
+                                    public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
+                                        if (response != null) {
+                                            upCardCacheEntity body = response.body();
+
+                                            if (body.getReturnX().getNCode() == 0) {
+
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
+                                    }
+                                });
+                            }
+
+
                         } else {
                             ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", body.getReturnX().getStrInfo());
-                            //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrInfo(),Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 }
@@ -205,47 +227,12 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
         }
 
-        if (CommonData.hyMessage != null) {
-            //进行会员卡预支付设置
-            upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, neworderInfo.prepayId);
-            upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
-                @Override
-                public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
-                    if (response != null) {
-                        upCardCacheEntity body = response.body();
 
-                        if (body.getReturnX().getNCode() == 0) {
-
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
-                }
-            });
-        }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-//            case R.id.all_chekbox:
-//                AllTheSelected();
-//                break;
-//            case R.id.tv_delete:
-//                checkDelete(adapter.getPitchOnMap());
-//                break;
-            case R.id.tv_go_to_pay:
-                if (totalCount <= 0) {
-                    Toast.makeText(this, "请选择要付款的商品~", Toast.LENGTH_SHORT).show();
-                } else {
 
-                    Toast.makeText(this, "付款成功", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-        }
     }
 
 
@@ -789,13 +776,17 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
         input_code.setOnKeyListener(new View.OnKeyListener() {
 
-            String input_paucode = "";
+            String input_paucode = input_code.getText().toString();
 
             @Override
-            public boolean onKey(View view, int i, KeyEvent event) {
+            public boolean onKey(View view, int keycode, KeyEvent event) {
+
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     char pressedKey = (char) event.getUnicodeChar();
+                    input_paucode = input_code.getText().toString();
+
                     input_paucode += pressedKey;
+                    input_code.setText(input_paucode);
                 }
                 if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
 
@@ -804,6 +795,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                     Moneypay();
                 }
 
+                input_code.setSelection(input_code.getText().toString().length());
                 return true;
             }
 
@@ -902,7 +894,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
 
         //调用确认支付接口
-        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,pluMap, payMap);
+        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,"",pluMap, payMap);
         ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
             @Override
             public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
@@ -1168,7 +1160,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         payMap.add(pmp);
 
         //调用确认支付接口
-        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,pluMap, payMap);
+        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,out_trade_no,pluMap, payMap);
 
         ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
             @Override

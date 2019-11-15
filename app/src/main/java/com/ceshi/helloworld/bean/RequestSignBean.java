@@ -31,6 +31,7 @@ public class RequestSignBean {
     private String payWay;
     private String sPayTypeExt;
     private String storeId;
+    private String transId;
     private int storeLat;
     private int storeLng;
     private String userId;
@@ -68,6 +69,16 @@ public class RequestSignBean {
     public void setExtra(String extra) {
         this.extra = extra;
     }
+
+
+    public String getTransId() {
+        return transId;
+    }
+
+    public void setTransId(String transId) {
+        this.transId = transId;
+    }
+
 
     public String getFaceCode() {
         return faceCode;

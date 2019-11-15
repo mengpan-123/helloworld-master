@@ -114,16 +114,16 @@ public class IndexActivity extends Activity {
                 String hynum=hyedit.getText().toString();
 
                 String sCorpId=CommonData.corpId;
-                sCorpId="C1501";
+
                 String sUserId="";
 
                 if (!TextUtils.isEmpty(hynum)){
 
-                    Call<GetHyInfoEntity> hyInfoEntityCall= RetrofitHelper.getInstance().getHyInfoEntityCall(hynum,sCorpId,"16",sUserId);
+                    Call<GetHyInfoEntity> hyInfoEntityCall= RetrofitHelper.getInstance().getHyInfoEntityCall(hynum,sCorpId,CommonData.lCorpId,sUserId);
                      hyInfoEntityCall.enqueue(new Callback<GetHyInfoEntity>() {
                          @Override
                          public void onResponse(Call<GetHyInfoEntity> call, Response<GetHyInfoEntity> response) {
-                             if (response.isSuccessful()) {
+                             if (null!=response && response.isSuccessful()) {
                                  GetHyInfoEntity body = response.body();
                                  if (body != null) {
                                     if (body.getReturnX().getNCode()==0){
@@ -140,20 +140,17 @@ public class IndexActivity extends Activity {
                                         Intent intent = new Intent(IndexActivity.this, InputGoodsActivity  .class);
                                         startActivity(intent);
 
-                                    }else {
-                                        ToastUtil.showToast(IndexActivity.this,"登录提示","该会员不存在，请重新输入");
-                                    return;
+                                    }else
+                                        {
+                                        ToastUtil.showToast(IndexActivity.this, "登录提示", "该会员不存在，请重新输入");
+                                        return;
                                     }
                                  }
                              }
                          }
                          @Override
                          public void onFailure(Call<GetHyInfoEntity> call, Throwable t) {
-                                try{
-                                    Log.e("zhoupan","getSub_mch_id = "+ call.execute().message());
-                                }catch (Exception e){
 
-                                }
                          }
                      });
                 }
