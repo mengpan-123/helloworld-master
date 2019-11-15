@@ -46,11 +46,11 @@
             android:layout_width="0dp"
             android:layout_weight="5"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
             android:ems="10"
             android:hint="请输入商品条码底部的数字"
             android:inputType="textPersonName"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
             android:text=""
             android:textSize="20dp" />
 

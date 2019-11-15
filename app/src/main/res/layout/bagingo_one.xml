@@ -12,11 +12,13 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -25,11 +27,12 @@
                 android:gravity="center"
                 android:textColor="#272727"
                 android:layout_weight="5"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="20dp"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"/>
             <TextView
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
@@ -39,13 +42,13 @@
                 android:gravity="center"
                 android:textColor="#272727"
                 android:id="@+id/closegwd"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="20dp"/>
         </LinearLayout>
-<!--购物-->
-        <ListView
-            android:id="@+id/lv_baginfo"
-            android:layout_width="wrap_content"
-            android:layout_height="401dp"
-            android:layout_marginTop="16dp"></ListView>
     </LinearLayout>
+    <ListView
+        android:id="@+id/lv_baginfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"></ListView>
 </LinearLayout>
