@@ -20,7 +20,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
            android:paddingRight="50dp"
            >
@@ -49,51 +49,60 @@
                 android:textColor="#F0F0F0"
                 android:gravity="center"/>
         </LinearLayout>
-        <!--会员号和会员图标-->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_gravity="center"
-                android:background="@drawable/huiyuan" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="176****1111"
-                android:textSize="14dp"
-                android:id="@+id/phone"
-                android:textColor="#F0F0F0"
-                android:gravity="center"/>
-        </LinearLayout>
-        <!--首页和首页图标-->
-        <LinearLayout
-            android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:id="@+id/return_home"
-            android:onClick="return_home">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/shouye"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="首页"
-                android:textColor="#F0F0F0"
-                android:textSize="14dp"
-                android:layout_marginRight="10dp"
-                android:gravity="right"/>
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+            <!--会员号和会员图标-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/huiyuan" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="176****1111"
+                    android:textSize="14dp"
+                    android:id="@+id/phone"
+                    android:textColor="#F0F0F0"
+                    android:gravity="center"/>
+            </LinearLayout>
+            <!--首页和首页图标-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/return_home"
+                android:onClick="return_home">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/shouye"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="首页"
+                    android:textColor="#F0F0F0"
+                    android:textSize="14dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="right"/>
+            </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
     <LinearLayout
         android:id="@+id/listtop"
@@ -245,7 +254,7 @@
                     android:layout_height="match_parent"
                     android:textSize="20dp"
                     android:textColor="#111111"
-                    android:text="优惠："
+                    android:text="优惠:"
                     android:gravity="center" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -268,7 +277,7 @@
                     android:layout_height="match_parent"
                     android:textSize="20dp"
                     android:textColor="#111111"
-                    android:text="应付："
+                    android:text="应付:"
                     android:gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
