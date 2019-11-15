@@ -11,7 +11,7 @@
     <!--顶部颜色#0FB6A4-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="0dp"
@@ -19,18 +19,28 @@
         android:orientation="horizontal"
         android:id="@+id/shop_top">
         <!--公司logo-->
-        <LinearLayout
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:background="@drawable/logo">
-        </LinearLayout>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="2"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+           >
+            <ImageView
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@drawable/logo_sy"/>
+        </LinearLayout>
         <!--首页和首页图标-->
         <LinearLayout
-            android:layout_width="80dp"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:onClick="gw_click">
@@ -38,15 +48,17 @@
                 android:layout_width="25dp"
                 android:layout_marginTop="5dp"
                 android:layout_height="25dp"
-                android:layout_gravity="center"
+                android:layout_marginRight="25dp"
+                android:layout_gravity="right"
                 android:background="@drawable/shezhi"/>
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设置"
                 android:textColor="#454646"
                 android:textSize="16dp"
-                android:gravity="center"/>
+                android:layout_marginRight="22dp"
+                android:layout_gravity="right"/>
         </LinearLayout>
     </LinearLayout>
     <!--自助收银系统中文显示-->
