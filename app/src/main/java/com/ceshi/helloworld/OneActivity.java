@@ -385,8 +385,6 @@ public class OneActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             try {
-
-
                                 mAuthInfo = ReturnXMLParser.parseGetAuthInfoXML(response.body().byteStream());
                                 if (mAuthInfo.length()>200){
                                     ToastUtil.showToast(OneActivity.this, "温馨提示", "接口凭证authinfo获取成功");

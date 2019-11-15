@@ -1068,9 +1068,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                 }
                                 String code = (String) info.get("return_code"); // 错误码
                                 String msg = (String) info.get("return_msg"); // 错误码描述
-                                String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
-                                openid = info.get("openid").toString(); // 人脸凭证，用于刷脸支付
-
 
                                 if (!code.equals("SUCCESS")) {
 
@@ -1093,17 +1090,25 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                         }
                                     });
                                 }
-                                else{
 
-                                    ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户放弃支付，请重试");
+                                if(code.equals("SUCCESS")) {
+                                    String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
+                                    openid = info.get("openid").toString(); // 人脸凭证，用于刷脸支付
+                                    //在这里处理业务逻辑
+                                    payAuthCode = faceCode;//将刷脸支付返回码进行订单调用
+
+                                    wxFaceMoneypay();
+                                }
+                               /* else if(code.equals("USER_CANCEL")){
+
+                                    WxPayFace.getInstance().releaseWxpayface(InputGoodsActivity.this);
+                                    //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户取消了支付，请重试");
                                     return;
 
-                                }
-
-                                //在这里处理业务逻辑
-                                payAuthCode = faceCode;//将刷脸支付返回码进行订单调用
-
-                                wxFaceMoneypay();
+                                }*/
+                                WxPayFace.getInstance().releaseWxpayface(InputGoodsActivity.this);
+                                //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户取消了支付，请重试");
+                                return;
 
                             }
                         });

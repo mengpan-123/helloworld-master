@@ -39,7 +39,6 @@ public class IndexActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
 
-
         /*需要在这里，第一。每次进入时，清空会员信息，清空订单信息,调用接口清空购物车*/
         ClearCarEntityCall=RetrofitHelper.getInstance().ClearCar(CommonData.khid,CommonData.userId);
         ClearCarEntityCall.enqueue(new Callback<ClearCarEntity>() {
@@ -49,7 +48,7 @@ public class IndexActivity extends Activity {
                     ClearCarEntity body = response.body();
 
                     if (body.getReturnX().getNCode()==0){
-                        //购物车清空成功。那如果万一没网 ，清空失败 这种情况呢？
+                        //购物车清空成功。，清空单据
                         CommonData.hyMessage=null;
                         CommonData.orderInfo=null;
                     }
@@ -63,7 +62,9 @@ public class IndexActivity extends Activity {
         });
 
 
-
+        //避免万一断网情况下，数据未正常清空。清空失败 这种情况呢？
+        CommonData.hyMessage=null;
+        CommonData.orderInfo=null;
 
 
 
@@ -81,6 +82,7 @@ public class IndexActivity extends Activity {
             }
         });
     }
+
 
 
     /**
@@ -187,6 +189,8 @@ public class IndexActivity extends Activity {
             editText1.setSelection(text.length());
         }
     }
+
+
 
     /**
      *

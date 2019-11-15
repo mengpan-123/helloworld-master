@@ -8,14 +8,14 @@ android {
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
-        versionName "3.0"  //文件版本号
+        versionName "4.0"  //文件版本号
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "shop151056.apk"
+                outputFileName = "shop151746.apk"
             }
     }
     buildTypes {
