@@ -20,30 +20,9 @@
         android:orientation="horizontal"
         >
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@mipmap/group1"
-            android:layout_weight="1"
-            android:layout_marginLeft="44dp"
-            />
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:background="@mipmap/group2"
-            android:layout_weight="1"
-            android:layout_marginLeft="44dp"
-            />
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:background="@mipmap/group3"
-            android:layout_weight="1"
-            android:layout_marginLeft="44dp"
-            android:layout_marginRight="44dp"
-            />
+
 
     </LinearLayout>
 

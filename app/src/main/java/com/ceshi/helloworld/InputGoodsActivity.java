@@ -298,79 +298,85 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         Addgoods.ResponseBean responseBean = addgoods.getResponse();
                         List<Addgoods.ResponseBean.GoodsListBean> maps = responseBean.getGoodsList();
 
-                        //拿到产品编码
-                        String spcode = maps.get(0).getGoodsId();
-                        double useprice = maps.get(0).getRealPrice();
-                        double disc = 0;
-                        //mainprice原价,extprice特价，vipprice会员价
-                        //有会员登录，会员价低取会员价
-                        //无会员登录，特价有就取特价，没有就是原价
-                        if (CommonData.hyMessage != null) {
-                            //说明有会员
-                            useprice = maps.get(0).getVipPrice();
-                        } else {
-                            useprice = maps.get(0).getExtPrice();
-                            if (useprice <= 0) {
-                                //如果没有特价时，则取原价
-                                useprice = maps.get(0).getMainPrice();
-                            }
-                        }
-                        //每录入一次，都去增加总数量和总价
-                        neworderInfo.totalCount = neworderInfo.totalCount + 1;  //增加总数量
-                        neworderInfo.totalPrice = neworderInfo.totalPrice + useprice;  //增加总价
-                        neworderInfo.totalDisc = neworderInfo.totalDisc + disc;    //增加总折扣
+                        //是有可能返回 一个具体列表的组合促销
+                        for (int sm = 0; sm < maps.size(); sm++) {
 
-                        //1.0先判断 改产品集合中是否存在
-                        if (MapList.containsKey(spcode)) {
-
-                            //如果存在，拿到集合，增加数量，总价，折扣
-                            MapList.get(spcode).get(0).setPackNum(MapList.get(spcode).get(0).getPackNum() + 1);
-                            MapList.get(spcode).get(0).setMainPrice(MapList.get(spcode).get(0).getMainPrice() + useprice);
-
-                            //更改 映射的 map的内容
-                            for (int k = 0; k < listmap.size(); k++) {
-                                if (listmap.get(k).get("id").equals(spcode)) {
-                                    listmap.get(k).put("count", String.valueOf(Integer.valueOf(listmap.get(k).get("count")) + 1));
-                                    //listmap.get(k).put("price", String.valueOf( Double.valueOf(listmap.get(k).get("price"))+ useprice));
-                                    listmap.get(k).put("price", String.valueOf(Double.valueOf(listmap.get(k).get("price"))));
+                            //拿到产品编码
+                            String spcode = maps.get(0).getGoodsId();
+                            double useprice = maps.get(0).getRealPrice();
+                            double disc = maps.get(0).getPluDis();
+                            //mainprice原价,extprice特价，vipprice会员价
+                            //有会员登录，会员价低取会员价
+                            //无会员登录，特价有就取特价，没有就是原价
+                            if (CommonData.hyMessage != null) {
+                                //说明有会员
+                                useprice = maps.get(0).getVipPrice();
+                            } else {
+                                useprice = maps.get(0).getExtPrice();
+                                if (useprice <= 0) {
+                                    //如果没有特价时，则取原价
+                                    useprice = maps.get(0).getMainPrice();
                                 }
                             }
-                        } else {
-                            List<SplnfoList> uselist = new ArrayList<SplnfoList>();
-                            SplnfoList usesplnfo = new SplnfoList();
-                            usesplnfo.setBarcode(maps.get(0).getBarcode());
-                            usesplnfo.setGoodsId(maps.get(0).getGoodsId());
-                            usesplnfo.setMainPrice(useprice);
-                            usesplnfo.setPackNum(maps.get(0).getPackNum());
-                            usesplnfo.setPluName(maps.get(0).getPluName());
-                            usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
-                            usesplnfo.setPluUnit(maps.get(0).getPluUnit());
-                            usesplnfo.setpluPrice(maps.get(0).getPluPrice());
-                            usesplnfo.setRealPrice(useprice);
-                            uselist.add(usesplnfo);
-                            //说明产品不存在，直接增加进去
-                            MapList.put(spcode, uselist);
-                            //下面是只取几个字段去改变 界面显示的
-                            map.put("id", maps.get(0).getGoodsId());
-                            map.put("name", maps.get(0).getPluName());
-                            map.put("price", String.valueOf(useprice));
-                            map.put("count", String.valueOf(maps.get(0).getPackNum()));
+                            //每录入一次，都去增加总数量和总价
+                            neworderInfo.totalCount = neworderInfo.totalCount + 1;  //增加总数量
+                            neworderInfo.totalPrice = neworderInfo.totalPrice + useprice;  //增加总价
+                            neworderInfo.totalDisc = neworderInfo.totalDisc + disc;    //增加总折扣
 
-                            CommonData.orderInfo = neworderInfo;
-                            CommonData.orderInfo.spList = MapList;
+                            //1.0先判断 改产品集合中是否存在
+                            if (MapList.containsKey(spcode)) {
+
+                                //如果存在，拿到集合，增加数量，总价，折扣
+                                MapList.get(spcode).get(0).setPackNum(MapList.get(spcode).get(0).getPackNum() + 1);
+                                MapList.get(spcode).get(0).setMainPrice(MapList.get(spcode).get(0).getMainPrice() + useprice);
+
+                                //更改 映射的 map的内容
+                                for (int k = 0; k < listmap.size(); k++) {
+                                    if (listmap.get(k).get("id").equals(spcode)) {
+                                        listmap.get(k).put("count", String.valueOf(Integer.valueOf(listmap.get(k).get("count")) + 1));
+                                        //listmap.get(k).put("price", String.valueOf( Double.valueOf(listmap.get(k).get("price"))+ useprice));
+                                        listmap.get(k).put("price", String.valueOf(Double.valueOf(listmap.get(k).get("price"))));
+                                    }
+                                }
+                            } else {
+                                List<SplnfoList> uselist = new ArrayList<SplnfoList>();
+                                SplnfoList usesplnfo = new SplnfoList();
+                                usesplnfo.setBarcode(maps.get(0).getBarcode());
+                                usesplnfo.setGoodsId(maps.get(0).getGoodsId());
+                                usesplnfo.setMainPrice(useprice);
+                                usesplnfo.setPackNum(maps.get(0).getPackNum());
+                                usesplnfo.setPluName(maps.get(0).getPluName());
+                                usesplnfo.setPluTypeId(maps.get(0).getPluTypeId());
+                                usesplnfo.setPluUnit(maps.get(0).getPluUnit());
+                                usesplnfo.setpluPrice(maps.get(0).getPluPrice());
+                                usesplnfo.setRealPrice(useprice);
+                                uselist.add(usesplnfo);
+                                //说明产品不存在，直接增加进去
+                                MapList.put(spcode, uselist);
+                                //下面是只取几个字段去改变 界面显示的
+                                map.put("id", maps.get(0).getGoodsId());
+                                map.put("name", maps.get(0).getPluName());
+                                map.put("price", String.valueOf(useprice));
+                                map.put("count", String.valueOf(maps.get(0).getPackNum()));
+
+                                CommonData.orderInfo = neworderInfo;
+                                CommonData.orderInfo.spList = MapList;
 
 
-                            listmap.add(map);
+                                listmap.add(map);
+                            }
                         }
                         //界面上实现  增加一个元素
                         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
                         listview.setAdapter(adapter);
                         adapter.setRefreshPriceInterface(InputGoodsActivity.this);
                         priceControl(adapter.getPitchOnMap());
-                    } else {
+                    }
+                    else {
                         String result = addgoods.getReturnX().getStrText();
                         ToastUtil.showToast(InputGoodsActivity.this, "商品查询通知", result);
                     }
+
                 }
             }
 
@@ -1087,18 +1093,14 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                         }
                                     });
                                 }
-                                        /*String openid = info.get("openid").toString(); // openid
-                                        String sub_openid = ""; // 子商户号下的openid(服务商模式)
-                                        int telephone_used = 0; // 获取的`face_code`，是否使用了请求参数中的`telephone`
-                                        int underage_state = 0; // 用户年龄信息（需联系微信支付开通权限）
-                                        if (info.get("sub_openid") != null) sub_openid = info.get("sub_openid").toString();
-                                        if (info.get("telephone_used") != null) telephone_used = Integer.parseInt(info.get("telephone_used").toString());
-                                        if (info.get("underage_state") != null) underage_state = Integer.parseInt(info.get("underage_state").toString());
-                                        if (code == null || faceCode == null || openid == null || !code.equals("SUCCESS")) {
-                                            new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
-                                            return ;
-                                        }*/
-                                //在这里处理您自己的业务逻辑
+                                else{
+
+                                    ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户放弃支付，请重试");
+                                    return;
+
+                                }
+
+                                //在这里处理业务逻辑
                                 payAuthCode = faceCode;//将刷脸支付返回码进行订单调用
 
                                 wxFaceMoneypay();
@@ -1129,7 +1131,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
         //1.0 初始化所有的产品信息,
         List<RequestSignBean.PluMapBean> pluMap = new ArrayList<RequestSignBean.PluMapBean>();
-
 
         try {
 
@@ -1168,24 +1169,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                 if (response!=null){
                     ResponseSignBean body = response.body();
                     if (payWay.equals("WXFacePay")){
-                        //首先要关闭微信人脸识别支付的接口
-                        /*HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("authinfo", mAuthInfo); // 调用凭证，必填
-                        WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
-                            @Override
-                            public void response(Map info) throws RemoteException {
-                                if (info == null) {
-                                    new RuntimeException("调用返回为空").printStackTrace();
-                                    return;
-                                }
-                                String code = (String) info.get("return_code"); // 错误码
-                                String msg = (String) info.get("return_msg"); // 错误码描述
-                                if (code == null || !code.equals("SUCCESS")) {
-                                    new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
-                                    return ;
-                                }
-                            }
-                        });*/
 
                         HashMap<String, String> map = new HashMap<String, String>();
                         map.put("appid", responseAppid); // 公众号，必填
@@ -1206,17 +1189,9 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                     new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
                                     return ;
                                 }
-                /*
-                在这里处理您自己的业务逻辑：
-                执行到这里说明用户已经确认支付结果且成功了，此时刷脸支付界面关闭，您可以在这里选择跳转到其它界面
-                 */
                             }
                         });
-
-
                     }
-
-
                     if (body.getReturnX().getNCode()==0){
 
                         ResponseSignBean.ResponseBean response1 = body.getResponse();
@@ -1224,7 +1199,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                         Intent intent = new Intent(InputGoodsActivity.this, WaitingFinishActivity.class);
 
                         startActivity(intent);
-
                     }
                     else{
                         //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();

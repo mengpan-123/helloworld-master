@@ -24,7 +24,7 @@ public class ChangeDataActivity  extends AppCompatActivity {
             public  void  onClick(View view) {
 
 
-                String  phone = ((EditText) findViewById(R.id.inputphone)).getText().toString();
+                /*String  phone = ((EditText) findViewById(R.id.inputphone)).getText().toString();
                 String  sname = ((EditText) findViewById(R.id.inputname)).getText().toString();
                 String  age = ((EditText) findViewById(R.id.inputage)).getText().toString();
 
@@ -37,7 +37,7 @@ public class ChangeDataActivity  extends AppCompatActivity {
                 bundle.putCharSequence("age", age);
 
                 intent.putExtras(bundle);     //将Bundle对象添加到Intent对象中
-                startActivity(intent);
+                startActivity(intent);*/
             }
         });
     }

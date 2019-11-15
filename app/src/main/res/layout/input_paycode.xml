@@ -35,7 +35,7 @@ android:background="#F0F0F0"
             android:layout_width="match_parent"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:hint="请输入付款码"
+            android:hint="请输入完整的18位付款码"
             android:maxLength="18"
             android:layout_height="wrap_content" />
         <TextView

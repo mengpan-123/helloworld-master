@@ -27,9 +27,6 @@
         tools:replace="icon, label,theme"
         android:name="com.ceshi.helloworld.net.CommonData" >
         <!-- 主页 -->
-        <activity android:name=".MainActivity">
-
-        </activity>
 
         <!--&lt;!&ndash; 学习基本布局和控件 &ndash;&gt;-->
         <activity android:name=".OneActivity" >
@@ -49,13 +46,6 @@
         <!--&lt;!&ndash; 3.权限控制相关的获取 &ndash;&gt;-->
         <activity android:name=".ConTrolActivity" />
 
-        <activity android:name=".SecondActivity">
-
-        </activity>
-
-        <activity android:name=".LoginActivity">
-
-        </activity>
 
         <activity android:name=".FinishActivity">
 

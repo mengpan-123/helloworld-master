@@ -44,8 +44,8 @@ public class ConTrolActivity extends AppCompatActivity {
 
         Button tvOne = findViewById(R.id.music);
 
-        player1.reset();
-        player1=MediaPlayer.create(this,R.raw.wxpay);
+        //player1.reset();
+        //player1=MediaPlayer.create(this,R.raw.wxpay);
 
 
 
