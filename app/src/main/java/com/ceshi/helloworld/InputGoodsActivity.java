@@ -63,6 +63,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     private ImageView text_tip;
     private TextView yhmoney;
     private TextView phone_view;
+    private  TextView storename;
 
     View layout = null;
     View layout_pay = null;
@@ -148,7 +149,11 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         price = (TextView) findViewById(R.id.tv_total_price);
         phone_view = (TextView) findViewById(R.id.phone);
         shopcar_num = findViewById(R.id.shopcar_num);
-        yhmoney = findViewById(R.id.yhmoney);
+        yhmoney=findViewById(R.id.yhmoney);
+        storename=findViewById(R.id.storename);
+        if (null!=CommonData.machine_name){
+            storename.setText(CommonData.machine_name);
+        }
         tv_go_to_pay = (TextView) findViewById(R.id.tv_go_to_pay);
         adapter = new CreateAddAdapter(InputGoodsActivity.this, listmap);
         listview.setAdapter(adapter);
@@ -551,6 +556,17 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         listView.bringToFront();*/
         listView.setDividerHeight(20);
         List<Map<String, Object>> listitem = new ArrayList<Map<String, Object>>();
+
+        TextView closegwd=layout.findViewById(R.id.closegwd);
+
+        closegwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+
+            }
+        });
 
         GetBagsInfo = RetrofitHelper.getInstance().getBagInfo(CommonData.userId, CommonData.khid);
         GetBagsInfo.enqueue(new Callback<PurchaseBag>() {
