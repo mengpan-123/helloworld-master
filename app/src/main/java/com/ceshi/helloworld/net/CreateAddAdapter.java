@@ -83,10 +83,11 @@ public class CreateAddAdapter extends BaseAdapter {
         describe=convertView.findViewById(R.id.describe);//促销信息
        // add = convertView.findViewById(R.id.tv_add);
 
-        name.setText(list.get(position).get("name"));
-        price.setText("¥ " + new BigDecimal(String.valueOf((Double.valueOf(list.get(position).get("price"))) * (Integer.valueOf(list.get(position).get("count"))))).setScale(2, BigDecimal.ROUND_HALF_UP).toString() );
-        y_price.setText("¥ " + new BigDecimal(String.valueOf((Double.valueOf(list.get(position).get("price"))) * (Integer.valueOf(list.get(position).get("count"))))).setScale(2, BigDecimal.ROUND_HALF_UP).toString() );
-        num.setText(list.get(position).get("count"));
+        name.setText(list.get(position).get("name"));//产品名称
+        y_price.setText(list.get(position).get("RealPrice"));//原价
+        price.setText(list.get(position).get("realprice"));//实际售价
+        num.setText(list.get(position).get("count"));//商品数量
+        describe.setText(list.get(position).get("actname"));//促销活动
 
         if(pitchOnMap.get(list.get(position).get("id"))== 0){
 
