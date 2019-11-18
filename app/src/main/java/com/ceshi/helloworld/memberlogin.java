@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.ceshi.helloworld.net.KeyboardUtils;
 
 public class memberlogin  extends Activity {
     @Override

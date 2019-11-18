@@ -71,11 +71,11 @@ public class  SplnfoList {
     }
 
 
-    public double getRealPrice() {
+    public String getRealPrice() {
         return realPrice;
     }
 
-    public void setRealPrice(double realPrice) {
+    public void setRealPrice(String realPrice) {
         this.realPrice = realPrice;
     }
 
@@ -83,12 +83,12 @@ public class  SplnfoList {
 
 
 
-    public double getTotalPrice() {
-        return totalPrice;
+    public double getTotaldisc() {
+        return totaldisc;
     }
 
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setTotaldisc(double totaldisc) {
+        this.totaldisc = totaldisc;
     }
 
     //商品条形码
@@ -110,13 +110,11 @@ public class  SplnfoList {
     private int packNum;
 
     //实际售价
-    private double realPrice;
+    private String realPrice;
 
     //实际售价
     private double pluPrice;
 
-    //订单总价
-    private double totalPrice;
-
-
+    //订单折扣
+    private double totaldisc;
 }

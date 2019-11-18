@@ -14,6 +14,9 @@ import com.ceshi.helloworld.net.CommonData;
 import java.io.Serializable;
 
 public class PayFailActivity extends AppCompatActivity {
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

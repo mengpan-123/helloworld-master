@@ -27,7 +27,6 @@ import com.ceshi.helloworld.net.HyMessage;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.ToastUtil;
-import com.ceshi.helloworld.net.KeyboardUtils;
 
 import java.util.HashMap;
 
@@ -82,7 +81,7 @@ public class IndexActivity extends Activity {
 
                 //Toast.makeText(IndexActivity.this,"正在跳转，请等待",Toast.LENGTH_SHORT).show();
                 //跳转到商品录入界面
-                Intent intent = new Intent(IndexActivity.this, InputGoodsActivity.class);
+                Intent intent = new Intent(IndexActivity.this, CarItemsActicity.class);
                 startActivity(intent);
             }
         });

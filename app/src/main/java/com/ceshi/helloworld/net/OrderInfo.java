@@ -11,7 +11,7 @@ public class OrderInfo implements Serializable {
 
 
      //订单总价
-    public   double   totalPrice=0.00;
+    public   String   totalPrice="0";
 
 
     //订单总数量
@@ -19,7 +19,7 @@ public class OrderInfo implements Serializable {
 
 
     //订单总折扣
-    public   double   totalDisc=0;
+    public   String   totalDisc="0";
 
 
 

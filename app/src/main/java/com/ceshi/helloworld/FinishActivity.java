@@ -1,17 +1,22 @@
 package com.ceshi.helloworld;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.net.CommonData;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,6 +26,12 @@ public class FinishActivity extends AppCompatActivity  {
     private  int i=0;
     private Timer timer=null;
     private TimerTask task=null;
+
+
+    public MediaPlayer player1=new MediaPlayer();        //初始化播放音乐对象
+
+    private TextToSpeech textToSpeech = null;//创建自带语音对象
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +40,39 @@ public class FinishActivity extends AppCompatActivity  {
 
 
         //进入之后设置界面的总金额
-        TextView totalmoney=findViewById(R.id.totalmoney);
+        try {
+            TextView totalmoney = findViewById(R.id.totalmoney);
 
-        totalmoney.setText("￥"+String.valueOf(CommonData.orderInfo.totalPrice));
+            totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
+        }
+        catch(Exception ex)
+        {
+
+        }
+
+        //播放 支付成功的语音提示
+        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == textToSpeech.SUCCESS) {
+
+                    textToSpeech.setPitch(1.0f);//方法用来控制音调
+                    textToSpeech.setSpeechRate(1.0f);//用来控制语速
+
+                    //判断是否支持下面两种语言
+                    int result1 = textToSpeech.setLanguage(Locale.US);
+                    int result2 = textToSpeech.setLanguage(Locale.
+                            SIMPLIFIED_CHINESE);
+
+                    textToSpeech.speak("支付已完成，请拿走商品和小票，祝您购物愉快",//输入中文，若不支持的设备则不会读出来
+                            TextToSpeech.QUEUE_FLUSH, null);
+
+                } else {
+                    Toast.makeText(FinishActivity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
 
 

@@ -127,7 +127,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                         list.remove(position);
                                         CommonData.orderInfo.totalCount=CommonData.orderInfo.totalCount-1;
 
-                                        CommonData.orderInfo.totalPrice=(BigDecimal.valueOf(CommonData.orderInfo.totalPrice).subtract(price)).doubleValue();
+                                        //CommonData.orderInfo.totalPrice=(BigDecimal.valueOf(CommonData.orderInfo.totalPrice).subtract(price)).doubleValue();
 
 
                                     }
@@ -138,7 +138,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                     list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) - 1) + "");
                                     BigDecimal price= BigDecimal.valueOf(Double.valueOf(list.get(position).get("price")));
                                     CommonData.orderInfo.totalCount=CommonData.orderInfo.totalCount-1;
-                                    CommonData.orderInfo.totalPrice=(BigDecimal.valueOf(CommonData.orderInfo.totalPrice).subtract(price)).doubleValue();
+                                    //CommonData.orderInfo.totalPrice=(BigDecimal.valueOf(CommonData.orderInfo.totalPrice).subtract(price)).doubleValue();
 
                                 }
 
