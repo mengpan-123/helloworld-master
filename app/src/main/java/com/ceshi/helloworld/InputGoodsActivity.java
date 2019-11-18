@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -507,11 +508,12 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
         dialog.setContentView(layout);
         //确定
         TextView title = (TextView) layout.findViewById(R.id.close1);
-
         //取消
         TextView title2 = (TextView) layout.findViewById(R.id.close2);
         setDialogSize(layout);
         dialog.show();
+        EditText editText1 = layout.findViewById(R.id.username);
+        editText1 .setInputType(InputType.TYPE_NULL);
         // 设置确定按钮的事件
         title.setOnClickListener(new View.OnClickListener() {
             @Override

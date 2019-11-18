@@ -2,14 +2,18 @@ package com.ceshi.helloworld;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,6 +27,7 @@ import com.ceshi.helloworld.net.HyMessage;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.ToastUtil;
+import com.ceshi.helloworld.net.KeyboardUtils;
 
 import java.util.HashMap;
 
@@ -32,12 +37,12 @@ public class IndexActivity extends Activity {
 
     private  Call<ClearCarEntity>  ClearCarEntityCall;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
         /*需要在这里，第一。每次进入时，清空会员信息，清空订单信息,调用接口清空购物车*/
         ClearCarEntityCall=RetrofitHelper.getInstance().ClearCar(CommonData.khid,CommonData.userId);
@@ -91,6 +96,7 @@ public class IndexActivity extends Activity {
      * */
 
     public  void  MembersLogin(View view){
+
         // 创建一个Dialog
         final Dialog dialog = new Dialog(this,
                 R.style.myNewsDialogStyle);
@@ -98,6 +104,7 @@ public class IndexActivity extends Activity {
         layout = View.inflate(this, R.layout.activity_memberlogin,
                 null);
         dialog.setContentView(layout);
+
         //确定
         TextView title = (TextView) layout.findViewById(R.id.closeHy);
 
@@ -105,7 +112,10 @@ public class IndexActivity extends Activity {
         TextView closemem=layout.findViewById(R.id.closemem);
 
         dialog.show();
-        // 设置确定按钮的事件
+        EditText hyedit=(EditText)layout.findViewById(R.id.phoneorhyNum);
+        hyedit.setInputType(InputType.TYPE_NULL);
+
+            // 设置确定按钮的事件
         title.setOnClickListener(new View.OnClickListener() {
 
             @Override

@@ -4,19 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/add_good"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
     <!--顶部图片-->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:id="@+id/l11"
         android:orientation="horizontal"
         android:gravity="center">
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:gravity="center">
             <ImageView
-                android:layout_width="300dp"
+                android:layout_width="340dp"
                 android:layout_height="80dp"
                 android:layout_weight="3"
                 android:background="@drawable/code"
@@ -68,6 +72,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="1"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"
@@ -77,6 +82,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="2"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"/>
@@ -85,6 +91,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="3"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
@@ -102,6 +109,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="4"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"/>
@@ -110,6 +118,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="5"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"/>
@@ -118,6 +127,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="6"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
@@ -128,14 +138,13 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-
-        >
+        android:layout_marginTop="20dp">
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="7"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"/>
@@ -144,6 +153,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="8"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"/>
@@ -152,6 +162,7 @@
             android:layout_weight="1"
             android:layout_height="60dp"
             android:text="9"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
@@ -169,6 +180,7 @@
             android:layout_weight="2"
             android:layout_height="60dp"
             android:text="0"
+            android:background="@drawable/btn_bg1"
             android:textSize="20dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"/>
@@ -176,7 +188,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="60dp"
-            android:text="X"
+            android:background="@drawable/delete"
             android:textSize="20dp"
             android:onClick="deleteClick"
             android:layout_marginLeft="10dp"

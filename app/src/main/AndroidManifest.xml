@@ -56,7 +56,7 @@
         <activity android:name=".PayFailActivity">
 
         </activity>
-        <activity android:name=".IndexActivity">
+        <activity android:name=".IndexActivity" android:windowSoftInputMode="adjustUnspecified|stateHidden" >
 
         </activity>
 
