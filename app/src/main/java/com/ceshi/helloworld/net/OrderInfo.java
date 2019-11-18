@@ -1,10 +1,11 @@
 package com.ceshi.helloworld.net;
 
+import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
-public class OrderInfo {
+public class OrderInfo implements Serializable {
 
      public   String   prepayId="";
 

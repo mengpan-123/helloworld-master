@@ -23,6 +23,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,6 +141,26 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void initView() {
+        //如果从支付失败界面重新 进入的时候 ，应该需要重新加载购物车
+        if (null!=CommonData.orderInfo){
+            if (null!=CommonData.orderInfo.spList){
+                HashMap<String, String> temp_map = new HashMap<>();
+                for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()){
+                    temp_map.clear();
+                    temp_map.put("id", entry.getValue().get(0).getGoodsId());
+                    temp_map.put("name", entry.getValue().get(0).getPluName());
+                    temp_map.put("price", String.valueOf(entry.getValue().get(0).getRealPrice()));
+                    temp_map.put("count", String.valueOf(entry.getValue().get(0).getPackNum()));
+
+                    listmap.add(temp_map);
+                }
+
+                MapList=CommonData.orderInfo.spList;
+            }
+        }
+
+
+
         listtop = findViewById(R.id.listtop);
         top_bar = (LinearLayout) findViewById(R.id.top_bar);
         listview = (ListView) findViewById(R.id.listview);
@@ -168,9 +189,19 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
      */
 
     public void Prepay() {
-        //预支付 相关的操作，给公共订单类赋值
 
-        if (CommonData.orderInfo == null) {
+
+        //预支付 相关的操作，给公共订单类赋值,每一次都重新生成单号，单号一定不能重复
+
+        if (CommonData.orderInfo != null) {
+            //可能是从错误页跳转过来的
+           neworderInfo.spList=CommonData.orderInfo.spList;
+            neworderInfo.totalCount=CommonData.orderInfo.totalCount;
+            neworderInfo.totalPrice=CommonData.orderInfo.totalPrice;
+            neworderInfo.totalCount=CommonData.orderInfo.totalCount;
+
+
+        }
             //调用接口拿到订单号
             createPrepayIdEntityCall = RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
 
@@ -186,10 +217,17 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                             //拿到预支付流水号
                             neworderInfo.prepayId = response1.getPrepayId();
-                            CommonData.orderInfo = neworderInfo;
+                            if (null!=CommonData.orderInfo ){
+                                //重新生成 订单号
+                                CommonData.orderInfo.prepayId=response1.getPrepayId();
+                            }
+                            else
+                            {
+                                CommonData.orderInfo=neworderInfo;
+                            }
 
 
-                            //会员预支付必须要等到 拿到上面的 订单流水号才可以支付
+                            //会员预支付必须要等到 拿到上面的 订单流水号才可以支付，预支付，不成功也无所谓的
                             if (CommonData.hyMessage != null) {
                                 //进行会员卡预支付设置
                                 upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, neworderInfo.prepayId);
@@ -200,6 +238,7 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                                             upCardCacheEntity body = response.body();
 
                                             if (body.getReturnX().getNCode() == 0) {
+                                                //暂时 先不管 会员卡预支付失败的结果
 
                                             }
                                         }
@@ -224,10 +263,6 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
 
                 }
             });
-
-        }
-
-
     }
 
     @Override
@@ -929,9 +964,22 @@ public class InputGoodsActivity extends AppCompatActivity implements View.OnClic
                             return;
                         }
 
-                        ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
-                        center_dialog.dismiss();
-                        return;
+                        else{
+                            Intent intent = new Intent(InputGoodsActivity.this, PayFailActivity.class);
+                            //参数传递
+                            Bundle bundle = new Bundle();
+
+                            bundle.putCharSequence("reason",Result);
+
+                            intent.putExtras(bundle);
+
+                            startActivity(intent);
+                            return;
+                        }
+
+                        //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
+                        //center_dialog.dismiss();
+                        //return;
                     }
                 }
             }

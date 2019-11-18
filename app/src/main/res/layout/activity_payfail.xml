@@ -61,6 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:orientation="vertical"
         android:layout_marginTop="10dp">
         <TextView
             android:layout_width="wrap_content"
@@ -68,6 +69,15 @@
             android:text="支付失败"
             android:textSize="20dp"
             android:textStyle="bold"
+            android:textColor="#575656"/>
+        <TextView
+            android:id="@+id/ErrReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="30dp"
+            android:textSize="16dp"
+
             android:textColor="#575656"/>
     </LinearLayout>
 
@@ -77,7 +87,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="60dp">
         <TextView
             android:id="@+id/newtopay"
             android:layout_width="240dp"
