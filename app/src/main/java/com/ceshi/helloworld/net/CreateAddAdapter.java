@@ -1,6 +1,7 @@
 package com.ceshi.helloworld.net;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -71,17 +72,20 @@ public class CreateAddAdapter extends BaseAdapter {
         convertView = View.inflate(context,  R.layout.shopcar_list, null);
         final CheckBox checkBox;
         ImageView icon;
-        final TextView name, price, num, type, reduce, add;
+        final TextView name, price, num, type, reduce, add,describe,y_price;
 
-        name = convertView.findViewById(R.id.tv_goods_name);
-        price = convertView.findViewById(R.id.tv_goods_price);
-        num = convertView.findViewById(R.id.tv_num);
-        reduce = convertView.findViewById(R.id.tv_reduce);
+        name = convertView.findViewById(R.id.tv_goods_name);//商品名称
+        price = convertView.findViewById(R.id.tv_goods_price);//商品价格
+        num = convertView.findViewById(R.id.tv_num);//商品数量
+        reduce = convertView.findViewById(R.id.tv_reduce);//减号
+        y_price=convertView.findViewById(R.id.tv_yuan_price);//原价格
+        y_price.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG); //中划线
+        describe=convertView.findViewById(R.id.describe);//促销信息
        // add = convertView.findViewById(R.id.tv_add);
 
         name.setText(list.get(position).get("name"));
         price.setText("¥ " + new BigDecimal(String.valueOf((Double.valueOf(list.get(position).get("price"))) * (Integer.valueOf(list.get(position).get("count"))))).setScale(2, BigDecimal.ROUND_HALF_UP).toString() );
-
+        y_price.setText("¥ " + new BigDecimal(String.valueOf((Double.valueOf(list.get(position).get("price"))) * (Integer.valueOf(list.get(position).get("count"))))).setScale(2, BigDecimal.ROUND_HALF_UP).toString() );
         num.setText(list.get(position).get("count"));
 
         if(pitchOnMap.get(list.get(position).get("id"))== 0){
@@ -96,8 +100,6 @@ public class CreateAddAdapter extends BaseAdapter {
         reduce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
               /*  CommonData.list_adaptor = new CreateAddAdapter(InputGoodsActivity.this, list);
                 listView.setAdapter(CommonData.list_adaptor);*/
 
