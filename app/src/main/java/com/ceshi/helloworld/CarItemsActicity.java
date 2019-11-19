@@ -658,7 +658,15 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         listview.setEmptyView(text_tip);
 
     }
+    public void deleteClick(View view) {
 
+        EditText editText = layout.findViewById(R.id.username);
+        if (null != editText.getText().toString() && editText.getText().toString().length() > 0) {
+            String old_text = editText.getText().toString();
+            editText.setText(old_text.substring(0, old_text.length() - 1));
+            editText.setSelection(editText.getText().toString().length());
+        }
+    }
     /**
      * 控制价格展示总价
      */

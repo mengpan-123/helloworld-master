@@ -72,7 +72,7 @@ public class CreateAddAdapter extends BaseAdapter {
         convertView = View.inflate(context,  R.layout.shopcar_list, null);
         final CheckBox checkBox;
         ImageView icon;
-        final TextView name, price, num, type, reduce, add,describe,y_price;
+        final TextView name, price, num, type, reduce, add,describe,y_price,y_title;
 
         name = convertView.findViewById(R.id.tv_goods_name);//商品名称
         price = convertView.findViewById(R.id.tv_goods_price);//商品价格
@@ -81,6 +81,7 @@ public class CreateAddAdapter extends BaseAdapter {
         y_price=convertView.findViewById(R.id.tv_yuan_price);//原价格
         y_price.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG); //中划线
         describe=convertView.findViewById(R.id.describe);//促销信息
+        y_title=convertView.findViewById(R.id.tv_yuan_title);
        // add = convertView.findViewById(R.id.tv_add);
 
         name.setText(list.get(position).get("name"));//产品名称
@@ -88,6 +89,18 @@ public class CreateAddAdapter extends BaseAdapter {
         price.setText(list.get(position).get("realprice"));//实际售价
         num.setText(list.get(position).get("count"));//商品数量
         describe.setText(list.get(position).get("actname"));//促销活动
+
+        if (list.get(position).get("RealPrice").equals(list.get(position).get("realprice"))){
+
+            y_price.setVisibility(View.INVISIBLE);
+            y_title.setVisibility(View.INVISIBLE);
+        }
+        else {
+
+            y_price.setVisibility(View.VISIBLE);
+            y_title.setVisibility(View.VISIBLE);
+        }
+
 
         if(pitchOnMap.get(list.get(position).get("id"))== 0){
 

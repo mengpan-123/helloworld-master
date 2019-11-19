@@ -68,10 +68,11 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
                     <TextView
+                        android:id="@+id/tv_yuan_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="原价:"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         android:textStyle="bold"
                         android:textColor="#6F6D6D" />
                     <TextView
@@ -79,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:textSize="20dp"
+                        android:textSize="18dp"
                         android:textStyle="bold"
                         android:textColor="#6F6D6D"
                         android:text="价格"
