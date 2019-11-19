@@ -238,11 +238,11 @@ public class PosLoginActivity extends AppCompatActivity {
                     CommonData.machine_name = cursor.getString(cursor.getColumnIndex("khsname"));
 
                     CommonData.mch_id= cursor.getString(cursor.getColumnIndex("mch_id"));
-
                     //用户信息
                     CommonData.userId= cursor.getString(cursor.getColumnIndex("userId"));
 
                     CommonData.machine_number=cursor.getString(cursor.getColumnIndex("machine_number"));
+
 
                     //然后获取到本地文件的版本，判断是否需要升级
                     String  newversion=getAppVersion(this);

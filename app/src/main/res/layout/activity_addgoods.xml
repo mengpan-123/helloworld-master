@@ -187,7 +187,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:childIndicator="@null"
-            android:groupIndicator="@null" >
+            android:groupIndicator="@null"
+
+            android:transcriptMode="alwaysScroll"
+            >
         </ListView>
         <ImageView
             android:id="@+id/text_tip"

@@ -11,15 +11,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ceshi.helloworld.CarItemsActicity;
 import com.ceshi.helloworld.InputGoodsActivity;
 import com.ceshi.helloworld.R;
 import com.ceshi.helloworld.bean.RequestDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseDeleteGoods;
+import com.ceshi.helloworld.bean.getCartItemsEntity;
 
 import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +33,8 @@ public class CreateAddAdapter extends BaseAdapter {
     private List<HashMap<String, String>> list;
     private HashMap<String, Integer> pitchOnMap;
     public Call<ResponseDeleteGoods> ResponseDeleteGoodsCall;
+    private Call<com.ceshi.helloworld.bean.getCartItemsEntity> getCartItemsEntityCall;
+
     private OnItemRemoveListener adapterListener;
     public HashMap<String, Integer> getPitchOnMap() {
         return pitchOnMap;
@@ -110,11 +115,11 @@ public class CreateAddAdapter extends BaseAdapter {
 
 
         //商品数量减
-        reduce.setOnClickListener(new View.OnClickListener() {
+        /*reduce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  CommonData.list_adaptor = new CreateAddAdapter(InputGoodsActivity.this, list);
-                listView.setAdapter(CommonData.list_adaptor);*/
+              *//*  CommonData.list_adaptor = new CreateAddAdapter(InputGoodsActivity.this, list);
+                listView.setAdapter(CommonData.list_adaptor);*//*
 
                 List<RequestDeleteGoods.ItemMapBean> itemMap =new ArrayList<RequestDeleteGoods.ItemMapBean>();
                 RequestDeleteGoods.ItemMapBean itemMapcls = new RequestDeleteGoods.ItemMapBean();
@@ -162,10 +167,10 @@ public class CreateAddAdapter extends BaseAdapter {
                                  //   CommonData.list_adaptor.setRefreshPriceInterface(CreateAddAdapter.this);
 
                                  notifyDataSetChanged();
-                               /* pitchOnMap = new HashMap<>();
+                               *//* pitchOnMap = new HashMap<>();
                                 for (int i = 0; i < list.size(); i++) {
                                     pitchOnMap.put(list.get(i).get("id"), 0);
-                                }*/
+                                }*//*
                                 mrefreshPriceInterface.refreshPrice(pitchOnMap);
 
                             }else {
@@ -182,7 +187,155 @@ public class CreateAddAdapter extends BaseAdapter {
 
                 mrefreshPriceInterface.refreshPrice(pitchOnMap);
             }
+        });*/
+
+
+
+
+        /**
+         * Created by zhoupan on 2019/11/18.
+         * 删减购物车数量，因为数据显示原因，重新写
+         */
+
+        reduce.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //调用减少购物车商品数量接口 ，然后调用接口获取购物车列表
+
+                //初始化报文信息
+                List<RequestDeleteGoods.ItemMapBean> itemMap =new ArrayList<RequestDeleteGoods.ItemMapBean>();
+                RequestDeleteGoods.ItemMapBean itemMapcls = new RequestDeleteGoods.ItemMapBean();
+                itemMapcls.setBarcode(list.get(position).get("barcode"));
+                itemMap.add(itemMapcls);
+
+                ResponseDeleteGoodsCall=RetrofitHelper.getInstance().responseDeleteGoods(itemMap);
+                ResponseDeleteGoodsCall.enqueue(new Callback<ResponseDeleteGoods>() {
+                    @Override
+                    public void onResponse(Call<ResponseDeleteGoods> call, Response<ResponseDeleteGoods> response) {
+                        if (response!=null){
+                            if (response.body().getReturnX().getNCode()==0) {
+
+                                //获取 购物车列表。然后解析购物车列表
+                                getCartItemsEntityCall = RetrofitHelper.getInstance().getCartItems(CommonData.userId, CommonData.khid);
+                                getCartItemsEntityCall.enqueue(new Callback<getCartItemsEntity>() {
+                                    @Override
+                                    public void onResponse(Call<getCartItemsEntity> call, Response<getCartItemsEntity> response) {
+                                        if (response != null) {
+                                            getCartItemsEntity body = response.body();
+                                            if (body.getReturnX().getNCode() == 0) {
+                                                //在这里重新写一个
+                                                Map<String, List<SplnfoList>> MapList = new HashMap<String, List<SplnfoList>>();
+                                                HashMap<String, String> map = new HashMap<>();
+                                                list.clear();
+                                                pitchOnMap.clear();
+                                                //下面先  获取到 总价和总金额折扣这些
+                                                CommonData.orderInfo.totalCount = body.getResponse().getTotalQty();
+                                                CommonData.orderInfo.totalPrice = body.getResponse().getShouldAmount();
+                                                CommonData.orderInfo.totalDisc = body.getResponse().getDisAmount();
+
+                                                //因为 可能存在组合促销啥的，少一个产品，描述会不一样，所以 移除最好就是全部重新加载一次
+                                                List<getCartItemsEntity.ResponseBean.ItemsListBean> itemsList = body.getResponse().getItemsList();
+                                                for (int sm = 0; sm < itemsList.size(); sm++) {
+                                                    List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = body.getResponse().getItemsList().get(sm).getItems();
+                                                    for (int sk = 0; sk < sub_itemsList.size(); sk++) {
+
+                                                        //拿到产品编码
+                                                        String spcode = sub_itemsList.get(sk).getSGoodsId();
+                                                        double nRealPrice = 0;
+                                                        //有会员登录，会员价低取会员价
+                                                        //无会员登录，则获取 nPluPrice
+                                                        if (CommonData.hyMessage != null) {
+                                                            //说明有会员
+                                                            nRealPrice = sub_itemsList.get(sk).getNRealPrice();
+                                                        } else {
+                                                            nRealPrice = sub_itemsList.get(sk).getNPluPrice();
+                                                        }
+
+
+                                                        if (MapList.containsKey(spcode)) {
+
+                                                            //如果存在，拿到集合，增加数量，总价，折扣
+                                                            MapList.get(spcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
+                                                            MapList.get(spcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
+
+                                                            //修改列表的数量
+                                                            for (int k = 0; k < list.size(); k++) {
+                                                                if (list.get(k).get("id").equals(spcode)) {
+                                                                    list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
+                                                                    list.get(k).put("RealPrice", String.valueOf(nRealPrice));
+                                                                    list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
+                                                                    list.get(k).put("actname", itemsList.get(sm).getDisRule());
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            List<SplnfoList> uselist = new ArrayList<SplnfoList>();
+                                                            SplnfoList usesplnfo = new SplnfoList();
+                                                            usesplnfo.setBarcode(sub_itemsList.get(sk).getSBarcode());
+                                                            usesplnfo.setGoodsId(sub_itemsList.get(sk).getSGoodsId());
+                                                            usesplnfo.setMainPrice(nRealPrice); //每一个产品的原价，无需计算
+                                                            usesplnfo.setPackNum(sub_itemsList.get(sk).getNQty());
+                                                            usesplnfo.setPluName(sub_itemsList.get(sk).getSGoodsName());
+                                                            usesplnfo.setTotaldisc(sub_itemsList.get(sk).getPluDis());// 总折扣
+                                                            usesplnfo.setRealPrice(sub_itemsList.get(sk).getPluRealAmount());  //总实际售价
+                                                            usesplnfo.setActname(itemsList.get(sm).getDisRule());
+
+                                                            uselist.add(usesplnfo);
+                                                            //说明产品不存在，直接增加进去
+                                                            MapList.put(spcode, uselist);
+
+
+                                                            //下面是只取几个字段去改变 界面显示的
+                                                            map.put("id", spcode);
+                                                            map.put("name", sub_itemsList.get(sk).getSGoodsName());
+                                                            map.put("MainPrice", String.valueOf(nRealPrice));  //原价
+                                                            map.put("disc", String.valueOf(sub_itemsList.get(sk).getPluDis()));  //折扣
+                                                            map.put("realprice", sub_itemsList.get(sk).getPluRealAmount());
+                                                            map.put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
+                                                            map.put("actname", itemsList.get(sm).getDisRule());
+                                                            list.add(map);
+                                                            pitchOnMap.put(spcode,0);
+
+                                                        }
+                                                    }
+                                                }
+                                                CommonData.orderInfo.spList = MapList;
+
+                                                //界面上实现  增加一个元素
+                                                CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
+                                                listView1.setAdapter(CommonData.list_adaptor);
+                                                notifyDataSetChanged();
+                                                mrefreshPriceInterface.refreshPrice(pitchOnMap);
+                                            }
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<getCartItemsEntity> call, Throwable t) {
+
+                                    }
+                                });
+
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseDeleteGoods> call, Throwable t) {
+
+                    }
+                });
+            }
         });
+
+
+
+
+
+
         //商品数量加
        // add.setOnClickListener(new View.OnClickListener() {
 //            @Override

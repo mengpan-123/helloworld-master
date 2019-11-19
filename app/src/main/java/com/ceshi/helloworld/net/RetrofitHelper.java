@@ -146,7 +146,7 @@ public class RetrofitHelper {
      * @param deviceid 任务id
      */
     public Call<getdeviceinfoEntity> getdeviceinfobyselfhelpdeviceid(String inputstoreid, String deviceid) {
-        return mAPIService.getdeviceinfobyselfhelpdeviceid(inputstoreid, inputstoreid);
+        return mAPIService.getdeviceinfobyselfhelpdeviceid(inputstoreid, deviceid);
     }
 
     /**
@@ -328,7 +328,6 @@ public class RetrofitHelper {
         return mAPIService.PostWxPay(requestBody);
 
     }
-
 
 
     //获取微信刷脸SDK调用凭证getWXFacepayAuthInfo

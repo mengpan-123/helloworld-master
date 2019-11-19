@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.Addgoods;
+import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestSignBean;
 import com.ceshi.helloworld.bean.ResponseSignBean;
@@ -94,6 +95,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     private Call<getWXFacepayAuthInfo> getWXFacepayAuthInfoCall;
     private Call<createPrepayIdEntity> createPrepayIdEntityCall;
     private Call<upCardCacheEntity> upCardCacheEntityCall;
+    private  Call<ClearCarEntity>  ClearCarEntityCall;
 
     //支付方式相关的
 
@@ -378,6 +380,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
 
                                                     //下面是只取几个字段去改变 界面显示的
+                                                    map.put("barcode", sub_itemsList.get(sk).getSBarcode());
                                                     map.put("id", spcode);
                                                     map.put("name", sub_itemsList.get(sk).getSGoodsName());
                                                     map.put("MainPrice", String.valueOf(nRealPrice));  //原价
@@ -648,6 +651,33 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         listmap.clear();
         MapList.clear();
 
+        //还需要调接口，清空购物车
+        /*需要在这里，第一。每次进入时，清空会员信息，清空订单信息,调用接口清空购物车*/
+        ClearCarEntityCall=RetrofitHelper.getInstance().ClearCar(CommonData.khid,CommonData.userId);
+        ClearCarEntityCall.enqueue(new Callback<ClearCarEntity>() {
+            @Override
+            public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
+                if (response!=null){
+                    ClearCarEntity body = response.body();
+
+                    if (body.getReturnX().getNCode()==0){
+                        //购物车清空成功。，清空单据
+
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ClearCarEntity> call, Throwable t) {
+                Toast.makeText(CarItemsActicity.this, "请检查网络配置...", Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+        CommonData.orderInfo.totalPrice="0.00";
+        CommonData.orderInfo.totalCount=0;
+        CommonData.orderInfo.totalDisc="0.00";
+        CommonData.orderInfo.spList.clear();
+
 
         //清空列表页面
         adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
@@ -660,6 +690,11 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         listview.setEmptyView(text_tip);
 
     }
+
+
+    /**
+     *键盘的清空数字按钮
+     */
     public void deleteClick(View view) {
 
         EditText editText = layout.findViewById(R.id.username);
@@ -715,6 +750,32 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+
+    //扫码枪的回车事件
+    String barcode = "";
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            char pressedKey = (char) event.getUnicodeChar();
+            barcode += pressedKey;
+        }
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+            // ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", barcode);
+            if (!TextUtils.isEmpty(barcode)) {
+                if (barcode.contains("\n")) {
+                    barcode = barcode.substring(0, barcode.length() - 1);
+                }
+                AddnewSpid(barcode);
+                barcode = "";
+            }
+
+        }
+        return true;
+
+    }
 
 
     /**
@@ -953,13 +1014,13 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             return;
                         }
 
-                        else{
+                        /*else{
 
                             Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
                             startActivity(intent);
                             return;
 
-                            /*Intent intent = new Intent(CarItemsActicity.this, PayFailActivity.class);
+                            *//*Intent intent = new Intent(CarItemsActicity.this, PayFailActivity.class);
                             //参数传递
                             Bundle bundle = new Bundle();
 
@@ -968,12 +1029,12 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             intent.putExtras(bundle);
 
                             startActivity(intent);
-                            return;*/
-                        }
+                            return;*//*
+                        }*/
 
-                        //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
-                        //center_dialog.dismiss();
-                        //return;
+                        ToastUtil.showToast(CarItemsActicity.this, "支付通知", Result);
+                        center_dialog.dismiss();
+                        return;
                     }
                 }
             }
