@@ -226,7 +226,9 @@ public class CreateAddAdapter extends BaseAdapter {
                                             if (body.getReturnX().getNCode() == 0) {
                                                 //在这里重新写一个
                                                 Map<String, List<SplnfoList>> MapList = new HashMap<String, List<SplnfoList>>();
-                                                HashMap<String, String> map = new HashMap<>();
+
+                                                CommonData.orderInfo.spList.clear();
+
                                                 list.clear();
                                                 pitchOnMap.clear();
                                                 //下面先  获取到 总价和总金额折扣这些
@@ -237,9 +239,9 @@ public class CreateAddAdapter extends BaseAdapter {
                                                 //因为 可能存在组合促销啥的，少一个产品，描述会不一样，所以 移除最好就是全部重新加载一次
                                                 List<getCartItemsEntity.ResponseBean.ItemsListBean> itemsList = body.getResponse().getItemsList();
                                                 for (int sm = 0; sm < itemsList.size(); sm++) {
-                                                    List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = body.getResponse().getItemsList().get(sm).getItems();
+                                                    List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
                                                     for (int sk = 0; sk < sub_itemsList.size(); sk++) {
-
+                                                        HashMap<String, String> map = new HashMap<>();
                                                         //拿到产品编码
                                                         String spcode = sub_itemsList.get(sk).getSGoodsId();
                                                         double nRealPrice = 0;
@@ -287,6 +289,7 @@ public class CreateAddAdapter extends BaseAdapter {
 
 
                                                             //下面是只取几个字段去改变 界面显示的
+                                                            map.put("barcode", sub_itemsList.get(sk).getSBarcode());
                                                             map.put("id", spcode);
                                                             map.put("name", sub_itemsList.get(sk).getSGoodsName());
                                                             map.put("MainPrice", String.valueOf(nRealPrice));  //原价
@@ -300,6 +303,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                                         }
                                                     }
                                                 }
+                                                //在上面 遍历过 之后重新赋值
                                                 CommonData.orderInfo.spList = MapList;
 
                                                 //界面上实现  增加一个元素

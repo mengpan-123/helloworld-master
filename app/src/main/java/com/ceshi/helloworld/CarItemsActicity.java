@@ -300,14 +300,11 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
     public void AddnewSpid(String inputbarcode) {
 
-       /* if (CommonData.orderInfo != null) {
+        if (CommonData.orderInfo != null) {
             if (CommonData.orderInfo.spList != null) {
                 MapList = CommonData.orderInfo.spList;
             }
-        }*/
-
-
-
+        }
         HashMap<String, String> map = new HashMap<>();
         Addgoodsinfo = RetrofitHelper.getInstance().getgoodsinfo(inputbarcode, CommonData.khid, CommonData.userId, "0");
         Addgoodsinfo.enqueue(new Callback<Addgoods>() {
@@ -332,9 +329,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                                         List<getCartItemsEntity.ResponseBean.ItemsListBean> itemsList = body.getResponse().getItemsList();
                                         for (int sm = 0; sm < itemsList.size(); sm++) {
-                                            List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = body.getResponse().getItemsList().get(sm).getItems();
+                                            List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
                                             for (int sk = 0; sk < sub_itemsList.size(); sk++) {
-
                                                 //拿到产品编码
                                                 String spcode = sub_itemsList.get(sk).getSGoodsId();
                                                 double nRealPrice = 0;
@@ -400,6 +396,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                         //界面上实现  增加一个元素
                                         adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
                                         listview.setAdapter(adapter);
+                                        listview.setSelection(listview.getBottom());  //加这一句话的目的是，超屏幕现实的时候，自动定位在底部
+
                                         adapter.setRefreshPriceInterface(CarItemsActicity.this);
                                         priceControl(adapter.getPitchOnMap());
                                     }

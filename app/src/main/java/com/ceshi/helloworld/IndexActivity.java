@@ -148,12 +148,12 @@ public class IndexActivity extends Activity {
                                         CommonData.hyMessage=hyinfo;
 
                                         //然后跳转到 购物界面
-                                        Intent intent = new Intent(IndexActivity.this, InputGoodsActivity  .class);
+                                        Intent intent = new Intent(IndexActivity.this,   CarItemsActicity.class);
                                         startActivity(intent);
 
                                     }else
                                         {
-                                        ToastUtil.showToast(IndexActivity.this, "登录提示", "该会员不存在，请重新输入");
+                                        ToastUtil.showToast(IndexActivity.this, "登录提示", body.getReturnX().getStrInfo());
                                         return;
                                     }
                                  }
