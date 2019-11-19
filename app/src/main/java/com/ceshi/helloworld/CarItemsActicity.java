@@ -1012,14 +1012,13 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             startActivity(intent);
                             return;
                         }
-
-                        /*else{
+                       /* else{
 
                             Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
                             startActivity(intent);
                             return;
 
-                            *//*Intent intent = new Intent(CarItemsActicity.this, PayFailActivity.class);
+                           *//* Intent intent = new Intent(CarItemsActicity.this, PayFailActivity.class);
                             //参数传递
                             Bundle bundle = new Bundle();
 

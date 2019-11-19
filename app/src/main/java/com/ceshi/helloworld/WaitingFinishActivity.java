@@ -33,34 +33,38 @@ public class WaitingFinishActivity extends AppCompatActivity {
 
 
 
-        new Thread() {
-            @Override
-            public void run() {
-                //应该是界面先显示，然后再来执行这个轮询。轮询支付界面，最多10次进行等待
-                while (i< 6) {
-                    //Thread.sleep(1000);
+        try {
+            new Thread() {
+                @Override
+                public void run() {
+                    //应该是界面先显示，然后再来执行这个轮询。轮询支付界面，最多10次进行等待
+                    while (i < 6) {
+                        //Thread.sleep(1000);
 
-                    SystemClock.sleep(2000);
+                        SystemClock.sleep(2000);
 
-                    if (getPayresult().equals("OK"))
-                    {
-                        Intent intent = new Intent(WaitingFinishActivity.this, FinishActivity.class);
-                        startActivity(intent);
-                        break;
+                        if (getPayresult().equals("OK")) {
+                            Intent intent = new Intent(WaitingFinishActivity.this, FinishActivity.class);
+                            startActivity(intent);
+                            break;
+                        }
+
+                        i++;
                     }
 
-                    i++;
+                    if (payresult != "OK") {
+                        //说明 支付失败了
+                        Intent intent = new Intent(WaitingFinishActivity.this, PayFailActivity.class);
+                        startActivity(intent);
+                    }
                 }
+            }.start();
 
-                if (payresult!="OK"){
-                    //说明 支付失败了
-                    Intent intent = new Intent(WaitingFinishActivity.this, PayFailActivity.class);
-                    startActivity(intent);
-                }
-            }
-        }.start();
-
-
+        }
+        catch(Exception ex){
+            Intent intent = new Intent(WaitingFinishActivity.this, PayFailActivity.class);
+            startActivity(intent);
+        }
 
 
 
