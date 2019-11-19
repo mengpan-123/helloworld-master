@@ -153,7 +153,7 @@ public class IndexActivity extends Activity {
 
                                     }else
                                         {
-                                        ToastUtil.showToast(IndexActivity.this, "登录提示", body.getReturnX().getStrInfo());
+                                        ToastUtil.showToast(IndexActivity.this, "登录提示", body.getReturnX().getStrText());
                                         return;
                                     }
                                  }

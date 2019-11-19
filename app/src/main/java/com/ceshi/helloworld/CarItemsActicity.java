@@ -719,12 +719,13 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         if (CommonData.orderInfo == null) {
             yhmoney.setText(" ￥ " + 0.00);
             shopcar_num.setText("0");
-            price.setText("0.00");//应付金额
+            price.setText(" ￥ 0.00");//应付金额
 
         } else {
             yhmoney.setText(" ￥ " + CommonData.orderInfo.totalDisc);
             shopcar_num.setText(String.valueOf(CommonData.orderInfo.totalCount));
-            price.setText(CommonData.orderInfo.totalPrice);//应付金额
+
+            price.setText(" ￥ " +CommonData.orderInfo.totalPrice);//应付金额
         }
 
 
@@ -783,7 +784,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
     public void to_pay(View view) {
         //首先要判断是否增加了产品
-        if (CommonData.orderInfo == null || MapList.size() == 0) {
+        if (CommonData.orderInfo == null || CommonData.orderInfo.spList.size()==0) {
             ToastUtil.showToast(CarItemsActicity.this, "支付通知", "请先录入要支付的商品");
             return;
         }
@@ -955,7 +956,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     public void Moneypay() {
         //1.0 初始化所有的产品信息,
         List<RequestSignBean.PluMapBean> pluMap = new ArrayList<RequestSignBean.PluMapBean>();
-
+        MapList = CommonData.orderInfo.spList;
         try {
 
             for (Map.Entry<String, List<SplnfoList>> entry : MapList.entrySet()) {
