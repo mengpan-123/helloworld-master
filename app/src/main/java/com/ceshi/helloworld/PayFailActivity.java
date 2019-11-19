@@ -17,6 +17,9 @@ public class PayFailActivity extends AppCompatActivity {
 
 
 
+    private   String reason="";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +29,13 @@ public class PayFailActivity extends AppCompatActivity {
       Intent intent = getIntent();                 //获取Intent对象 07
         Bundle bundle = intent.getExtras();
 
-      String  reason =bundle.getString("reason");
-
+        try {
+            reason = bundle.getString("reason");
+        }
+        catch (Exception ex) {
+            //因为有可能是 轮询支付结果的时候失败了走过来，是没有参数的
+            reason = "很抱歉，用户支付失败，请重试！";
+        }
 
         TextView edit= findViewById(R.id.ErrReason);
 
@@ -35,14 +43,11 @@ public class PayFailActivity extends AppCompatActivity {
 
 
 
-
         findViewById(R.id.newtopay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(PayFailActivity.this, InputGoodsActivity.class);
-
-
+                Intent intent = new Intent(PayFailActivity.this, CarItemsActicity.class);
                 startActivity(intent);
 
             }

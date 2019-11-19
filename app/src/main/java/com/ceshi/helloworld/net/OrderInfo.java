@@ -2,6 +2,7 @@ package com.ceshi.helloworld.net;
 
 import java.io.Serializable;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,6 @@ public class OrderInfo implements Serializable {
 
 
     //产品的集合
-    public Map<String,List<SplnfoList>> spList= null;
+    public Map<String,List<SplnfoList>> spList=  new  HashMap<String, List<SplnfoList>>();
 
 }

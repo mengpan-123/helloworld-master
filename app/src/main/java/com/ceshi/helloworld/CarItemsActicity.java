@@ -92,6 +92,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     private Call<PurchaseBag> GetBagsInfo;
     private Call<ResponseSignBean> ResponseSignBeanCall;
     private Call<getWXFacepayAuthInfo> getWXFacepayAuthInfoCall;
+    private Call<createPrepayIdEntity> createPrepayIdEntityCall;
+    private Call<upCardCacheEntity> upCardCacheEntityCall;
 
     //支付方式相关的
 
@@ -124,14 +126,10 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         } else {
             phone_view.setText(CommonData.hyMessage.hySname);
         }
-
-        //一进来就得执行。初始化会员支付，初始化订单号
-        Prepay();
-
     }
 
     private void initView() {
-
+        //一进来就得执行。初始化会员支付，初始化订单号
         Prepay();
         adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
 
@@ -193,6 +191,22 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         }
         else
         {
+            //预加载之前的产品信息
+            if (null!=CommonData.orderInfo.spList){
+                HashMap<String, String> temp_map = new HashMap<>();
+                for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()){
+                    temp_map.clear();
+                    temp_map.put("id", entry.getValue().get(0).getGoodsId());
+                    temp_map.put("name", entry.getValue().get(0).getPluName());
+                    temp_map.put("MainPrice", String.valueOf(entry.getValue().get(0).getMainPrice()));
+                    temp_map.put("realprice", String.valueOf(entry.getValue().get(0).getRealPrice()));
+                    temp_map.put("count", String.valueOf(entry.getValue().get(0).getPackNum()));
+                    temp_map.put("actname", String.valueOf(entry.getValue().get(0).getActname()));
+
+                    listmap.add(temp_map);
+                }
+                MapList=CommonData.orderInfo.spList;
+            }
 
         }
 
@@ -216,20 +230,10 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         });
 
 
-        //预支付 相关的操作，给公共订单类赋值,每一次都重新生成单号，单号一定不能重复
+        //预支付 相关的操作，给公共订单类赋值,每一次都重新生成单号，单号暂时设置为不能重复
 
-        if (CommonData.orderInfo != null) {
-            //可能是从错误页跳转过来的
-           /* neworderInfo.spList=CommonData.orderInfo.spList;
-            neworderInfo.totalCount=CommonData.orderInfo.totalCount;
-            neworderInfo.totalPrice=CommonData.orderInfo.totalPrice;
-            neworderInfo.totalCount=CommonData.orderInfo.totalCount;*/
-
-
-        }
         //调用接口拿到订单号
-       /* createPrepayIdEntityCall = RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
-
+        createPrepayIdEntityCall = RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
         createPrepayIdEntityCall.enqueue(new Callback<createPrepayIdEntity>() {
             @Override
             public void onResponse(Call<createPrepayIdEntity> call, Response<createPrepayIdEntity> response) {
@@ -241,20 +245,15 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                         createPrepayIdEntity.ResponseBean response1 = body.getResponse();
 
                         //拿到预支付流水号
-                        neworderInfo.prepayId = response1.getPrepayId();
                         if (null!=CommonData.orderInfo ){
                             //重新生成 订单号
                             CommonData.orderInfo.prepayId=response1.getPrepayId();
                         }
-                        else
-                        {
-                            CommonData.orderInfo=neworderInfo;
-                        }
 
                         //会员预支付必须要等到 拿到上面的 订单流水号才可以支付，预支付，不成功也无所谓的
-                        if (CommonData.hyMessage != null) {
+                        if (null!=CommonData.hyMessage) {
                             //进行会员卡预支付设置
-                            upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, neworderInfo.prepayId);
+                            upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, CommonData.orderInfo.prepayId);
                             upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
                                 @Override
                                 public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
@@ -267,16 +266,14 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                         }
                                     }
                                 }
-
                                 @Override
                                 public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
                                 }
                             });
                         }
-
-
-                    } else {
-                        ToastUtil.showToast(InputGoodsActivity.this, "商品录入通知", body.getReturnX().getStrInfo());
+                    }
+                    else {
+                        ToastUtil.showToast(CarItemsActicity.this, "商品录入通知", body.getReturnX().getStrInfo());
 
                     }
                 }
@@ -286,7 +283,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             public void onFailure(Call<createPrepayIdEntity> call, Throwable t) {
 
             }
-        });*/
+        });
     }
 
 
@@ -306,6 +303,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 MapList = CommonData.orderInfo.spList;
             }
         }*/
+
+
 
         HashMap<String, String> map = new HashMap<>();
         Addgoodsinfo = RetrofitHelper.getInstance().getgoodsinfo(inputbarcode, CommonData.khid, CommonData.userId, "0");
@@ -360,18 +359,19 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                                             listmap.get(k).put("actname", itemsList.get(sm).getDisRule());
                                                         }
                                                     }
-
-
-                                                } else {
+                                                }
+                                                else {
                                                     List<SplnfoList> uselist = new ArrayList<SplnfoList>();
                                                     SplnfoList usesplnfo = new SplnfoList();
                                                     usesplnfo.setBarcode(sub_itemsList.get(sk).getSBarcode());
                                                     usesplnfo.setGoodsId(sub_itemsList.get(sk).getSGoodsId());
-                                                    usesplnfo.setMainPrice(sub_itemsList.get(sk).getNRealPrice()); //每一个产品的原价，无需计算
+                                                    usesplnfo.setMainPrice(nRealPrice); //每一个产品的原价，无需计算
                                                     usesplnfo.setPackNum(sub_itemsList.get(sk).getNQty());
                                                     usesplnfo.setPluName(sub_itemsList.get(sk).getSGoodsName());
                                                     usesplnfo.setTotaldisc(sub_itemsList.get(sk).getPluDis());// 总折扣
                                                     usesplnfo.setRealPrice(sub_itemsList.get(sk).getPluRealAmount());  //总实际售价
+                                                    usesplnfo.setActname(itemsList.get(sm).getDisRule());
+
                                                     uselist.add(usesplnfo);
                                                     //说明产品不存在，直接增加进去
                                                     MapList.put(spcode, uselist);
@@ -380,7 +380,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                                     //下面是只取几个字段去改变 界面显示的
                                                     map.put("id", spcode);
                                                     map.put("name", sub_itemsList.get(sk).getSGoodsName());
-                                                    map.put("RealPrice", String.valueOf(nRealPrice));  //原价
+                                                    map.put("MainPrice", String.valueOf(nRealPrice));  //原价
                                                     map.put("disc", String.valueOf(sub_itemsList.get(sk).getPluDis()));  //折扣
                                                     map.put("realprice", sub_itemsList.get(sk).getPluRealAmount());
                                                     map.put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
@@ -391,6 +391,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                                 }
                                             }
                                         }
+
+                                        CommonData.orderInfo.spList = MapList;
 
                                         //界面上实现  增加一个元素
                                         adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
@@ -905,7 +907,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
                 payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));  //单项实付金额
                 payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));  //单品单价
-                payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getTotaldisc()));  //单品优惠
+                payMapcls.setPluDis(entry.getValue().get(0).getTotaldisc());  //单品优惠
                 payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));   //单项小计
                 pluMap.add(payMapcls);
             }
@@ -952,7 +954,12 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                         }
 
                         else{
-                            Intent intent = new Intent(CarItemsActicity.this, PayFailActivity.class);
+
+                            Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
+                            startActivity(intent);
+                            return;
+
+                            /*Intent intent = new Intent(CarItemsActicity.this, PayFailActivity.class);
                             //参数传递
                             Bundle bundle = new Bundle();
 
@@ -961,7 +968,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             intent.putExtras(bundle);
 
                             startActivity(intent);
-                            return;
+                            return;*/
                         }
 
                         //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", Result);
@@ -1200,7 +1207,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
                 payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));  //单项实付金额
                 payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));  //单品单价
-                payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getTotaldisc()));  //单品优惠
+                payMapcls.setPluDis(Double.valueOf(entry.getValue().get(0).getTotaldisc()));  //单品优惠
                 payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));   //单项小计
                 pluMap.add(payMapcls);
             }

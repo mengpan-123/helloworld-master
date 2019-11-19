@@ -200,7 +200,7 @@ public class RequestSignBean {
         private String barcode;
         private String goodsId;
         private double pluAmount;
-        private int pluDis;
+        private double pluDis;
         private double pluPrice;
         private int pluQty;
         private double realPrice;
@@ -229,11 +229,11 @@ public class RequestSignBean {
             this.pluAmount = pluAmount;
         }
 
-        public int getPluDis() {
+        public double getPluDis() {
             return pluDis;
         }
 
-        public void setPluDis(int pluDis) {
+        public void setPluDis(double pluDis) {
             this.pluDis = pluDis;
         }
 

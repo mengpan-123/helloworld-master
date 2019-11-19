@@ -79,7 +79,13 @@ public class  SplnfoList {
         this.realPrice = realPrice;
     }
 
+    public String getActname() {
+        return actname;
+    }
 
+    public void setActname(String actname) {
+        this.actname = actname;
+    }
 
 
 
@@ -111,6 +117,9 @@ public class  SplnfoList {
 
     //实际售价
     private String realPrice;
+
+    //这个商品对应的 折扣或者促销/满减活动
+    private String actname;
 
     //实际售价
     private double pluPrice;
