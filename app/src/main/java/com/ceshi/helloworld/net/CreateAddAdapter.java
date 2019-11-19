@@ -84,30 +84,29 @@ public class CreateAddAdapter extends BaseAdapter {
         y_title=convertView.findViewById(R.id.tv_yuan_title);
        // add = convertView.findViewById(R.id.tv_add);
 
-        name.setText(list.get(position).get("name"));//产品名称
-        y_price.setText(list.get(position).get("RealPrice"));//原价
-        price.setText(list.get(position).get("realprice"));//实际售价
-        num.setText(list.get(position).get("count"));//商品数量
-        describe.setText(list.get(position).get("actname"));//促销活动
+        try {
 
-        if (list.get(position).get("RealPrice").equals(list.get(position).get("realprice"))){
+            name.setText(list.get(position).get("name"));//产品名称
+            y_price.setText(list.get(position).get("MainPrice"));//原价
+            price.setText(list.get(position).get("realprice"));//实际售价
+            num.setText(list.get(position).get("count"));//商品数量
+            describe.setText(list.get(position).get("actname"));//促销活动
 
-            y_price.setVisibility(View.INVISIBLE);
-            y_title.setVisibility(View.INVISIBLE);
+            if (list.get(position).get("RealPrice").equals(list.get(position).get("realprice"))){
+
+                y_price.setVisibility(View.INVISIBLE);
+                y_title.setVisibility(View.INVISIBLE);
+            }
+            else {
+
+                y_price.setVisibility(View.VISIBLE);
+                y_title.setVisibility(View.VISIBLE);
+            }
+
+        }catch (Exception e){
+
+
         }
-        else {
-
-            y_price.setVisibility(View.VISIBLE);
-            y_title.setVisibility(View.VISIBLE);
-        }
-
-
-        if(pitchOnMap.get(list.get(position).get("id"))== 0){
-
-        }else{
-
-        }
-
 
 
         //商品数量减
