@@ -103,6 +103,14 @@ public class FinishActivity extends AppCompatActivity  {
         });
 
     }
+    /**
+     * 返回首页
+     */
+    public void return_home(View view) {
+        Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
+        startActivity(intent);
+    }
+
 
     public void startTime() {
         timer = new Timer();

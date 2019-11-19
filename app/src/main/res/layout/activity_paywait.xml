@@ -31,7 +31,9 @@
         <LinearLayout
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/return_home"
+            android:onClick="return_home">
             <ImageView
                 android:layout_width="30dp"
                 android:layout_marginTop="5dp"

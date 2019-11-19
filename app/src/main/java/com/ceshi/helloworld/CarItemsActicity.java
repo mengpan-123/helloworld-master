@@ -436,7 +436,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void refreshPrice(HashMap<String, Integer> pitchOnMap) {
-        //priceControl(pitchOnMap);
+        priceControl(pitchOnMap);
     }
 
 

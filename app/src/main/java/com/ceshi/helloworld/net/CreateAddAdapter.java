@@ -138,7 +138,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                     //list.remove(position);
                                     try {
                                         CommonData.orderInfo.spList.remove(list.get(position).get("id"));
-                                        BigDecimal price= BigDecimal.valueOf(Double.valueOf(list.get(position).get("price")));
+//                                        BigDecimal price= BigDecimal.valueOf(Double.valueOf(list.get(position).get("price")));
 
                                         pitchOnMap.remove(list.get(position).get("id"));
                                         list.remove(position);
@@ -153,7 +153,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                 } else {
                                     //pitchOnMap.remove(list.get(position).get("id"));
                                     list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) - 1) + "");
-                                    BigDecimal price= BigDecimal.valueOf(Double.valueOf(list.get(position).get("price")));
+//                                    BigDecimal price= BigDecimal.valueOf(Double.valueOf(list.get(position).get("price")));
                                     CommonData.orderInfo.totalCount=CommonData.orderInfo.totalCount-1;
                                     //CommonData.orderInfo.totalPrice=(BigDecimal.valueOf(CommonData.orderInfo.totalPrice).subtract(price)).doubleValue();
 
@@ -317,7 +317,7 @@ public class CreateAddAdapter extends BaseAdapter {
 
                                     }
                                 });
-
+                                mrefreshPriceInterface.refreshPrice(pitchOnMap);
                             }
 
                         }
@@ -328,6 +328,8 @@ public class CreateAddAdapter extends BaseAdapter {
 
                     }
                 });
+
+                mrefreshPriceInterface.refreshPrice(pitchOnMap);
             }
         });
 

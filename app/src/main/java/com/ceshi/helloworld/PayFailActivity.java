@@ -54,4 +54,13 @@ public class PayFailActivity extends AppCompatActivity {
         });
 
     }
+
+
+    /**
+     * 返回首页
+     */
+    public void return_home(View view) {
+        Intent intent = new Intent(PayFailActivity.this, IndexActivity.class);
+        startActivity(intent);
+    }
 }
