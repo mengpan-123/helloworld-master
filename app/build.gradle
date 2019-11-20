@@ -8,14 +8,14 @@ android {
         minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
-        versionName "4.6"  //文件版本号
+        versionName "5.89"  //文件版本号
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "shop1918.apk"
+                outputFileName = "MyApp1.apk"
             }
     }
     buildTypes {
@@ -61,4 +61,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     implementation 'com.alibaba:fastjson:1.1.54.android'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 }

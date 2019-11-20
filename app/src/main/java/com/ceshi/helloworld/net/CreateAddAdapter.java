@@ -1,7 +1,12 @@
 package com.ceshi.helloworld.net;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Paint;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,17 +14,13 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ceshi.helloworld.CarItemsActicity;
-import com.ceshi.helloworld.InputGoodsActivity;
 import com.ceshi.helloworld.R;
 import com.ceshi.helloworld.bean.RequestDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseDeleteGoods;
 import com.ceshi.helloworld.bean.getCartItemsEntity;
 
 import java.util.ArrayList;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -245,16 +246,7 @@ public class CreateAddAdapter extends BaseAdapter {
                                                         HashMap<String, String> map = new HashMap<>();
                                                         //拿到产品编码
                                                         String spcode = sub_itemsList.get(sk).getSGoodsId();
-                                                        double nRealPrice = 0;
-                                                        //有会员登录，会员价低取会员价
-                                                        //无会员登录，则获取 nPluPrice
-                                                        if (CommonData.hyMessage != null) {
-                                                            //说明有会员
-                                                            nRealPrice = sub_itemsList.get(sk).getNRealPrice();
-                                                        } else {
-                                                            nRealPrice = sub_itemsList.get(sk).getNPluPrice();
-                                                        }
-
+                                                        double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
 
                                                         if (MapList.containsKey(spcode)) {
 

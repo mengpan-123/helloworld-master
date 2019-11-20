@@ -1,85 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ceshi.helloworld"
     android:versionCode="2"
-    android:versionName="2.0.0"
-    xmlns:tools="http://schemas.android.com/tools">
-    <!--&lt;!&ndash; 网络权限 &ndash;&gt;-->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" /><!-- 摄像头权限 -->
+    android:versionName="2.0.0">
 
+    <!-- &lt;!&ndash; 网络权限 &ndash;&gt; -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 摄像头权限 -->
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.camera" /> <!-- SD卡读写权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 以下是下载的相关权限 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
     <application
-        android:networkSecurityConfig="@xml/network_security_config"
+        android:name=".net.CommonData"
         android:allowBackup="true"
         android:icon="@drawable/apk_label"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="icon, label,theme"
-        android:name="com.ceshi.helloworld.net.CommonData" >
+        tools:replace="icon, label,theme">
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
         <!-- 主页 -->
+        <!-- &lt;!&ndash; 学习基本布局和控件 &ndash;&gt; -->
+        <activity android:name=".OneActivity">
 
-        <!--&lt;!&ndash; 学习基本布局和控件 &ndash;&gt;-->
-        <activity android:name=".OneActivity" >
-           <!-- <intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />  &lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.HOME" />   &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;
                 <category android:name="android.intent.category.LAUNCHER" />   &lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;
-            </intent-filter>-->
-        </activity>
-
-
-        <!-- 2.学习简单的网络请求 -->
-        <activity android:name=".InputGoodsActivity" >
-
-        </activity>
-        <!--&lt;!&ndash; 3.权限控制相关的获取 &ndash;&gt;-->
-        <activity android:name=".ConTrolActivity" >
-
-       </activity>
-        <activity android:name=".CarItemsActicity" >
-
-        </activity>
+            </intent-filter>
+            -->
+        </activity> <!-- 2.学习简单的网络请求 -->
+        <activity android:name=".InputGoodsActivity"></activity> <!-- &lt;!&ndash; 3.权限控制相关的获取 &ndash;&gt; -->
+        <activity android:name=".ConTrolActivity"></activity>
+        <activity android:name=".CarItemsActicity"></activity>
         <activity android:name=".FinishActivity">
 
-         <!--   <intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />  &lt;!&ndash;&lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;&ndash;&gt;
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.HOME" />   &lt;!&ndash;&lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;&ndash;&gt;
                 <category android:name="android.intent.category.LAUNCHER" />   &lt;!&ndash;&lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;&ndash;&gt;
+            </intent-filter>
+            -->
+
+        </activity>
+        <activity android:name=".WaitingFinishActivity"></activity>
+        <activity android:name=".PayFailActivity"></activity>
+        <activity
+            android:name=".IndexActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+
+
+        <activity android:name=".DowmLoadActivity">
+          <!--  <intent-filter>
+                <action android:name="android.intent.action.MAIN" /> &lt;!&ndash; &lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt; &ndash;&gt;
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.HOME" /> &lt;!&ndash; &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt; &ndash;&gt;
+                <category android:name="android.intent.category.LAUNCHER" /> &lt;!&ndash; &lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt; &ndash;&gt;
             </intent-filter>-->
-
-
-        </activity>
-        <activity android:name=".WaitingFinishActivity">
-
-        </activity>
-        <activity android:name=".PayFailActivity">
-
-        </activity>
-        <activity android:name=".IndexActivity" android:windowSoftInputMode="adjustUnspecified|stateHidden" >
-
         </activity>
 
-        <!--这里的intent-filter  MAIN表示进入的第一个页面  现在启动app进入的第一个页面就是这个-->
-      <activity android:name=".PosLoginActivity" >
+        <!-- 这里的intent-filter  MAIN表示进入的第一个页面  现在启动app进入的第一个页面就是这个 -->
+        <activity android:name=".PosLoginActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />  <!--&lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;-->
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.HOME" />   <!--&lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;-->
                 <category android:name="android.intent.category.LAUNCHER" />   <!--&lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;-->
             </intent-filter>
+
         </activity>
+
+       <!-- <receiver
+            android:name=".InstallApkBroadcast">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
+            </intent-filter>
+        </receiver>-->
+
+       <!-- <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+
+                <action android:name="MLY" />
+            </intent-filter>
+        </receiver>-->
+
+        <!--<receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter android:priority="1000">
+                <action android:name="panhouye" />
+            </intent-filter>
+        </receiver>-->
+
     </application>
 
 </manifest>

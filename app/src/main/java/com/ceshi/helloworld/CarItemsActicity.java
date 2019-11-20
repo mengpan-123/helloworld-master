@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -220,9 +221,15 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                     textToSpeech.setPitch(1.0f);//方法用来控制音调
                     textToSpeech.setSpeechRate(1.0f);//用来控制语速
+                    int result =textToSpeech.setLanguage(Locale.CHINESE);
 
-                    textToSpeech.speak("请扫描商品上的条形码，扫描完成后请将商品放在置物台",//输入中文，若不支持的设备则不会读出来
-                            TextToSpeech.QUEUE_FLUSH, null);
+                    if (result==TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
+                    }else {
+                        textToSpeech.speak("请扫描商品上的条形码，扫描完成后请将商品放在置物台",//输入中文，若不支持的设备则不会读出来
+                                TextToSpeech.QUEUE_FLUSH, null);
+                    }
 
                 } else {
                     Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
@@ -333,15 +340,15 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                             for (int sk = 0; sk < sub_itemsList.size(); sk++) {
                                                 //拿到产品编码
                                                 String spcode = sub_itemsList.get(sk).getSGoodsId();
-                                                double nRealPrice = 0;
-                                                //有会员登录，会员价低取会员价
+                                                double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
+                                               /* //有会员登录，会员价低取会员价
                                                 //无会员登录，则获取 nPluPrice
                                                 if (CommonData.hyMessage != null) {
                                                     //说明有会员
                                                     nRealPrice = sub_itemsList.get(sk).getNRealPrice();
                                                 } else {
                                                     nRealPrice = sub_itemsList.get(sk).getNPluPrice();
-                                                }
+                                                }*/
                                                 if (MapList.containsKey(spcode)) {
 
                                                     //如果存在，拿到集合，增加数量，总价，折扣
@@ -1067,7 +1074,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                 textToSpeech.setPitch(1.0f);//方法用来控制音调
                                 textToSpeech.setSpeechRate(1.0f);//用来控制语速
 
-                                textToSpeech.speak("请先输入手机后四位数，然后进行脸部识别完成支付",//输入中文，若不支持的设备则不会读出来
+                                textToSpeech.speak("请按提示进行脸部识别，识别成功后请输入手机号后四位，进行支付",//输入中文，若不支持的设备则不会读出来
                                         TextToSpeech.QUEUE_FLUSH, null);
 
                             } else {
@@ -1255,7 +1262,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
         //1.0 初始化所有的产品信息,
         List<RequestSignBean.PluMapBean> pluMap = new ArrayList<RequestSignBean.PluMapBean>();
-
+        MapList = CommonData.orderInfo.spList;
         try {
 
             for (Map.Entry<String, List<SplnfoList>> entry : MapList.entrySet()) {
@@ -1294,7 +1301,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                     ResponseSignBean body = response.body();
                     if (payWay.equals("WXFacePay")){
 
-                        HashMap<String, String> map = new HashMap<String, String>();
+                        /*HashMap<String, String> map = new HashMap<String, String>();
                         map.put("appid", responseAppid); // 公众号，必填
                         map.put("mch_id", responsemachid); // 商户号，必填
                         map.put("store_id", CommonData.khid); // 门店编号，必填
@@ -1314,7 +1321,27 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                     return ;
                                 }
                             }
+                        });*/
+
+                        //没有成功需要关掉 人脸支付
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put("authinfo", mAuthInfo); // 调用凭证，必填
+                        WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
+                            @Override
+                            public void response(Map info) throws RemoteException {
+                                if (info == null) {
+                                    new RuntimeException("调用返回为空").printStackTrace();
+                                    return;
+                                }
+                                String code = (String) info.get("return_code"); // 错误码
+                                String msg = (String) info.get("return_msg"); // 错误码描述
+                                if (code == null || !code.equals("SUCCESS")) {
+                                    new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
+                                    return;
+                                }
+                            }
                         });
+
                     }
                     if (body.getReturnX().getNCode()==0){
 

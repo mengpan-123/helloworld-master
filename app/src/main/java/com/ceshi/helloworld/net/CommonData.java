@@ -8,7 +8,9 @@ import java.util.List;
 //需要将该类型 配置到 清单文件中
 public  class CommonData  extends Application {
 
-    public static String    CommonUrl="http://dvp.rongxwy.com/";
+    //public static String    CommonUrl="http://dvp.rongxwy.com/";
+
+    public static String    CommonUrl="http://54.223.249.111:90/";  //新的地址
 
 
     //自定义一个全局变量，作为表名称，多个地方使用
