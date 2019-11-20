@@ -77,7 +77,7 @@ public class CreateAddAdapter extends BaseAdapter {
         convertView = View.inflate(context,  R.layout.shopcar_list, null);
         final CheckBox checkBox;
         ImageView icon;
-        final TextView name, price, num, type, reduce, add,describe,y_price,y_title;
+        final TextView name, price, num, type, reduce, add,describe,y_price,y_title ,price_disc;
 
         name = convertView.findViewById(R.id.tv_goods_name);//商品名称
         price = convertView.findViewById(R.id.tv_goods_price);//商品价格
@@ -87,6 +87,7 @@ public class CreateAddAdapter extends BaseAdapter {
         y_price.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG); //中划线
         describe=convertView.findViewById(R.id.describe);//促销信息
         y_title=convertView.findViewById(R.id.tv_yuan_title);
+        price_disc=null;
        // add = convertView.findViewById(R.id.tv_add);
 
         try {
@@ -96,8 +97,9 @@ public class CreateAddAdapter extends BaseAdapter {
             price.setText(list.get(position).get("realprice"));//实际售价
             num.setText(list.get(position).get("count"));//商品数量
             describe.setText(list.get(position).get("actname"));//促销活动
+            price_disc.setText(list.get(position).get("disc"));
 
-            if (list.get(position).get("RealPrice").equals(list.get(position).get("realprice"))){
+            if ("0.00".equals(list.get(position).get("disc"))||"0".equals(list.get(position).get("disc"))||"0.0".equals(list.get(position).get("disc"))){
 
                 y_price.setVisibility(View.INVISIBLE);
                 y_title.setVisibility(View.INVISIBLE);
