@@ -9,6 +9,7 @@
     android:padding="35dp"
     android:focusableInTouchMode="true">
     <!--顶部图片-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -175,7 +176,7 @@
         >
         <Button
             android:layout_width="0dp"
-            android:layout_weight="1.7"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:text="0"
             android:background="@drawable/btn_bg1"
@@ -184,7 +185,7 @@
             android:layout_marginLeft="30dp"/>
         <Button
             android:layout_width="0dp"
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="@drawable/delete"
             android:textSize="35dp"
