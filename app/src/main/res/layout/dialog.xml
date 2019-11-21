@@ -1,42 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:background="@drawable/add_good"
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
     <!--顶部图片-->
     <LinearLayout
-        android:layout_width="420dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/l11"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@drawable/code">
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="340dp"
-                android:layout_height="80dp"
-                android:layout_weight="3"
-                android:background="@drawable/code"
-                />
-        </LinearLayout>
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"></LinearLayout>
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/close2"
-                android:textSize="25dp"
+                android:textSize="50dp"
                 android:gravity="center"
-                android:text="X"/>
+                android:text="×"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -45,26 +39,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/l1"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
         android:orientation="horizontal">
         <EditText
             android:id="@+id/username"
-            android:layout_width="0dp"
-            android:layout_weight="5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:ems="20"
             android:hint="请输入商品条码底部的数字"
             android:inputType="textPersonName"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text=""
-            android:textSize="20dp" />
+            android:textSize="25dp" />
 
     </LinearLayout>
 
     <!--数字1、2、3-->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -72,36 +66,36 @@
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="1"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"
             />
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="2"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="3"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="30dp"/>
     </LinearLayout>
     <!--数字4、5、6-->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -109,63 +103,63 @@
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="4"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="5"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="6"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="30dp"/>
     </LinearLayout>
     <!--数字7、8、9-->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="7"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="8"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:text="9"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="30dp"/>
@@ -176,22 +170,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
         >
         <Button
             android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="60dp"
+            android:layout_weight="1.7"
+            android:layout_height="wrap_content"
             android:text="0"
             android:background="@drawable/btn_bg1"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="30dp"/>
         <Button
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_weight="0.8"
+            android:layout_height="wrap_content"
             android:background="@drawable/delete"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:onClick="deleteClick"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="30dp"/>
@@ -202,23 +197,22 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_alignParentBottom="true">
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:background="@drawable/button_shape"
             android:textColor="#F0F0F0"
             android:text="确   定"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:gravity="center"
             android:id="@+id/close1"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="40dp"
 
             />
     </LinearLayout>

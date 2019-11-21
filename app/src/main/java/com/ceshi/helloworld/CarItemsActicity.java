@@ -502,7 +502,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                        int oldRight, int oldBottom) {
                 int heightNow = v.getHeight();//dialog当前的高度
                 int widthNow = v.getWidth();//dialog当前的宽度
-                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.55);//最小宽度为屏幕的0.7倍
+                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.8);//最小宽度为屏幕的0.7倍
                 int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
                 if (widthNow < needWidth || heightNow > needHeight) {
                     if (widthNow > needWidth) {
