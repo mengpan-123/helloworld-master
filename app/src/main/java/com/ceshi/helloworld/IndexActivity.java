@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,7 +110,7 @@ public class IndexActivity extends Activity {
 
         //closemember 关闭页面
         TextView closemem=layout.findViewById(R.id.closemem);
-
+        setDialogSize(layout);
         dialog.show();
         EditText hyedit=(EditText)layout.findViewById(R.id.phoneorhyNum);
         hyedit.setInputType(InputType.TYPE_NULL);
@@ -199,7 +200,31 @@ public class IndexActivity extends Activity {
         }
     }
 
-
+    /**
+     * 动态控制弹出框的大小
+     */
+    private void setDialogSize(final View mView) {
+        mView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
+                                       int oldRight, int oldBottom) {
+                int heightNow = v.getHeight();//dialog当前的高度
+                int widthNow = v.getWidth();//dialog当前的宽度
+                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.8);//最小宽度为屏幕的0.7倍
+                int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
+                if (widthNow < needWidth || heightNow > needHeight) {
+                    if (widthNow > needWidth) {
+                        needWidth = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    if (heightNow < needHeight) {
+                        needHeight = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    mView.setLayoutParams(new FrameLayout.LayoutParams(needWidth,
+                            needHeight));
+                }
+            }
+        });
+    }
 
     /**
      *
