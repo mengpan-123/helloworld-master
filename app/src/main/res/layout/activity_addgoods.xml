@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="93dp"
+        android:layout_height="105dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="0dp"
@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="18dp"
+            android:layout_marginLeft="15dp"
             android:paddingRight="50dp"
             >
             <ImageView
@@ -32,7 +32,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:layout_gravity="center"
-                android:background="@drawable/logo" />
+                android:background="@drawable/leftlogo" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:text=""
-                android:textSize="32dp"
+                android:textSize="34dp"
                 android:id="@+id/storename"
                 android:textColor="#F0F0F0"
                 android:gravity="center"/>
@@ -111,8 +111,8 @@
         android:orientation="horizontal"
         >
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/prodlist"/>
         <LinearLayout
@@ -129,7 +129,7 @@
                 android:gravity="center"
                 android:textColor="#090909"
                 android:text="商品列表"
-                android:textSize="18dp"/>
+                android:textSize="28dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -146,8 +146,8 @@
             android:layout_weight="1"/>
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
             android:background="@drawable/shanchu"
             android:onClick="deletecar"/>
         <LinearLayout
@@ -161,12 +161,12 @@
                 android:layout_weight="1"/>
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginRight="10dp"
+                android:layout_height="34dp"
+                android:layout_marginRight="18dp"
                 android:gravity="center"
                 android:textColor="#090909"
                 android:text="清空"
-                android:textSize="18dp"
+                android:textSize="28dp"
                 android:onClick="deletecar"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -199,7 +199,7 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="260dp"
         android:orientation="vertical" >
         <ImageView
             android:layout_width="match_parent"
@@ -246,7 +246,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="horizontal"
                 android:layout_marginLeft="20dp">
                 <TextView
@@ -305,7 +305,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="购物袋"
-                    android:textSize="27dp"
+                    android:textSize="28dp"
                     android:gravity="center"/>
             </LinearLayout>
             <!--手动输入商品编码-->
@@ -325,7 +325,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="手输条码"
-                    android:textSize="27dp"
+                    android:textSize="28dp"
                     android:gravity="center"/>
             </LinearLayout>
         </LinearLayout>
@@ -342,9 +342,9 @@
                 android:id="@+id/tv_go_to_pay"
                 android:layout_width="0dp"
                 android:layout_weight="7"
-                android:layout_height="75dp"
+                android:layout_height="85dp"
                 android:text="去 付 款"
-                android:textSize="36dp"
+                android:textSize="38dp"
                 android:background="@drawable/button_shape"
                 android:textColor="#F0F0F0"
                 android:gravity="center"

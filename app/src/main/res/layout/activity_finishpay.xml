@@ -8,7 +8,7 @@
     <!--顶部颜色#0FB6A4-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="105dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="0dp"
@@ -18,9 +18,10 @@
         android:id="@+id/shop_top">
         <!--公司logo-->
         <LinearLayout
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:background="@drawable/logo">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/leftlogo">
         </LinearLayout>
         <TextView
             android:layout_width="0dp"
@@ -28,14 +29,14 @@
             android:layout_weight="1"/>
         <!--首页和首页图标-->
         <LinearLayout
-            android:layout_width="80dp"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:onClick="return_home">
             <ImageView
-                android:layout_width="30dp"
+                android:layout_width="45dp"
                 android:layout_marginTop="5dp"
-                android:layout_height="30dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center"
                 android:background="@drawable/shouye"/>
             <TextView
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="首页"
                 android:textColor="#F0F0F0"
-                android:textSize="14dp"
+                android:textSize="28dp"
                 android:gravity="center"/>
         </LinearLayout>
     </LinearLayout>
@@ -52,10 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="150dp">
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:background="@drawable/paysuccess" />
     </LinearLayout>
     <LinearLayout
@@ -68,24 +69,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="￥576"
-            android:textSize="35dp"
+            android:textSize="46dp"
             android:textStyle="bold"
             android:textColor="#E01111"/>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="10dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="支付成功"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="#575656"/>
-    </LinearLayout>
-    <!--已安全退出当前账号-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,8 +81,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="支付成功"
+            android:textSize="36dp"
+            android:textStyle="bold"
+            android:textColor="#575656"/>
+    </LinearLayout>
+    <!--已安全退出当前账号-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="已安全退出当前账号"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:textColor="#575656"/>
     </LinearLayout>
     <!--20S后自动跳转回首页-->
@@ -110,13 +111,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="30"
-            android:textSize="15dp"
+            android:textSize="30dp"
             android:textColor="#E01111"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="秒后自动跳转回首页"
-            android:textSize="15dp"
+            android:textSize="30dp"
             android:textColor="#575656"/>
     </LinearLayout>
     <!--立即返回首页-->
@@ -125,14 +126,15 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="30dp">
         <TextView
             android:id="@+id/comback"
-            android:layout_width="240dp"
-            android:layout_height="50dp"
+            android:layout_width="340dp"
+            android:layout_height="66dp"
             android:text="立即返回首页"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="36dp"
+            android:padding="10dp"
             android:textColor="#F0F0F0"
             android:background="@drawable/button_shape"/>
     </LinearLayout>

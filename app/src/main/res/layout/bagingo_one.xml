@@ -22,8 +22,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="购 物 袋"
-                android:textSize="20dp"
+                android:text="购  物  袋"
+                android:textSize="35dp"
                 android:gravity="center"
                 android:textColor="#272727"
                 android:layout_weight="5"
@@ -36,11 +36,11 @@
             <TextView
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:text="X"
-                android:textSize="20dp"
-                android:layout_marginRight="20dp"
+                android:text="×"
+                android:textSize="50dp"
+                android:layout_marginRight="40dp"
                 android:gravity="center"
-                android:textColor="#272727"
+                android:textColor="#666666"
                 android:id="@+id/closegwd"
                 android:layout_marginTop="20dp"/>
         </LinearLayout>

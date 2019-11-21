@@ -6,7 +6,7 @@
     android:background="@drawable/add_good"
     android:orientation="vertical"
     android:focusable="true"
-    android:padding="35dp"
+    android:padding="40dp"
     android:focusableInTouchMode="true">
     <LinearLayout
         android:layout_width="match_parent"
@@ -93,7 +93,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text=""
-            android:textSize="30dp" />
+            android:textSize="35dp" />
 
     </LinearLayout>
     <!--数字1、2、3-->

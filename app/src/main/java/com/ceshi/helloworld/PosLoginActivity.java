@@ -1,60 +1,38 @@
 package com.ceshi.helloworld;
 
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.UpdateVersionEntity;
-import com.ceshi.helloworld.bean.createPrepayIdEntity;
 import com.ceshi.helloworld.bean.getdeviceinfoEntity;
-import com.ceshi.helloworld.net.AllInterFace;
 import com.ceshi.helloworld.net.CommonData;
-import com.ceshi.helloworld.net.DownLoadRunnable;
 import com.ceshi.helloworld.net.DownloadDialog;
-import com.ceshi.helloworld.net.DownloadService;
-import com.ceshi.helloworld.net.HttpSendRequest;
 import com.ceshi.helloworld.net.MyDatabaseHelper;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.ToastUtil;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
 import java.text.SimpleDateFormat;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Url;
 
 /**
  * 没有在清单文件注册 现在应该好了

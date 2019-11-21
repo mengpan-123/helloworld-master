@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"/>
+            android:layout_weight="1"/>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_marginTop="80dp"
@@ -33,14 +33,15 @@
             <ImageView
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
+                android:padding="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="90dp"
-                android:background="@drawable/logo_sy"/>
+                android:background="@drawable/logo"/>
         </LinearLayout>
         <!--首页和首页图标-->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:orientation="vertical" >
             <!--<ImageView-->
@@ -64,13 +65,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="55dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="自  助  收  银  系  统"
             android:gravity="center"
-            android:textSize="44dp"
+            android:textSize="48dp"
             android:textStyle="bold"
             android:textColor="#0FB6A4"
             android:id="@+id/title_c"
@@ -80,13 +81,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="34dp">
+        android:layout_marginTop="24dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Welcome  your  patronage"
             android:gravity="center"
-            android:textSize="36dp"
+            android:textSize="32dp"
             android:textStyle="bold"
             android:textColor="#2D667F"
             android:id="@+id/title_e"
@@ -173,7 +174,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginLeft="50dp"
-        android:textSize="26dp"
+        android:textSize="28dp"
         android:text="扫描商品条形码加入购物车"
         android:layout_weight="1"/>
         <TextView
@@ -183,7 +184,7 @@
             android:text=""
             android:layout_weight="1"/>
         <TextView
-            android:textSize="26dp"
+            android:textSize="28dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -196,7 +197,7 @@
             android:text=""
             android:layout_weight="1"/>
         <TextView
-            android:textSize="26dp"
+            android:textSize="28dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -219,7 +220,7 @@
             android:layout_marginLeft="90dp"
             android:text="开    始    购     物 "
             android:textColor="#F0F0F0"
-            android:textSize="30dp"/>
+            android:textSize="36dp"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -235,7 +236,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="会员登录 >"
-            android:textSize="34dp"
+            android:textSize="36dp"
             android:onClick="MembersLogin"/>
     </LinearLayout>
     <LinearLayout
@@ -247,6 +248,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:background="@color/colorgreen">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="由武汉众诚卓越提供技术支持 >"
+            android:textSize="26dp"
+            android:padding="5dp"
+            android:textColor="@color/colorPrimary"
+           />
     </LinearLayout>
 
 </LinearLayout>

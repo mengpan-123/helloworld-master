@@ -1246,7 +1246,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                     } else {
 
-                        ToastUtil.showToast(CarItemsActicity.this, "支付通知", body.getReturnX().getStrInfo());
+                        ToastUtil.showToast(CarItemsActicity.this, "支付通知", body.getReturnX().getStrText());
 
                     }
                 }

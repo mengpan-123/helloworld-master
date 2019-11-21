@@ -8,7 +8,7 @@
     <!--顶部颜色#0FB6A4-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="105dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="0dp"
@@ -18,9 +18,9 @@
         android:id="@+id/shop_top">
         <!--公司logo-->
         <LinearLayout
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:background="@drawable/logo">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/leftlogo">
 
         </LinearLayout>
         <TextView
@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="150dp">
         <!--<ImageView-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:text="支付等待"
             android:gravity="center"
-            android:textSize="24dp"
+            android:textSize="38dp"
             android:textStyle="bold"/>
     </LinearLayout>
     <!--支付等待文字-->
@@ -92,6 +92,6 @@
             android:layout_height="wrap_content"
             android:text="支付信息正在提交，请耐心等待"
             android:gravity="center"
-            android:textSize="16dp" />
+            android:textSize="30dp" />
     </LinearLayout>
 </LinearLayout>
