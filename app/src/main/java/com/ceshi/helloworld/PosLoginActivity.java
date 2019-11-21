@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,9 +100,15 @@ public class PosLoginActivity extends AppCompatActivity {
     private String url = "http://192.168.0.108/222/MyApp1.apk";
 
 
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//
+//        String  s=Build.SERIAL;
+//         Log.e("系统参数", "手机型号：" + s);
+        Log.e("系统参数", "手机型号：" + CommonData.machine_number);
+
+
 
 
         //1.0  首先创建出数据库  BaseInfo ，用于保存信息
@@ -117,21 +125,30 @@ public class PosLoginActivity extends AppCompatActivity {
 
 
 
-
-
         //2.0  先从本地选取初始化数据，如果拿到了，说明初始化过，则直接跳转，跳过登录
         InitData(querydb);
 
         //3.0  比较 app  版本号信息，是否需要升级
-        PrepareUpdateVersion();
+        //PrepareUpdateVersion();
 
-        setContentView(R.layout.activity_l_login);  //设置页面
-        if (!CommonData.khid.equals("") && !CommonData.machine_number.equals("")) {
+
+        if (!CommonData.khid.equals("") && !CommonData.userId.equals("")) {
             //说明已经初始化过了 ，直接跳转到欢迎的首界面
              //显示跳转
             Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
             startActivity(intent);
             return;
+        }
+        else
+        {
+            setContentView(R.layout.activity_l_login);  //设置页面
+
+            EditText edt = findViewById(R.id.inputmachine);
+            edt.setText(CommonData.machine_number);
+            edt.setCursorVisible(false);
+            edt.setFocusable(false);
+            edt.setFocusableInTouchMode(false);
+
         }
 
 
@@ -261,7 +278,7 @@ public class PosLoginActivity extends AppCompatActivity {
                     //用户信息
                     CommonData.userId = cursor.getString(cursor.getColumnIndex("userId"));
 
-                    CommonData.machine_number = cursor.getString(cursor.getColumnIndex("machine_number"));
+                    //CommonData.machine_number = cursor.getString(cursor.getColumnIndex("machine_number"));
 
                 }
                 while
@@ -299,7 +316,7 @@ public class PosLoginActivity extends AppCompatActivity {
             values.put("corpId", corpId);
             values.put("lCorpId", lCorpId);
             values.put("userId", userId);
-            values.put("machine_number", s_inputmachine);
+            values.put("machine_number", CommonData.machine_number);
             values.put("app_version", app_version);
             values.put("date_lr", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").toString());
             values.put("mch_id", mch_id);
@@ -321,7 +338,7 @@ public class PosLoginActivity extends AppCompatActivity {
         CommonData.sub_mch_id = sub_mch_id;
         CommonData.lCorpId = lCorpId;
         CommonData.corpId = corpId;
-        CommonData.machine_number = s_inputmachine;
+        //CommonData.machine_number = s_inputmachine;
         CommonData.app_version = app_version;
 
         //显示跳转

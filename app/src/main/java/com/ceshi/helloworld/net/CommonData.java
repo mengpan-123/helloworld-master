@@ -1,6 +1,7 @@
 package com.ceshi.helloworld.net;
 
 import android.app.Application;
+import android.os.Build;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public  class CommonData  extends Application {
     public static String    tablename="BaseInfo2";
 
     //设备号deviceId
-    public static String    machine_number="";
+    public static String    machine_number= Build.SERIAL;
 
     //门店编号
     public static String    khid="";

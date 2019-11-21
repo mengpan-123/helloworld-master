@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:textColor="#F06E48"
-                android:text="1111"/>
+                android:text=""/>
             <TextView
                 android:id="@+id/tv_goods_name"
                 android:layout_width="match_parent"

@@ -3,19 +3,18 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/lvtitle"
+    android:gravity="center|center_horizontal|center_vertical"
     >
 
 
     <!-- 白色的边框背景-->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/borderinfo"
-        android:layout_marginTop="150dp"
-        android:layout_marginBottom="120dp"
-        android:layout_marginLeft="34dp"
-        android:layout_marginRight="34dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="70dp"
         >
 
         <TextView
@@ -23,28 +22,29 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:gravity="center"
-            android:text="信息录入"
+            android:text="信 息 录 入"
             android:textColor="@color/colorgreen"
-            android:textSize="24sp" />
+            android:textSize="42sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/borderbutton"
             android:orientation="horizontal"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             >
 
             <TextView
                 android:id="@+id/title_khid"
-                android:layout_width="70dp"
+                android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
+
                 android:text="门 店 号"
                 android:textColor="#666"
-                android:textSize="16sp" />
+                android:textSize="28sp" />
 
             <EditText
                 android:id="@+id/inputkhid"
@@ -52,32 +52,32 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:lines="1"
-                android:padding="10dp"
+                android:padding="20dp"
                 android:singleLine="true"
                 android:text=""
                 android:textColorHint="#95A1AA"
-                android:textSize="17sp" />
+                android:textSize="28sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="80dp"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:background="@drawable/borderbutton"
             android:orientation="horizontal"
             >
 
             <TextView
                 android:id="@+id/title_machine"
-                android:layout_width="70dp"
+                android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="机器编号"
                 android:textColor="#666"
-                android:textSize="16sp" />
+                android:textSize="28sp" />
 
             <EditText
                 android:id="@+id/inputmachine"
@@ -86,21 +86,21 @@
                 android:background="@null"
 
                 android:lines="1"
-                android:padding="10dp"
+                android:padding="20dp"
                 android:singleLine="true"
                 android:text=""
                 android:textColorHint="#95A1AA"
-                android:textSize="17sp" />
+                android:textSize="28sp" />
 
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
 
             android:orientation="horizontal"
             >
@@ -110,14 +110,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="提示：本消息请谨慎录入，一旦写入后，将不可更改。该参数请如实填写"
+                android:text="提示：请如实填写门店编码，设备号由系统自动获取。信息提交后将不可更改"
                 android:textColor="#E5530B"
-                android:textSize="16sp" />
+                android:textSize="24sp" />
 
         </LinearLayout>
 
 
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
@@ -126,14 +126,31 @@
         <Button
             android:id="@+id/Login"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
+            android:layout_height="96dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
             android:layout_gravity="center"
             android:background="@drawable/button_shape"
-            android:text="确  定"
+            android:text="提  交"
             android:textColor="#ffffff"
-            android:textSize="22sp" />
+            android:textSize="30dp" />
+        </LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="30dp">
+            <Button
+                android:id="@+id/Login"
+                android:background="@drawable/button_shape"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginRight="60dp"
+                android:layout_marginLeft="60dp"
+                android:text="  提    交  "
+                android:textColor="#F0F0F0"
+                android:textSize="30dp"/>
         </LinearLayout>
 
     </LinearLayout>

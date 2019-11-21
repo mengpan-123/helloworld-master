@@ -2,6 +2,7 @@ package com.ceshi.helloworld;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.speech.tts.TextToSpeech;
@@ -129,6 +130,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         } else {
             phone_view.setText(CommonData.hyMessage.hySname);
         }
+
+
     }
 
     private void initView() {
@@ -359,7 +362,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                                     for (int k = 0; k < listmap.size(); k++) {
                                                         if (listmap.get(k).get("id").equals(spcode)) {
                                                             listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
-                                                            listmap.get(k).put("RealPrice", String.valueOf(nRealPrice));
+                                                            listmap.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                                             listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
                                                             listmap.get(k).put("actname", itemsList.get(sm).getDisRule());
                                                         }
@@ -1076,6 +1079,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                                 textToSpeech.speak("请按提示进行脸部识别，识别成功后请输入手机号后四位，进行支付",//输入中文，若不支持的设备则不会读出来
                                         TextToSpeech.QUEUE_FLUSH, null);
+
+
 
                             } else {
                                 Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();

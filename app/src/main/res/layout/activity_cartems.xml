@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="93dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="0dp"
@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="18dp"
             android:paddingRight="50dp"
             >
             <ImageView
@@ -42,9 +42,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="25dp"
                 android:text=""
-                android:textSize="20dp"
+                android:textSize="32dp"
                 android:id="@+id/storename"
                 android:textColor="#F0F0F0"
                 android:gravity="center"/>
@@ -63,16 +63,16 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="15dp"
                     android:layout_gravity="center"
                     android:background="@drawable/huiyuan" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="176****1111"
-                    android:textSize="14dp"
+                    android:textSize="28dp"
                     android:id="@+id/phone"
                     android:textColor="#F0F0F0"
                     android:gravity="center"/>
@@ -86,19 +86,19 @@
                 android:id="@+id/return_home"
                 android:onClick="return_home">
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_height="30dp"
+                    android:layout_width="45dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_height="45dp"
                     android:layout_gravity="right"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="30dp"
                     android:background="@drawable/shouye"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="首页"
                     android:textColor="#F0F0F0"
-                    android:textSize="14dp"
-                    android:layout_marginRight="10dp"
+                    android:textSize="28dp"
+                    android:layout_marginRight="30dp"
                     android:gravity="right"/>
             </LinearLayout>
         </LinearLayout>
@@ -199,7 +199,7 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="250dp"
         android:orientation="vertical" >
         <ImageView
             android:layout_width="match_parent"
@@ -216,18 +216,18 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:layout_weight="1"
-                android:layout_marginLeft="20dp">
+                android:layout_marginLeft="40dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="20dp"
+                    android:textSize="32dp"
                     android:textColor="#111111"
                     android:text="共"
                     android:gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="25dp"
+                    android:textSize="32dp"
                     android:textColor="#EC1D1D"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
@@ -237,7 +237,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="20dp"
+                    android:textSize="32dp"
                     android:textColor="#111111"
                     android:text="件商品"
                     android:gravity="center"/>
@@ -252,14 +252,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="20dp"
+                    android:textSize="32dp"
                     android:textColor="#111111"
                     android:text="优惠:"
                     android:gravity="center" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="20dp"
+                    android:textSize="32dp"
                     android:textColor="#EC1D1D"
                     android:text=""
                     android:gravity="center"
@@ -275,7 +275,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="20dp"
+                    android:textSize="32dp"
                     android:textColor="#111111"
                     android:text="应付:"
                     android:gravity="center"/>
@@ -283,7 +283,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/tv_total_price"
-                    android:textSize="20dp"
+                    android:textSize="32dp"
                     android:textColor="#EC1D1D"
                     android:text="1"
                     android:gravity="center"/>
@@ -298,13 +298,14 @@
                 android:layout_marginLeft="10dp"
                 android:onClick="input_bags">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
+                    android:layout_width="70dp"
+                    android:layout_height="80dp"
                     android:background="@drawable/gwd" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="购物袋"
+                    android:textSize="27dp"
                     android:gravity="center"/>
             </LinearLayout>
             <!--手动输入商品编码-->
@@ -317,13 +318,14 @@
                 android:layout_marginLeft="20dp"
                 android:onClick="input_tiaoma">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
+                    android:layout_width="70dp"
+                    android:layout_height="80dp"
                     android:background="@drawable/inputtm"/>
                 <TextView
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="手输条码"
+                    android:textSize="27dp"
                     android:gravity="center"/>
             </LinearLayout>
         </LinearLayout>
@@ -331,19 +333,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:orientation="horizontal">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+
             <Button
                 android:clickable="true"
                 android:id="@+id/tv_go_to_pay"
                 android:layout_width="0dp"
                 android:layout_weight="7"
-                android:layout_height="50dp"
-                android:text="去付款"
-                android:textSize="20dp"
+                android:layout_height="75dp"
+                android:text="去 付 款"
+                android:textSize="36dp"
                 android:background="@drawable/button_shape"
                 android:textColor="#F0F0F0"
                 android:gravity="center"
@@ -351,10 +352,7 @@
                 android:layout_marginTop="10dp"
                 android:onClick="to_pay"
                 />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+
         </LinearLayout>
     </LinearLayout>
 

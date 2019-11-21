@@ -26,39 +26,37 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="icon, label,theme">
-        <receiver
-            android:name=".MyReceiver"
-            android:enabled="true"
-            android:exported="true"></receiver>
+
         <!-- 主页 -->
         <!-- &lt;!&ndash; 学习基本布局和控件 &ndash;&gt; -->
         <activity android:name=".OneActivity">
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />  &lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.HOME" />   &lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;
-                <category android:name="android.intent.category.LAUNCHER" />   &lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;
-            </intent-filter>
-            -->
-        </activity> <!-- 2.学习简单的网络请求 -->
+        </activity>
+
+        <!-- 2.学习简单的网络请求 -->
         <activity android:name=".InputGoodsActivity"></activity> <!-- &lt;!&ndash; 3.权限控制相关的获取 &ndash;&gt; -->
-        <activity android:name=".ConTrolActivity"></activity>
+        <activity android:name=".ConTrolActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />  &lt;!&ndash;&lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;&ndash;&gt;-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<action android:name="android.intent.action.HOME" />   &lt;!&ndash;&lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;&ndash;&gt;-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />   &lt;!&ndash;&lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;&ndash;&gt;-->
+            <!--</intent-filter>-->
+
+        </activity>
         <activity android:name=".CarItemsActicity"></activity>
         <activity android:name=".FinishActivity">
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />  &lt;!&ndash;&lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;&ndash;&gt;
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.HOME" />   &lt;!&ndash;&lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;&ndash;&gt;
-                <category android:name="android.intent.category.LAUNCHER" />   &lt;!&ndash;&lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;&ndash;&gt;
-            </intent-filter>
-            -->
+        </activity>
+        <activity android:name=".WaitingFinishActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />  &lt;!&ndash;&lt;!&ndash;//这一句属性 的意思要设置其作为初始启动Activity&ndash;&gt;&ndash;&gt;-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<action android:name="android.intent.action.HOME" />   &lt;!&ndash;&lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;&ndash;&gt;-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />   &lt;!&ndash;&lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;&ndash;&gt;-->
+            <!--</intent-filter>-->
 
         </activity>
-        <activity android:name=".WaitingFinishActivity"></activity>
         <activity android:name=".PayFailActivity"></activity>
         <activity
             android:name=".IndexActivity"

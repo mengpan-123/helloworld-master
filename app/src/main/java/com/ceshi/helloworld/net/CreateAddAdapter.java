@@ -97,7 +97,7 @@ public class CreateAddAdapter extends BaseAdapter {
             y_price.setText(list.get(position).get("MainPrice"));//原价
             price.setText(list.get(position).get("realprice"));//实际售价
             num.setText(list.get(position).get("count"));//商品数量
-            describe.setText(list.get(position).get("actname"));//促销活动
+            //describe.setText(list.get(position).get("actname"));//促销活动
 
             if ("0.00".equals(list.get(position).get("disc"))||"0".equals(list.get(position).get("disc"))||"0.0".equals(list.get(position).get("disc"))){
 
@@ -197,6 +197,8 @@ public class CreateAddAdapter extends BaseAdapter {
         /**
          * Created by zhoupan on 2019/11/18.
          * 删减购物车数量，因为数据显示原因，重新写
+         * Created by zhoupan on 2019/11/21.
+         * 因为觉得 移除商品的时候 ，为了重新限时促销信息  会导致列表重新刷新了，影响视觉效果，所以改为不显示 促销规则了
          */
 
         reduce.setOnClickListener(new View.OnClickListener() {
@@ -226,19 +228,21 @@ public class CreateAddAdapter extends BaseAdapter {
                                         if (response != null) {
                                             getCartItemsEntity body = response.body();
                                             if (body.getReturnX().getNCode() == 0) {
-                                                //在这里重新写一个
-                                                Map<String, List<SplnfoList>> MapList = new HashMap<String, List<SplnfoList>>();
+                                                //如果原来的数量只有一个。直接从集合里面移除这一个
+                                                if (Integer.valueOf(list.get(position).get("count")) <= 1) {
 
-                                                CommonData.orderInfo.spList.clear();
+                                                    pitchOnMap.remove(list.get(position).get("id"));
+                                                    //从集合里面移除
+                                                    CommonData.orderInfo.spList.remove(list.get(position).get("id"));
+                                                    list.remove(position);
+                                                }
 
-                                                list.clear();
-                                                pitchOnMap.clear();
                                                 //下面先  获取到 总价和总金额折扣这些
                                                 CommonData.orderInfo.totalCount = body.getResponse().getTotalQty();
                                                 CommonData.orderInfo.totalPrice = body.getResponse().getShouldAmount();
                                                 CommonData.orderInfo.totalDisc = body.getResponse().getDisAmount();
 
-                                                //因为 可能存在组合促销啥的，少一个产品，描述会不一样，所以 移除最好就是全部重新加载一次
+                                                //因为 可能存在组合促销啥的，少一个产品，,每一个产品的售价都会不一样，直接修改 单价信息
                                                 List<getCartItemsEntity.ResponseBean.ItemsListBean> itemsList = body.getResponse().getItemsList();
                                                 for (int sm = 0; sm < itemsList.size(); sm++) {
                                                     List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
@@ -248,56 +252,28 @@ public class CreateAddAdapter extends BaseAdapter {
                                                         String spcode = sub_itemsList.get(sk).getSGoodsId();
                                                         double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
 
-                                                        if (MapList.containsKey(spcode)) {
+                                                        if (CommonData.orderInfo.spList.containsKey(spcode)) {
 
-                                                            //如果存在，拿到集合，增加数量，总价，折扣
-                                                            MapList.get(spcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
-                                                            MapList.get(spcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
+                                                            //如果存在本产品，重新拿到，拿到集合，增加数量，总价，折扣
+                                                            CommonData.orderInfo.spList.get(spcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
+                                                            CommonData.orderInfo.spList.get(spcode).get(0).setpluPrice(Double.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
 
                                                             //修改列表的数量
                                                             for (int k = 0; k < list.size(); k++) {
                                                                 if (list.get(k).get("id").equals(spcode)) {
                                                                     list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
-                                                                    list.get(k).put("RealPrice", String.valueOf(nRealPrice));
+                                                                    list.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                                                     list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
                                                                     list.get(k).put("actname", itemsList.get(sm).getDisRule());
+
                                                                 }
                                                             }
                                                         }
-                                                        else {
-                                                            List<SplnfoList> uselist = new ArrayList<SplnfoList>();
-                                                            SplnfoList usesplnfo = new SplnfoList();
-                                                            usesplnfo.setBarcode(sub_itemsList.get(sk).getSBarcode());
-                                                            usesplnfo.setGoodsId(sub_itemsList.get(sk).getSGoodsId());
-                                                            usesplnfo.setMainPrice(nRealPrice); //每一个产品的原价，无需计算
-                                                            usesplnfo.setPackNum(sub_itemsList.get(sk).getNQty());
-                                                            usesplnfo.setPluName(sub_itemsList.get(sk).getSGoodsName());
-                                                            usesplnfo.setTotaldisc(sub_itemsList.get(sk).getPluDis());// 总折扣
-                                                            usesplnfo.setRealPrice(sub_itemsList.get(sk).getPluRealAmount());  //总实际售价
-                                                            usesplnfo.setActname(itemsList.get(sm).getDisRule());
 
-                                                            uselist.add(usesplnfo);
-                                                            //说明产品不存在，直接增加进去
-                                                            MapList.put(spcode, uselist);
-
-
-                                                            //下面是只取几个字段去改变 界面显示的
-                                                            map.put("barcode", sub_itemsList.get(sk).getSBarcode());
-                                                            map.put("id", spcode);
-                                                            map.put("name", sub_itemsList.get(sk).getSGoodsName());
-                                                            map.put("MainPrice", String.valueOf(nRealPrice));  //原价
-                                                            map.put("disc", String.valueOf(sub_itemsList.get(sk).getPluDis()));  //折扣
-                                                            map.put("realprice", sub_itemsList.get(sk).getPluRealAmount());
-                                                            map.put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
-                                                            map.put("actname", itemsList.get(sm).getDisRule());
-                                                            list.add(map);
-                                                            pitchOnMap.put(spcode,0);
-
-                                                        }
                                                     }
                                                 }
                                                 //在上面 遍历过 之后重新赋值
-                                                CommonData.orderInfo.spList = MapList;
+                                                //CommonData.orderInfo.spList = MapList;
 
                                                 //界面上实现  增加一个元素
                                                 CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);

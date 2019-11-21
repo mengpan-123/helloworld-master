@@ -6,6 +6,7 @@
     android:background="@drawable/add_good"
     android:orientation="vertical"
     android:focusable="true"
+    android:padding="35dp"
     android:focusableInTouchMode="true">
     <!--顶部图片-->
     <LinearLayout
@@ -52,7 +53,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:text=""
-            android:textSize="25dp" />
+            android:textSize="30dp" />
 
     </LinearLayout>
 
@@ -207,7 +208,7 @@
             android:background="@drawable/button_shape"
             android:textColor="#F0F0F0"
             android:text="确   定"
-            android:textSize="35dp"
+            android:textSize="32dp"
             android:gravity="center"
             android:id="@+id/close1"
             android:layout_marginLeft="30dp"

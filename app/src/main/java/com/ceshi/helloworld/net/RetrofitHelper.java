@@ -201,6 +201,7 @@ public class RetrofitHelper {
         return  mAPIService.getgoodsinfo(barcode, storeId, userId,  goodsPrice);
     }
 
+
     /***
      * 调用接口告诉对方程序升级了
      *sBindMobile 手机号
