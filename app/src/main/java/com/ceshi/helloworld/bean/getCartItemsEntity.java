@@ -244,7 +244,7 @@ public class getCartItemsEntity implements Serializable {
                 private String pluAmount;
                 private double pluDis;
                 private String pluRealAmount;
-                private int nWeight;
+                private String  nWeight;
                 private boolean bSelected;
                 private String dLastUpdateTime;
                 private String sGoodsHeadPic;
@@ -348,11 +348,11 @@ public class getCartItemsEntity implements Serializable {
                     this.pluRealAmount = pluRealAmount;
                 }
 
-                public int getNWeight() {
+                public String getNWeight() {
                     return nWeight;
                 }
 
-                public void setNWeight(int nWeight) {
+                public void setNWeight(String nWeight) {
                     this.nWeight = nWeight;
                 }
 

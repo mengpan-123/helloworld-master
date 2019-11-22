@@ -77,7 +77,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     private CreateAddAdapter adapter; //用于显示列表的容器，传输数据
     private ListView listview;  //用于画列表的
 
-
+    private Boolean isPay=true;
 
     private Dialog center_dialog;
 
@@ -418,6 +418,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onFailure(Call<getCartItemsEntity> call, Throwable t) {
 
+                                ToastUtil.showToast(CarItemsActicity.this, "商品查询通知", t.getMessage());
+                                return;
                             }
                         });
                     } else {
@@ -629,7 +631,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         String text = bt.getText().toString();
         EditText editText1 = layout.findViewById(R.id.username);
         if (!TextUtils.isEmpty(editText1.getText())) {
-            if (editText1.getText().toString().length() <= 15) {
+            if (editText1.getText().toString().length() <= 23) {
                 text = editText1.getText().toString() + text;
                 editText1.setText(text);
                 editText1.setSelection(text.length());
@@ -964,6 +966,14 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
      */
 
     public void Moneypay() {
+
+        //默认值为 true，表示  可以支付了 ，只有为 true 的时候才可以进行支付
+        if (!isPay){
+            return;
+        }
+
+        isPay=false;   //说明 已经开始支付了，避免一次 扫码扫到连个触发两次
+
         //1.0 初始化所有的产品信息,
         List<RequestSignBean.PluMapBean> pluMap = new ArrayList<RequestSignBean.PluMapBean>();
         MapList = CommonData.orderInfo.spList;
@@ -999,7 +1009,10 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
             @Override
             public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
+                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
+
                 if (response != null) {
+
                     ResponseSignBean body = response.body();
 
                     if (body.getReturnX().getNCode() == 0) {
@@ -1050,6 +1063,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onFailure(Call<ResponseSignBean> call, Throwable t) {
 
+                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
             }
         });
 
