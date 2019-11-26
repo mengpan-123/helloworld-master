@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="#090909"
-
+                android:id="@+id/ordernumber"
                 android:text="商品列表"
                 android:textSize="30dp"/>
 

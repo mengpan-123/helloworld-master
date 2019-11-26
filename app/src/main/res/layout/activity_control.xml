@@ -56,7 +56,14 @@
             android:text="打电话"
             android:textColor="#f00"
             android:textSize="14sp" />
-
+        <Button
+            android:id="@+id/print"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="测试打印"
+            android:textColor="#f00"
+            android:textSize="14sp" />
 
 
         <Button

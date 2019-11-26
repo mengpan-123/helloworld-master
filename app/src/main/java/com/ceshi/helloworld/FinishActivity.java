@@ -1,6 +1,8 @@
 package com.ceshi.helloworld;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +17,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.net.CommonData;
+import com.ceshi.helloworld.net.MyDatabaseHelper;
+import com.ceshi.helloworld.net.ToastUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,7 +34,7 @@ public class FinishActivity extends AppCompatActivity  {
     private TimerTask task=null;
 
 
-    public MediaPlayer player1=new MediaPlayer();        //初始化播放音乐对象
+    //public  MediaPlayer player1=CommonData.player;  //初始化播放音乐对象
 
     private TextToSpeech textToSpeech = null;//创建自带语音对象
 
@@ -39,19 +45,21 @@ public class FinishActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_finishpay);  //设置页面
 
 
+
+
         //进入之后设置界面的总金额
-        try {
-            TextView totalmoney = findViewById(R.id.totalmoney);
-
-            totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
-        }
-        catch(Exception ex)
-        {
-
-        }
+//        try {
+//            TextView totalmoney = findViewById(R.id.totalmoney);
+//
+//            totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
+//        }
+//        catch(Exception ex)
+//        {
+//
+//        }
 
         //播放 支付成功的语音提示
-        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        /*textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == textToSpeech.SUCCESS) {
@@ -72,15 +80,46 @@ public class FinishActivity extends AppCompatActivity  {
                 }
 
             }
-        });
+        });*/
 
+
+        CommonData.player.reset();
+        CommonData.player=MediaPlayer.create(this,R.raw.finishpay);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
 
 
         //倒计时30s立即返回到 首界面
 
-        time=(TextView) findViewById(R.id.tv_time);
+        /*time=(TextView) findViewById(R.id.tv_time);
         i=Integer.parseInt(time.getText().toString());
-        startTime();
+        startTime();*/
+
+
+
+        //一旦支付成功，这个参数就自动加上1
+        CommonData.number=CommonData.number+1;
+        //1.0  首先  更新本地数据库的记录号，避免机器无端关机导致其等于0
+        try {
+            MyDatabaseHelper dbHelper = new MyDatabaseHelper(this, "BaseInfo2.db", null, 1);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+
+            values.put("number", CommonData.number);
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String today = sdf.format(date);
+
+            values.put("date_lr", today);
+
+            db.update(CommonData.tablename,values,"khid= ?",new String[] { CommonData.khid });
+
+
+        } catch (Exception ex) {
+            //如果创建异常,不能影响其他
+
+        }
 
 
 
@@ -89,7 +128,7 @@ public class FinishActivity extends AppCompatActivity  {
          * Created by zhoupan on 2019/11/8.
          * 点此立即返回到首页
          * */
-        TextView comback=findViewById(R.id.comback);
+        /*TextView comback=findViewById(R.id.comback);
 
 
         comback.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +139,7 @@ public class FinishActivity extends AppCompatActivity  {
                 Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
     /**

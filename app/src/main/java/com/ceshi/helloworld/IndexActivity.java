@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -11,6 +14,7 @@ import retrofit2.Response;
 
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -25,10 +29,13 @@ import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.TaskDetailEntity;
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.HyMessage;
+import com.ceshi.helloworld.net.MyDatabaseHelper;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.ToastUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class IndexActivity extends Activity {
@@ -36,12 +43,53 @@ public class IndexActivity extends Activity {
     View layout=null;
 
     private  Call<ClearCarEntity>  ClearCarEntityCall;
+    //public  MediaPlayer player=CommonData.player;  //初始化播放音乐对象
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
+
+        //从数据库取数据，如果万一数据有是从1 开始的话，说明可能 程序中断了，机器重启了，从数据库查找本地保存的已知 的流水号
+        if (CommonData.number==1) {
+            try {
+                MyDatabaseHelper dbHelper = new MyDatabaseHelper(this, "BaseInfo2.db", null, 1);
+                SQLiteDatabase querydb = dbHelper.getWritableDatabase();
+
+                //获取今天
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String today = sdf.format(date);
+
+                Cursor cursor = querydb.query(CommonData.tablename, null,null,null, null, null, null);
+
+                if (null != cursor) {
+                    if (cursor.moveToFirst()) {
+                        String  get_days = cursor.getString(cursor.getColumnIndex("date_lr"));
+                        if (get_days.equals(today)){
+                            //如果是同一天
+                            CommonData.number=cursor.getInt(cursor.getColumnIndex("number"));
+                        }
+                        else
+                        {
+                            CommonData.number=1;
+                        }
+                    }
+                }
+
+
+            }
+            catch (Exception ex) {
+                //如果创建异常,不能影响其他进度
+
+            }
+        }
+
+
 
 
         /*需要在这里，第一。每次进入时，清空会员信息，清空订单信息,调用接口清空购物车*/
@@ -70,6 +118,12 @@ public class IndexActivity extends Activity {
         //避免万一断网情况下，数据未正常清空。清空失败 这种情况呢？
         CommonData.hyMessage=null;
         CommonData.orderInfo=null;
+
+
+        CommonData.player.reset();
+        CommonData.player= MediaPlayer.create(this,R.raw.main);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
 
 
 

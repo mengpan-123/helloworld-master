@@ -29,6 +29,7 @@ import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.ToastUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,7 +114,7 @@ public class PosLoginActivity extends AppCompatActivity {
         if (!CommonData.khid.equals("") && !CommonData.userId.equals("")) {
             //说明已经初始化过了 ，直接跳转到欢迎的首界面
              //显示跳转
-            Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
+            Intent intent = new Intent(PosLoginActivity.this, NewIndexActivity.class);
             startActivity(intent);
             return;
         }
@@ -296,9 +297,15 @@ public class PosLoginActivity extends AppCompatActivity {
             values.put("userId", userId);
             values.put("machine_number", CommonData.machine_number);
             values.put("app_version", app_version);
-            values.put("date_lr", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").toString());
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String today = sdf.format(date);
+
+            values.put("date_lr", today);
             values.put("mch_id", mch_id);
             values.put("sub_mch_id", sub_mch_id);
+            values.put("number", 1);
+
             db.insert(CommonData.tablename, null, values);
 
             values.clear();
@@ -320,7 +327,7 @@ public class PosLoginActivity extends AppCompatActivity {
         CommonData.app_version = app_version;
 
         //显示跳转
-        Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
+        Intent intent = new Intent(PosLoginActivity.this, NewIndexActivity.class);
         startActivity(intent);
     }
 

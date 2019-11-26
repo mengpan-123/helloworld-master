@@ -45,7 +45,9 @@ import com.tencent.wxpayface.WxPayFace;
 import com.tencent.wxpayface.WxfacePayCommonCode;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -59,6 +61,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
 
     private TextToSpeech textToSpeech = null;//创建自带语音对象
+
+
 
     private TextView phone_view;  //显示会员名称的控件
     private TextView price;
@@ -190,6 +194,14 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
     public void Prepay() {
 
+        //设置界面上显示的订单流水号
+        SimpleDateFormat form = new SimpleDateFormat("yyyyMMdd");
+        Date date = new Date();
+        String day=form.format(date);
+
+        TextView txtv=findViewById(R.id.ordernumber);
+        txtv.setText("流水号:"+day+String.format("%03d",CommonData.number));
+
         if (null==CommonData.orderInfo) {
 
             OrderInfo  orders=new  OrderInfo();
@@ -217,7 +229,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         }
 
         //播放 支付成功的语音提示
-        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+       /* textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == textToSpeech.SUCCESS) {
@@ -239,7 +251,14 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 }
 
             }
-        });
+        });*/
+
+
+        CommonData.player.reset();
+        CommonData.player=MediaPlayer.create(this,R.raw.lusp);
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
+
 
 
         //预支付 相关的操作，给公共订单类赋值,每一次都重新生成单号，单号暂时设置为不能重复
@@ -647,7 +666,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
      * 点击右上角按钮，返回首页
      */
     public void return_home(View view) {
-        Intent intent = new Intent(CarItemsActicity.this, IndexActivity.class);
+        Intent intent = new Intent(CarItemsActicity.this, NewIndexActivity.class);
         startActivity(intent);
     }
 
@@ -683,9 +702,9 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         });
 
 
-        CommonData.orderInfo.totalPrice="0.00";
+        CommonData.orderInfo.totalPrice="0";
         CommonData.orderInfo.totalCount=0;
-        CommonData.orderInfo.totalDisc="0.00";
+        CommonData.orderInfo.totalDisc="0";
         CommonData.orderInfo.spList.clear();
 
 
@@ -743,7 +762,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
 
         if (CommonData.orderInfo.totalCount==0) {
-            listtop.setVisibility(View.GONE);
+            //listtop.setVisibility(View.GONE); //zhoupan  去掉的，默认一进来就应该显示
             tv_go_to_pay.setText("去付款");
             tv_go_to_pay.setBackgroundResource(R.drawable.button_shape_black); // 使用Color类转换
             tv_go_to_pay.setEnabled(false);
@@ -754,7 +773,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             catch(Exception ex){
 
             }
-            listtop.setVisibility(View.VISIBLE);
+            //listtop.setVisibility(View.VISIBLE);
             tv_go_to_pay.setEnabled(true);
             tv_go_to_pay.setBackgroundResource(R.drawable.button_shape);
 
@@ -801,8 +820,13 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
+//        CommonData.player.reset();
+//        CommonData.player=MediaPlayer.create(this,R.raw.paytype);
+//        CommonData.player.start();
+//        CommonData.player.setLooping(false);
+
         //播放 支付成功的语音提示
-        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        /*textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == textToSpeech.SUCCESS) {
@@ -818,50 +842,54 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 }
 
             }
-        });
+        });*/
 
 
-        final Dialog dialog1 = new Dialog(this, R.style.myNewsDialogStyle);
-        // 自定义对话框布局
-        layout_pay = View.inflate(this, R.layout.activity_chosepay, null);
-        dialog1.setContentView(layout_pay);
-        Window window = dialog1.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        window.setDimAmount(0f);
-        dialog1.show();
-        View zfb = (View) layout_pay.findViewById(R.id.zfb);
-        View wx = (View) layout_pay.findViewById(R.id.wx);
-        View wx_face = (View) layout_pay.findViewById(R.id.wx_face);
+//        final Dialog dialog1 = new Dialog(this, R.style.myNewsDialogStyle);
+//        // 自定义对话框布局
+//        layout_pay = View.inflate(this, R.layout.activity_chosepay, null);
+//        dialog1.setContentView(layout_pay);
+//        Window window = dialog1.getWindow();
+//        window.setGravity(Gravity.BOTTOM);
+//        window.setDimAmount(0f);
+//        dialog1.show();
+//        View zfb = (View) layout_pay.findViewById(R.id.zfb);
+//        View wx = (View) layout_pay.findViewById(R.id.wx);
+//        View wx_face = (View) layout_pay.findViewById(R.id.wx_face);
+//
+//        zfb.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog1.dismiss();
+//                payWay = "AliPaymentCodePay";
+//                sPayTypeExt="devicealimicropay";
+//                dialog_paycode(view,"支付宝");
+//
+//
+//            }
+//        });
+//        wx.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog1.dismiss();
+//                payWay = "WXPaymentCodePay";
+//                sPayTypeExt="devicewxmicropay";
+//                dialog_paycode(view,"微信");
+//            }
+//        });
+//        wx_face.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                sPayTypeExt="devicewxface";
+//                payWay = "WXFacePay";
+//
+//                wxFacepay();
+//            }
+//        });
 
-        zfb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog1.dismiss();
-                payWay = "AliPaymentCodePay";
-                sPayTypeExt="devicealimicropay";
-                dialog_paycode(view,"支付宝");
+        Intent intent = new Intent(CarItemsActicity.this, payWayActivity.class);
+        startActivity(intent);
 
-
-            }
-        });
-        wx.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog1.dismiss();
-                payWay = "WXPaymentCodePay";
-                sPayTypeExt="devicewxmicropay";
-                dialog_paycode(view,"微信");
-            }
-        });
-        wx_face.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sPayTypeExt="devicewxface";
-                payWay = "WXFacePay";
-
-                wxFacepay();
-            }
-        });
     }
 
     /**
@@ -888,7 +916,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         EditText input_code = layout_paycode.findViewById(R.id.pay_code);
 
 
-        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+       /* textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == textToSpeech.SUCCESS) {
@@ -904,7 +932,16 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 }
 
             }
-        });
+        });*/
+        CommonData.player.reset();
+        if (payway.equals("支付宝")){
+            CommonData.player=MediaPlayer.create(this,R.raw.alipay);
+        }
+        else{
+            CommonData.player=MediaPlayer.create(this,R.raw.wxpay);
+        }
+        CommonData.player.start();
+        CommonData.player.setLooping(false);
 
 
         input_code.setOnKeyListener(new View.OnKeyListener() {
@@ -1083,26 +1120,30 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                     if (!isSuccessInfo(info)) {
                         return;
                     }
-                    textToSpeech = new TextToSpeech(CarItemsActicity.this, new TextToSpeech.OnInitListener() {
-                        @Override
-                        public void onInit(int status) {
-                            if (status == textToSpeech.SUCCESS) {
+//                    textToSpeech = new TextToSpeech(CarItemsActicity.this, new TextToSpeech.OnInitListener() {
+//                        @Override
+//                        public void onInit(int status) {
+//                            if (status == textToSpeech.SUCCESS) {
+//
+//                                textToSpeech.setPitch(1.0f);//方法用来控制音调
+//                                textToSpeech.setSpeechRate(1.0f);//用来控制语速
+//
+//                                textToSpeech.speak("请按提示进行脸部识别，识别成功后请输入手机号后四位，进行支付",//输入中文，若不支持的设备则不会读出来
+//                                        TextToSpeech.QUEUE_FLUSH, null);
+//
+//
+//
+//                            } else {
+//                                Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                        }
+//                    });
 
-                                textToSpeech.setPitch(1.0f);//方法用来控制音调
-                                textToSpeech.setSpeechRate(1.0f);//用来控制语速
-
-                                textToSpeech.speak("请按提示进行脸部识别，识别成功后请输入手机号后四位，进行支付",//输入中文，若不支持的设备则不会读出来
-                                        TextToSpeech.QUEUE_FLUSH, null);
-
-
-
-                            } else {
-                                Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    });
-
+                    CommonData.player.reset();
+                    CommonData.player=MediaPlayer.create(CarItemsActicity.this,R.raw.facepay);
+                    CommonData.player.start();
+                    CommonData.player.setLooping(false);
 
                     // 2.0微信刷脸  获取rawdata和AuthInfo 数据
                     try {

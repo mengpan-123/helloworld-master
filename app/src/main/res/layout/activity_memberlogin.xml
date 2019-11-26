@@ -28,7 +28,7 @@
                     android:layout_height="match_parent"
                     android:text="会   员   登   录"
                     android:layout_gravity="center"
-                    android:textSize="35dp"
+                    android:textSize="38dp"
                     android:gravity="center"/>
             </LinearLayout>
             <LinearLayout
@@ -87,13 +87,13 @@
             android:id="@+id/phoneorhyNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="20"
+            android:ems="11"
             android:hint="请输入手机号/会员号"
             android:inputType="textPersonName"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginLeft="60dp"
             android:text=""
-            android:textSize="35dp" />
+            android:textSize="30dp" />
 
     </LinearLayout>
     <!--数字1、2、3-->
@@ -111,7 +111,7 @@
             android:background="@drawable/btn_bg1"
             android:textSize="35dp"
             android:onClick="numClick"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="60dp"
             />
         <Button
             android:layout_width="0dp"
@@ -131,7 +131,7 @@
             android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="60dp"/>
     </LinearLayout>
     <!--数字4、5、6-->
     <LinearLayout
@@ -148,7 +148,7 @@
             android:background="@drawable/btn_bg1"
             android:textSize="35dp"
             android:onClick="numClick"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="60dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -167,7 +167,7 @@
             android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="60dp"/>
     </LinearLayout>
     <!--数字7、8、9-->
     <LinearLayout
@@ -183,7 +183,7 @@
             android:background="@drawable/btn_bg1"
             android:textSize="35dp"
             android:onClick="numClick"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="60dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -202,7 +202,7 @@
             android:textSize="35dp"
             android:onClick="numClick"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="60dp"/>
     </LinearLayout>
     <!--数字0和删除按钮-->
     <LinearLayout
@@ -220,7 +220,7 @@
             android:background="@drawable/btn_bg1"
             android:textSize="35dp"
             android:onClick="numClick"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="60dp"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -229,7 +229,7 @@
             android:textSize="35dp"
             android:onClick="deleteClick"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="60dp"/>
     </LinearLayout>
     <!--确定和取消按钮-->
     <!--确定和取消按钮-->
@@ -251,8 +251,8 @@
             android:textSize="35dp"
             android:gravity="center"
             android:id="@+id/closeHy"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
             android:layout_marginBottom="40dp"
             />
     </LinearLayout>

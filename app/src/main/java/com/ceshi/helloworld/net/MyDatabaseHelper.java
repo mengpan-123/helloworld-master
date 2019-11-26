@@ -30,13 +30,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
             + "date_lr date, "
 
-            + "sub_mch_id date, "
+            + "sub_mch_id text, "
+
+            + "number integer, "
 
             + "mch_id text )";
 
 
     //构造函数
-    public MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public  MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
 
         super(context, name, factory, version);
 
@@ -52,9 +54,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Toast.makeText(mContext, "Create succeeded", Toast.LENGTH_SHORT).show();
 
     }
-
-
-
 
 
     @Override

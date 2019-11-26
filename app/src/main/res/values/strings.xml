@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">自助购物</string>
+    <string name="app_name">AIINBI自助收银</string>
     <string name="app_width">65dp</string>
     <string name="app_table">khda</string>
+    <string name="error_param">参数错误</string>
+    <string name="no_support">字符串不支持</string>
+    <string name="string_to_long">字符串不支持</string>
+    <string name="def_text">abcdefg</string>
+    <string name="func_success">操作成功</string>
+    <string name="func_failed">操作失败</string>
 </resources>

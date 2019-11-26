@@ -1,6 +1,7 @@
 package com.ceshi.helloworld.net;
 
 import android.app.Application;
+import android.media.MediaPlayer;
 import android.os.Build;
 
 import java.util.List;
@@ -22,6 +23,10 @@ public  class CommonData  extends Application {
 
     //门店编号
     public static String    khid="";
+
+
+    //订单流水号，命名规则为 销售日期和 一个三位的序号,这里只使用序号
+    public static  int    number=1;
 
 
     //门店注册登陆之后 返回的 userid，用于 支付时使用
@@ -49,6 +54,8 @@ public  class CommonData  extends Application {
 
     //微信支付商户号
     public static String    mch_id="";
+
+    public static MediaPlayer player=new MediaPlayer();
 
     //微信支付子商户号
     public static String    sub_mch_id="";
