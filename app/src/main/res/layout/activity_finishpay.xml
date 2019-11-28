@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="640dp"
+        android:layout_height="740dp"
         android:background="@mipmap/paysuccess"
         android:gravity="center"
         android:orientation="vertical">
@@ -21,8 +21,8 @@
             android:gravity="center"
             android:orientation="vertical">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="170dp"
+                android:layout_height="160dp"
                 android:background="@mipmap/paylogo"
                 android:gravity="center"
                 />
@@ -57,7 +57,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="140dp"
+            android:layout_marginLeft="100dp"
             android:layout_marginTop="30dp"
             android:gravity="left">
             <TextView
@@ -70,7 +70,8 @@
 
                 />
             <TextView
-                android:layout_width="230dp"
+                android:id="@+id/ordernumber"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colortext"
                 android:text="1111111111111"
@@ -85,8 +86,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="140dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="40dp"
             android:gravity="left">
             <TextView
                 android:layout_width="180dp"
@@ -97,7 +98,8 @@
                 android:gravity="left"
                 />
             <TextView
-                android:layout_width="230dp"
+                android:id="@+id/paytype"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colortext"
                 android:text="支付宝"
@@ -138,7 +140,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="250dp"
         android:gravity="center">
 
         <TextView

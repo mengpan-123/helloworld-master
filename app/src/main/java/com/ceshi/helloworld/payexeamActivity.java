@@ -73,6 +73,9 @@ public class payexeamActivity extends AppCompatActivity {
             totalpay.setText("金额合计 ："+CommonData.orderInfo.totalPrice);
 
 
+            TextView storename=findViewById(R.id.storename);
+            storename.setText(CommonData.machine_name);
+
             payWay = bundle.getString("payWay");
         }
         catch (Exception ex) {
@@ -99,6 +102,15 @@ public class payexeamActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(payexeamActivity.this, payWayActivity.class);
+
+                startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.returnback).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(payexeamActivity.this, CarItemsActicity.class);
 
                 startActivity(intent);
             }

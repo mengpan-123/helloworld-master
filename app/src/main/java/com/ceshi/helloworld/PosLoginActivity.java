@@ -82,13 +82,6 @@ public class PosLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//
-//        String  s=Build.SERIAL;
-//         Log.e("系统参数", "手机型号：" + s);
-        Log.e("系统参数", "手机型号：" + CommonData.machine_number);
-
-
-
 
         //1.0  首先创建出数据库  BaseInfo ，用于保存信息
         try {
@@ -108,7 +101,7 @@ public class PosLoginActivity extends AppCompatActivity {
         InitData(querydb);
 
         //3.0  比较 app  版本号信息，是否需要升级
-        //PrepareUpdateVersion();
+        PrepareUpdateVersion();
 
 
         if (!CommonData.khid.equals("") && !CommonData.userId.equals("")) {
@@ -346,7 +339,7 @@ public class PosLoginActivity extends AppCompatActivity {
     public   void PrepareUpdateVersion(){
 
         try {
-            UpdateVersionEntityCall = RetrofitHelper.getInstance().UpdateVersion(CommonData.machine_name, CommonData.userId, CommonData.khid);
+            UpdateVersionEntityCall = RetrofitHelper.getInstance().UpdateVersion(CommonData.machine_name, "", CommonData.khid);
             UpdateVersionEntityCall.enqueue(new Callback<UpdateVersionEntity>() {
                 @Override
                 public void onResponse(Call<UpdateVersionEntity> call, Response<UpdateVersionEntity> response) {

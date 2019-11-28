@@ -16,7 +16,7 @@
         android:layout_marginLeft="0dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#eeeeee">
+        android:background="#0fB6A4">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -26,12 +26,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
                 android:text="退出"
                 android:textSize="42dp"
                 android:id="@+id/exit"
-                android:textColor="@color/colorgreen"
-                android:gravity="center"/>
+                android:layout_marginLeft="28dp"
+                android:textColor="@color/colorPrimary"
+                android:gravity="left"/>
         </LinearLayout>
 
         <LinearLayout
@@ -42,46 +42,45 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
                 android:text=""
-                android:textSize="34dp"
+                android:textSize="50dp"
                 android:id="@+id/storename"
-                android:textColor="#F0F0F0"
+                android:textColor="@color/mainColor"
                 android:gravity="center"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"
             >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
                 android:text="我是会员"
                 android:textSize="44dp"
                 android:id="@+id/IamHy"
-                android:textColor="@color/colorgreen"
-                android:gravity="center"/>
+                android:onClick="MembersLogin"
+                android:textColor="@color/colorPrimary"
+                android:gravity="right"/>
         </LinearLayout>
 
     </LinearLayout>
     <LinearLayout
         android:id="@+id/listtop"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="72dp"
         android:orientation="horizontal"
         >
         <ImageView
-            android:layout_width="62dp"
-            android:layout_height="62dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/prodlist"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp">
+            android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
@@ -92,7 +91,7 @@
                 android:gravity="center"
                 android:textColor="#090909"
                 android:id="@+id/ordernumber"
-                android:text="商品列表"
+                android:text="流水号"
                 android:textSize="32dp"/>
 
             <TextView
@@ -110,8 +109,8 @@
             android:layout_weight="1"/>
 
         <ImageView
-            android:layout_width="62dp"
-            android:layout_height="62dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:background="@drawable/shanchu"
             android:onClick="deletecar"/>
         <LinearLayout
@@ -129,7 +128,7 @@
                 android:layout_marginRight="18dp"
                 android:gravity="center"
                 android:textColor="#090909"
-                android:text="清空"
+                android:text="清空所有商品"
                 android:textSize="32dp"
                 android:onClick="deletecar"/>
             <TextView
@@ -153,16 +152,11 @@
             android:childIndicator="@null"
             android:groupIndicator="@null" >
         </ListView>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:textColor="#090909"
-            android:text="请在下方扫码区扫描商品条形码"
-            android:textSize="45dp" />
+
         <ImageView
             android:id="@+id/text_tip"
-            android:layout_width="540dp"
-            android:layout_height="738dp"
+            android:layout_width="756dp"
+            android:layout_height="960dp"
             android:layout_marginTop="150dp"
             android:textColor="@color/colorAccent"
             android:background="@mipmap/qrscan"/>

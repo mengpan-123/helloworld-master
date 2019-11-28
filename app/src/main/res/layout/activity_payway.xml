@@ -14,7 +14,7 @@
             android:orientation="horizontal"
             android:id="@+id/wxuseinfo"
             android:layout_width="match_parent"
-            android:layout_height="740dp"
+            android:layout_height="750dp"
             android:background="@mipmap/banner1"
             >
         </ImageView>
@@ -79,9 +79,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20dp"
         android:background="@drawable/button_shape"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="20dp"
         android:gravity="center">
 
 

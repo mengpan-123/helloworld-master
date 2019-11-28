@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestSignBean;
 import com.ceshi.helloworld.bean.ResponseSignBean;
@@ -36,6 +37,7 @@ import com.ceshi.helloworld.bean.getWXFacepayAuthInfo;
 import com.ceshi.helloworld.bean.upCardCacheEntity;
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.CreateAddAdapter;
+import com.ceshi.helloworld.net.HyMessage;
 import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
@@ -127,11 +129,21 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
         initView();
-       /* if (CommonData.hyMessage == null) {
-            phone_view.setText("");
+        if (CommonData.hyMessage == null) {
+            phone_view.setText("我是会员");
         } else {
-            phone_view.setText(CommonData.hyMessage.hySname);
-        }*/
+            phone_view.setText("欢迎你，"+CommonData.hyMessage.hySname);
+        }
+
+
+       //推出之后回到首页
+        findViewById(R.id.exit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CarItemsActicity.this, NewIndexActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
@@ -167,8 +179,9 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         //top_bar = (LinearLayout) findViewById(R.id.top_bar);
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
+
         price = (TextView) findViewById(R.id.tv_total_price);
-        //phone_view = (TextView) findViewById(R.id.phone);
+        phone_view = (TextView) findViewById(R.id.IamHy);
         shopcar_num = findViewById(R.id.shopcar_num);
         yhmoney=findViewById(R.id.yhmoney);
         storename=findViewById(R.id.storename);
@@ -179,10 +192,104 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
         listview.setAdapter(adapter);
         listview.setEmptyView(text_tip);
+
         adapter.setRefreshPriceInterface(this);
         priceControl(adapter.getPitchOnMap());
         CommonData.list_adaptor = adapter;
     }
+
+
+
+    public  void  MembersLogin(View view){
+
+        // 创建一个Dialog
+        final Dialog dialog = new Dialog(this,
+                R.style.myNewsDialogStyle);
+        // 自定义对话框布局
+        layout = View.inflate(this, R.layout.activity_memberlogin,
+                null);
+        dialog.setContentView(layout);
+
+        //确定
+        TextView title = (TextView) layout.findViewById(R.id.closeHy);
+
+        //closemember 关闭页面
+        TextView closemem=layout.findViewById(R.id.closemem);
+        setDialogSize(layout);
+        dialog.show();
+        EditText hyedit=(EditText)layout.findViewById(R.id.phoneorhyNum);
+        hyedit.setInputType(InputType.TYPE_NULL);
+
+        // 设置确定按钮的事件
+        title.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                EditText hyedit=(EditText)layout.findViewById(R.id.phoneorhyNum);
+
+                String hynum=hyedit.getText().toString();
+
+                String sCorpId=CommonData.corpId;
+
+                String sUserId="";
+
+                if (!TextUtils.isEmpty(hynum)){
+
+                    Call<GetHyInfoEntity> hyInfoEntityCall= RetrofitHelper.getInstance().getHyInfoEntityCall(hynum,sCorpId,CommonData.lCorpId,sUserId);
+                    hyInfoEntityCall.enqueue(new Callback<GetHyInfoEntity>() {
+                        @Override
+                        public void onResponse(Call<GetHyInfoEntity> call, Response<GetHyInfoEntity> response) {
+                            if (null!=response && response.isSuccessful()) {
+                                GetHyInfoEntity body = response.body();
+                                if ( null!=body) {
+                                    if (body.getReturnX().getNCode()==0){
+                                        GetHyInfoEntity.ResponseBean response1 = body.getResponse();
+                                        HyMessage hyinfo=new  HyMessage();
+                                        hyinfo.cardnumber=response1.getCdoData().getSMemberId();
+                                        hyinfo.hySname=response1.getCdoData().getStrName();
+                                        hyinfo.hytelphone=response1.getCdoData().getSBindMobile();
+
+                                        //给会员信息赋值
+                                        CommonData.hyMessage=hyinfo;
+                                        phone_view.setText("欢迎你，会员"+hyinfo.hySname);
+
+
+                                    }else
+                                    {
+                                        ToastUtil.showToast(CarItemsActicity.this, "登录提示", body.getReturnX().getStrText());
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    ToastUtil.showToast(CarItemsActicity.this, "登录提示", "接口访问失败，请重试");
+                                    return;
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<GetHyInfoEntity> call, Throwable t) {
+                            ToastUtil.showToast(CarItemsActicity.this, "登录提示", "请求失败，请检查网络连接");
+                            return;
+                        }
+                    });
+                }
+                dialog.dismiss();
+
+            }
+        });
+        //设置关闭按钮的时间
+        closemem.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+
 
 
     /**
@@ -227,32 +334,6 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             }
 
         }
-
-        //播放 支付成功的语音提示
-       /* textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == textToSpeech.SUCCESS) {
-
-                    textToSpeech.setPitch(1.0f);//方法用来控制音调
-                    textToSpeech.setSpeechRate(1.0f);//用来控制语速
-                    int result =textToSpeech.setLanguage(Locale.CHINESE);
-
-                    if (result==TextToSpeech.LANG_MISSING_DATA
-                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
-                    }else {
-                        textToSpeech.speak("请扫描商品上的条形码，扫描完成后请将商品放在置物台",//输入中文，若不支持的设备则不会读出来
-                                TextToSpeech.QUEUE_FLUSH, null);
-                    }
-
-                } else {
-                    Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });*/
-
 
         CommonData.player.reset();
         CommonData.player=MediaPlayer.create(this,R.raw.lusp);
@@ -323,6 +404,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
 
 
 
@@ -673,6 +755,42 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         } else {
             editText1.setText(text);
             editText1.setSelection(text.length());
+        }
+    }
+
+
+    /**
+     *
+     * 数字键盘事件
+     *
+     * */
+    public  void  hynumClick(View view){
+        Button bt=(Button)view;
+        String text= bt.getText().toString();
+        EditText editText1=layout.findViewById(R.id.phoneorhyNum);
+        if (!TextUtils.isEmpty(editText1.getText())){
+            if (editText1.getText().toString().length()<=15){
+                text=editText1.getText().toString()+text;
+                editText1.setText(text);
+                editText1.setSelection(text.length());
+            }
+        }else {
+            editText1.setText(text);
+            editText1.setSelection(text.length());
+        }
+    }
+
+
+    /**
+     *键盘的清空数字按钮
+     */
+    public void   hydeleteClick(View view) {
+
+        EditText editText = layout.findViewById(R.id.username);
+        if (null != editText.getText().toString() && editText.getText().toString().length() > 0) {
+            String old_text = editText.getText().toString();
+            editText.setText(old_text.substring(0, old_text.length() - 1));
+            editText.setSelection(editText.getText().toString().length());
         }
     }
 

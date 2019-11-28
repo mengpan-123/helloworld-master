@@ -75,7 +75,7 @@ public class NewIndexActivity extends Activity {
         storename.setText("门店编号:"+ CommonData.khid);
 
         TextView appmachine=findViewById(R.id.appmachine);
-        appmachine.setText("门店编号:"+ CommonData.machine_number);
+        appmachine.setText("设备编号:"+ CommonData.machine_number);
 
 
         TextView appversion=findViewById(R.id.appversion);
@@ -275,7 +275,7 @@ public class NewIndexActivity extends Activity {
      * 数字键盘事件
      *
      * */
-    public  void  numClick(View view){
+    public  void  hynumClick(View view){
         Button bt=(Button)view;
         String text= bt.getText().toString();
         EditText editText1=layout.findViewById(R.id.phoneorhyNum);
@@ -310,7 +310,7 @@ public class NewIndexActivity extends Activity {
      * 删除按钮事件
      *
      * */
-    public  void  deleteClick(View view){
+    public  void  hydeleteClick(View view){
 
         EditText editText=layout.findViewById(R.id.phoneorhyNum);
         if (null!=editText.getText().toString()&&editText.getText().toString().length()>0){
