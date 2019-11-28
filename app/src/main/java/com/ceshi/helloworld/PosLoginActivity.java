@@ -159,15 +159,19 @@ public class PosLoginActivity extends AppCompatActivity {
                     public void onResponse(Call<getdeviceinfoEntity> call, Response<getdeviceinfoEntity> response) {
 
                         if (response != null) {
-
                             getdeviceinfoEntity body = response.body();
+                            if(null!=body) {
+                                int nCode = body.getReturnX().getNCode();
 
-                            int nCode = body.getReturnX().getNCode();
+                                if (nCode != 0) {
+                                    String message = body.getReturnX().getStrText();
 
-                            if (nCode != 0) {
-                                String message = body.getReturnX().getStrText();
-
-                                ToastUtil.showToast(PosLoginActivity.this, "输入消息通知", message);
+                                    ToastUtil.showToast(PosLoginActivity.this, "输入消息通知", message);
+                                    return;
+                                }
+                            }
+                            else {
+                                ToastUtil.showToast(PosLoginActivity.this, "接口异常", "接口访问异常，请及时处理");
                                 return;
                             }
 
@@ -188,20 +192,25 @@ public class PosLoginActivity extends AppCompatActivity {
                                 public void onResponse(Call<StoreIdEntity> call, Response<StoreIdEntity> response) {
                                     if (response != null) {
                                         StoreIdEntity body = response.body();
-                                        //这里就直接拿到后台返回的对象StoreIdEntity  比如我要取return下的code
-                                        StoreIdEntity.ReturnBean returnX = body.getReturnX();
+                                        if(null!=body) {
+                                            //这里就直接拿到后台返回的对象StoreIdEntity  比如我要取return下的code
+                                            StoreIdEntity.ReturnBean returnX = body.getReturnX();
 
-                                        int nCode = returnX.getNCode();
-                                        if (nCode == 0) {
-                                            StoreIdEntity.ResponseBean response1 = body.getResponse();
+                                            int nCode = returnX.getNCode();
+                                            if (nCode == 0) {
+                                                StoreIdEntity.ResponseBean response1 = body.getResponse();
 
-                                            mch_id = response1.getMch_id();
-                                            sub_mch_id = response1.getSub_mch_id();
+                                                mch_id = response1.getMch_id();
+                                                sub_mch_id = response1.getSub_mch_id();
 
-                                            //因为请求是异步的。以上基础信息写完之后 在进行操作
+                                                //因为请求是异步的。以上基础信息写完之后 在进行操作
 
 
-                                            WirttenDataToSqlite();
+                                                WirttenDataToSqlite();
+                                            }
+                                        }else {
+                                            ToastUtil.showToast(PosLoginActivity.this, "接口异常", "接口访问异常，请及时处理");
+                                            return;
                                         }
                                     }
 
@@ -343,17 +352,22 @@ public class PosLoginActivity extends AppCompatActivity {
                 public void onResponse(Call<UpdateVersionEntity> call, Response<UpdateVersionEntity> response) {
                     if (response != null) {
                         UpdateVersionEntity body = response.body();
-
-                        if (body.getReturnX().getNCode() == 0) {
-                            //接口返回的版本号，进行比较，然后拿到URL进行下载
-
-
-                            //获取到本地文件的版本，判断是否需要升级
-                            String newversion = getAppVersion(PosLoginActivity.this);
+                        if (null!=body) {
+                            if (body.getReturnX().getNCode() == 0) {
+                                //接口返回的版本号，进行比较，然后拿到URL进行下载
 
 
+                                //获取到本地文件的版本，判断是否需要升级
+                                String newversion = getAppVersion(PosLoginActivity.this);
+
+
+                            }
                         }
-
+                        else
+                        {
+                            ToastUtil.showToast(PosLoginActivity.this, "接口异常", "接口请求异常");
+                            return;
+                        }
 
                         //EnsureUPdate();
 
@@ -385,7 +399,7 @@ public class PosLoginActivity extends AppCompatActivity {
         request.setDescription("zhoupan 的测试apk正在下载");
         request.setAllowedOverRoaming(false);
         //设置文件存放目录
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "MyApp1");
+        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "AIINBINEW.apk");
 
         DownloadManager downManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long id= downManager.enqueue(request);

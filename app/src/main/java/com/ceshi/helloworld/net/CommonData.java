@@ -28,7 +28,7 @@ public  class CommonData  extends Application {
     //订单流水号，命名规则为 销售日期和 一个三位的序号,这里只使用序号
     public static  int    number=1;
 
-
+    public static  String     ordernumber="";
     //门店注册登陆之后 返回的 userid，用于 支付时使用
     public static String    userId="";
 
@@ -54,6 +54,8 @@ public  class CommonData  extends Application {
 
     //微信支付商户号
     public static String    mch_id="";
+
+    public static String    usepayway="";
 
     public static MediaPlayer player=new MediaPlayer();
 

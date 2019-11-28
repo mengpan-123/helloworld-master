@@ -15,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ceshi.helloworld.CarItemsActicity;
 import com.ceshi.helloworld.R;
+import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.RequestDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseDeleteGoods;
 import com.ceshi.helloworld.bean.getCartItemsEntity;
@@ -34,7 +36,9 @@ public class CreateAddAdapter extends BaseAdapter {
     private List<HashMap<String, String>> list;
     private HashMap<String, Integer> pitchOnMap;
     public Call<ResponseDeleteGoods> ResponseDeleteGoodsCall;
+    private Call<Addgoods> Addgoodsinfo;
     private Call<com.ceshi.helloworld.bean.getCartItemsEntity> getCartItemsEntityCall;
+
 
     private OnItemRemoveListener adapterListener;
     public HashMap<String, Integer> getPitchOnMap() {
@@ -89,7 +93,7 @@ public class CreateAddAdapter extends BaseAdapter {
         describe=convertView.findViewById(R.id.describe);//促销信息
         y_title=convertView.findViewById(R.id.tv_yuan_title);
 
-       // add = convertView.findViewById(R.id.tv_add);
+        add = convertView.findViewById(R.id.tv_add);
 
         try {
 
@@ -249,18 +253,18 @@ public class CreateAddAdapter extends BaseAdapter {
                                                     for (int sk = 0; sk < sub_itemsList.size(); sk++) {
                                                         HashMap<String, String> map = new HashMap<>();
                                                         //拿到产品编码
-                                                        String spcode = sub_itemsList.get(sk).getSGoodsId();
+                                                        String usebarcode = sub_itemsList.get(sk).getSBarcode();
                                                         double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
 
-                                                        if (CommonData.orderInfo.spList.containsKey(spcode)) {
+                                                        if (CommonData.orderInfo.spList.containsKey(usebarcode)) {
 
                                                             //如果存在本产品，重新拿到，拿到集合，增加数量，总价，折扣
-                                                            CommonData.orderInfo.spList.get(spcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
-                                                            CommonData.orderInfo.spList.get(spcode).get(0).setpluPrice(Double.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
+                                                            CommonData.orderInfo.spList.get(usebarcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
+                                                            CommonData.orderInfo.spList.get(usebarcode).get(0).setpluPrice(Double.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
 
                                                             //修改列表的数量
                                                             for (int k = 0; k < list.size(); k++) {
-                                                                if (list.get(k).get("id").equals(spcode)) {
+                                                                if (list.get(k).get("id").equals(usebarcode)) {
                                                                     list.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
                                                                     list.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                                                     list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
@@ -312,19 +316,93 @@ public class CreateAddAdapter extends BaseAdapter {
 
 
         //商品数量加
-       // add.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) + 1) + "");
-//                notifyDataSetChanged();
-//                mrefreshPriceInterface.refreshPrice(pitchOnMap);
-//
-//            }
+       add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String inputbarcode=list.get(position).get("barcode");
 
-     //   });
+                HashMap<String, String> map = new HashMap<>();
+                Addgoodsinfo = RetrofitHelper.getInstance().getgoodsinfo(inputbarcode, CommonData.khid, CommonData.userId, "0");
+                Addgoodsinfo.enqueue(new Callback<Addgoods>() {
+                    @Override
+                    public void onResponse(Call<Addgoods> call, Response<Addgoods> response) {
+
+                        if (response.body() != null) {
+                            if (response.body().getReturnX().getNCode() == 0) {
+
+                                //获取 购物车列表。然后解析购物车列表
+                                getCartItemsEntityCall = RetrofitHelper.getInstance().getCartItems(CommonData.userId, CommonData.khid);
+                                getCartItemsEntityCall.enqueue(new Callback<getCartItemsEntity>() {
+                                    @Override
+                                    public void onResponse(Call<getCartItemsEntity> call, Response<getCartItemsEntity> response) {
+                                        if (response != null) {
+                                            getCartItemsEntity body = response.body();
+                                            if (body.getReturnX().getNCode() == 0) {
+                                                //下面先  获取到 总价和总金额折扣这些
+                                                CommonData.orderInfo.totalCount = body.getResponse().getTotalQty();
+                                                CommonData.orderInfo.totalPrice = body.getResponse().getShouldAmount();
+                                                CommonData.orderInfo.totalDisc = body.getResponse().getDisAmount();
+
+                                                List<getCartItemsEntity.ResponseBean.ItemsListBean> itemsList = body.getResponse().getItemsList();
+                                                for (int sm = 0; sm < itemsList.size(); sm++) {
+                                                    List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
+                                                    for (int sk = 0; sk < sub_itemsList.size(); sk++) {
+                                                        //拿到产品编码
+                                                        String barcode = sub_itemsList.get(sk).getSBarcode();
+                                                        double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
+
+                                                        if (CommonData.orderInfo.spList.containsKey(barcode)) {
+
+                                                            //如果存在，拿到集合，增加数量，总价，折扣
+                                                            CommonData.orderInfo.spList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
+                                                            CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
+
+                                                            //修改列表的数量
+                                                            list.get(position).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
+                                                            list.get(position).put("MainPrice", String.valueOf(nRealPrice));
+                                                            list.get(position).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
+                                                            list.get(position).put("actname", itemsList.get(sm).getDisRule());
+                                                        }
+                                                    }
+                                                }
+                                                CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
+                                                listView1.setAdapter(CommonData.list_adaptor);
+                                                notifyDataSetChanged();
+                                                mrefreshPriceInterface.refreshPrice(pitchOnMap);
+
+                                            }
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<getCartItemsEntity> call, Throwable t) {
+
+
+                                    }
+                                });
+                            }
+                            else {
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Addgoods> call, Throwable t) {
+
+                    }
+                });
+
+            }
+
+        });
 
         return convertView;
     }
+
+
+
 
     /**
      * 创建接口

@@ -127,18 +127,22 @@ public class NewIndexActivity extends Activity {
             public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
                 if (response!=null){
                     ClearCarEntity body = response.body();
-
-                    if (body.getReturnX().getNCode()==0){
-                        //购物车清空成功。，清空单据
-                        CommonData.hyMessage=null;
-                        CommonData.orderInfo=null;
+                    if (null!=body) {
+                        if (body.getReturnX().getNCode() == 0) {
+                            //购物车清空成功。，清空单据
+                            CommonData.hyMessage = null;
+                            CommonData.orderInfo = null;
+                        }
+                    }
+                    else{
+                        ToastUtil.showToast(NewIndexActivity.this, "异常通知", "接口请求异常，请耐心等待回复");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ClearCarEntity> call, Throwable t) {
-                Toast.makeText(NewIndexActivity.this, "请检查网络配置...", Toast.LENGTH_LONG).show();
+                ToastUtil.showToast(NewIndexActivity.this, "异常通知", "请检查网络配置");
             }
         });
 
@@ -218,7 +222,7 @@ public class NewIndexActivity extends Activity {
                         public void onResponse(Call<GetHyInfoEntity> call, Response<GetHyInfoEntity> response) {
                             if (null!=response && response.isSuccessful()) {
                                 GetHyInfoEntity body = response.body();
-                                if (body != null) {
+                                if ( null!=body) {
                                     if (body.getReturnX().getNCode()==0){
                                         GetHyInfoEntity.ResponseBean response1 = body.getResponse();
                                         HyMessage hyinfo=new  HyMessage();
@@ -239,11 +243,17 @@ public class NewIndexActivity extends Activity {
                                         return;
                                     }
                                 }
+                                else
+                                {
+                                    ToastUtil.showToast(NewIndexActivity.this, "登录提示", "接口访问失败，请重试");
+                                    return;
+                                }
                             }
                         }
                         @Override
                         public void onFailure(Call<GetHyInfoEntity> call, Throwable t) {
-
+                            ToastUtil.showToast(NewIndexActivity.this, "登录提示", "请求失败，请检查网络连接");
+                            return;
                         }
                     });
                 }
@@ -289,20 +299,8 @@ public class NewIndexActivity extends Activity {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
                                        int oldRight, int oldBottom) {
-                int heightNow = v.getHeight();//dialog当前的高度
-                int widthNow = v.getWidth();//dialog当前的宽度
-                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.8);//最小宽度为屏幕的0.7倍
-                int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
-                if (widthNow < needWidth || heightNow > needHeight) {
-                    if (widthNow > needWidth) {
-                        needWidth = FrameLayout.LayoutParams.WRAP_CONTENT;
-                    }
-                    if (heightNow < needHeight) {
-                        needHeight = FrameLayout.LayoutParams.WRAP_CONTENT;
-                    }
-                    mView.setLayoutParams(new FrameLayout.LayoutParams(needWidth,
-                            needHeight));
-                }
+                mView.setLayoutParams(new FrameLayout.LayoutParams(780,
+                        1100));
             }
         });
     }

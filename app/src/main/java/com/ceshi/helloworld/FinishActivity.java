@@ -18,11 +18,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.MyDatabaseHelper;
+import com.ceshi.helloworld.net.SplnfoList;
 import com.ceshi.helloworld.net.ToastUtil;
+import com.szsicod.print.escpos.PrinterAPI;
+import com.szsicod.print.io.InterfaceAPI;
+import com.szsicod.print.io.SerialAPI;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,6 +39,8 @@ public class FinishActivity extends AppCompatActivity  {
     private  int i=0;
     private Timer timer=null;
     private TimerTask task=null;
+
+    public PrinterAPI mPrinter = PrinterAPI.getInstance();  //打印机部分
 
 
     //public  MediaPlayer player1=CommonData.player;  //初始化播放音乐对象
@@ -45,43 +54,16 @@ public class FinishActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_finishpay);  //设置页面
 
 
-
-
         //进入之后设置界面的总金额
-//        try {
-//            TextView totalmoney = findViewById(R.id.totalmoney);
-//
-//            totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
-//        }
-//        catch(Exception ex)
-//        {
-//
-//        }
+        try {
+            TextView totalmoney = findViewById(R.id.havepaynet);
 
-        //播放 支付成功的语音提示
-        /*textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == textToSpeech.SUCCESS) {
+            totalmoney.setText("￥" + String.valueOf(CommonData.orderInfo.totalPrice));
+        }
+        catch(Exception ex)
+        {
 
-                    textToSpeech.setPitch(1.0f);//方法用来控制音调
-                    textToSpeech.setSpeechRate(1.0f);//用来控制语速
-
-                    //判断是否支持下面两种语言
-                    int result1 = textToSpeech.setLanguage(Locale.US);
-                    int result2 = textToSpeech.setLanguage(Locale.
-                            SIMPLIFIED_CHINESE);
-
-                    textToSpeech.speak("支付已完成，请拿走商品和小票，祝您购物愉快",//输入中文，若不支持的设备则不会读出来
-                            TextToSpeech.QUEUE_FLUSH, null);
-
-                } else {
-                    Toast.makeText(FinishActivity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });*/
-
+        }
 
         CommonData.player.reset();
         CommonData.player=MediaPlayer.create(this,R.raw.finishpay);
@@ -89,11 +71,14 @@ public class FinishActivity extends AppCompatActivity  {
         CommonData.player.setLooping(false);
 
 
+        //打印
+        print();
+
         //倒计时30s立即返回到 首界面
 
-        /*time=(TextView) findViewById(R.id.tv_time);
+        time=(TextView) findViewById(R.id.tv_time);
         i=Integer.parseInt(time.getText().toString());
-        startTime();*/
+        startTime();
 
 
 
@@ -128,7 +113,7 @@ public class FinishActivity extends AppCompatActivity  {
          * Created by zhoupan on 2019/11/8.
          * 点此立即返回到首页
          * */
-        /*TextView comback=findViewById(R.id.comback);
+        TextView comback=findViewById(R.id.backhome);
 
 
         comback.setOnClickListener(new View.OnClickListener() {
@@ -136,18 +121,11 @@ public class FinishActivity extends AppCompatActivity  {
             public void onClick(View view) {
 
 
-                Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
+                Intent intent = new Intent(FinishActivity.this, NewIndexActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });
 
-    }
-    /**
-     * 返回首页
-     */
-    public void return_home(View view) {
-        Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
-        startActivity(intent);
     }
 
 
@@ -163,7 +141,7 @@ public class FinishActivity extends AppCompatActivity  {
                     message.arg1 = i;
                     mHandler.sendMessage(message);
                 }else {
-                    Intent intent = new Intent(FinishActivity.this, IndexActivity.class);
+                    Intent intent = new Intent(FinishActivity.this, NewIndexActivity.class);
                     startActivity(intent);
                 }
             }
@@ -176,4 +154,97 @@ public class FinishActivity extends AppCompatActivity  {
             startTime();
         };
     };
+
+
+
+    protected void print()
+    {
+        InterfaceAPI io = null;
+        io = new SerialAPI(new File(
+                "/dev/ttyS1"),
+                38400,
+                1);
+        StringBuffer sbb = new StringBuffer();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy－MM－dd HH:mm");//初始化Formatter的转换格式。
+
+
+        String Str="          欢迎光临          "+"\n";
+        Str+="     "+CommonData.machine_name+"     "+"\n";
+        Str+="流水号："+CommonData.ordernumber+"     "+"\n";
+        Str+="日期：     "+formatter+"     "+"\n";
+        Str+="================================"+"\n";
+        Str+=" 品名  数量   成交价   单价     金额"+"\n";
+
+
+
+        for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
+
+            String  barcode=entry.getValue().get(0).getBarcode();
+            String sname=entry.getValue().get(0).getPluName();
+            double qty=entry.getValue().get(0).getPackNum();
+            double dj=entry.getValue().get(0).getMainPrice();
+
+            String zj=entry.getValue().get(0).getRealPrice();
+
+            Str+= barcode+"   "+sname+" "+qty+"  "+dj+"  "+zj+" "+"\n";
+        }
+
+        //付款方式
+        Str+="================================"+"\n";
+        Str+="付款方式    金额   "+"\n";
+        String  printpaytype="";
+        //只会有一种支付方式
+        if (CommonData.usepayway.equals("WXPaymentCodePay")){
+            printpaytype="微信支付";
+        }
+        else if(CommonData.usepayway.equals("AliPaymentCodePay")){
+            printpaytype="支付宝支付";
+        }
+        else{
+            printpaytype="刷脸支付";
+        }
+        Str+=printpaytype+"  "+CommonData.orderInfo.totalPrice+"\n";
+
+        Str+="应收      总数量     找零"+"\n";
+        Str+=""+CommonData.orderInfo.totalPrice+"     "+CommonData.orderInfo.totalCount+"     0.00     "+"\n";
+
+
+        //获取当前时间并 打印时间
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");// HH:mm:ss
+        Date date = new Date(System.currentTimeMillis());
+
+        Str+="==============="+simpleDateFormat.format(date)+"==============="+"\n";
+        Str+="         谢谢惠顾，请妥善保管小票            "+"\n";
+        Str+="         开正式发票，当月有效            "+"\n";
+
+        if (PrinterAPI.SUCCESS == mPrinter.connect(io))
+        {
+            Toast.makeText(FinishActivity.this, "链接成功", Toast.LENGTH_SHORT).show();
+            try {
+                if (PrinterAPI.SUCCESS == mPrinter.printString(Str,"GBK", true))
+                {
+//                                Thread.sleep(time);
+                }
+                else
+                {
+                    Toast.makeText(FinishActivity.this, "，小票打印失败,请重试", Toast.LENGTH_SHORT).show();
+//                                handler.sendEmptyMessage(1);
+                }
+
+                mPrinter.printFeed();
+                //清楚打印缓存区 避免对后面数据的影响 有些设置会恢复默认值
+                mPrinter.init();
+                mPrinter.cutPaper(66, 0);
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                //printstate.setText("小票打印失败,请重试");
+            }
+        }
+    }
+
+
 }

@@ -4,7 +4,7 @@
     <!--设置背景色-->
     <solid android:color="#0FB6A4"/>
     <!--设置圆角-->
-    <corners android:radius="20dip"/>
+    <corners android:radius="10dip"/>
     <!--设置边框线的宽度和颜色-->
     <stroke android:width="2dp" android:color="#0FB6A4" />
 

@@ -97,8 +97,6 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     private Call<Addgoods> Addgoodsinfo;
     private Call<com.ceshi.helloworld.bean.getCartItemsEntity> getCartItemsEntityCall;
     private Call<PurchaseBag> GetBagsInfo;
-    private Call<ResponseSignBean> ResponseSignBeanCall;
-    private Call<getWXFacepayAuthInfo> getWXFacepayAuthInfoCall;
     private Call<createPrepayIdEntity> createPrepayIdEntityCall;
     private Call<upCardCacheEntity> upCardCacheEntityCall;
     private  Call<ClearCarEntity>  ClearCarEntityCall;
@@ -129,11 +127,11 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
         initView();
-        if (CommonData.hyMessage == null) {
+       /* if (CommonData.hyMessage == null) {
             phone_view.setText("");
         } else {
             phone_view.setText(CommonData.hyMessage.hySname);
-        }
+        }*/
 
 
     }
@@ -170,7 +168,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
         price = (TextView) findViewById(R.id.tv_total_price);
-        phone_view = (TextView) findViewById(R.id.phone);
+        //phone_view = (TextView) findViewById(R.id.phone);
         shopcar_num = findViewById(R.id.shopcar_num);
         yhmoney=findViewById(R.id.yhmoney);
         storename=findViewById(R.id.storename);
@@ -200,7 +198,9 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         String day=form.format(date);
 
         TextView txtv=findViewById(R.id.ordernumber);
-        txtv.setText("流水号:"+day+String.format("%03d",CommonData.number));
+        CommonData.ordernumber=day+String.format("%03d",CommonData.number);
+
+        txtv.setText("流水号:"+CommonData.ordernumber);
 
         if (null==CommonData.orderInfo) {
 
@@ -270,41 +270,48 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<createPrepayIdEntity> call, Response<createPrepayIdEntity> response) {
                 if (response != null) {
                     createPrepayIdEntity body = response.body();
+                    if(null!=body) {
+                        if (body.getReturnX().getNCode() == 0) {
 
-                    if (body.getReturnX().getNCode() == 0) {
+                            createPrepayIdEntity.ResponseBean response1 = body.getResponse();
 
-                        createPrepayIdEntity.ResponseBean response1 = body.getResponse();
+                            //拿到预支付流水号
+                            if (null != CommonData.orderInfo) {
+                                //重新生成 订单号
+                                CommonData.orderInfo.prepayId = response1.getPrepayId();
+                            }
 
-                        //拿到预支付流水号
-                        if (null!=CommonData.orderInfo ){
-                            //重新生成 订单号
-                            CommonData.orderInfo.prepayId=response1.getPrepayId();
-                        }
+                            //会员预支付必须要等到 拿到上面的 订单流水号才可以支付，预支付，不成功也无所谓的
+                            if (null != CommonData.hyMessage) {
+                                //进行会员卡预支付设置
+                                upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, CommonData.orderInfo.prepayId);
+                                upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
+                                    @Override
+                                    public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
+                                        if (response != null) {
+                                            upCardCacheEntity body = response.body();
 
-                        //会员预支付必须要等到 拿到上面的 订单流水号才可以支付，预支付，不成功也无所谓的
-                        if (null!=CommonData.hyMessage) {
-                            //进行会员卡预支付设置
-                            upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, CommonData.orderInfo.prepayId);
-                            upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
-                                @Override
-                                public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
-                                    if (response != null) {
-                                        upCardCacheEntity body = response.body();
+                                            /*if (body.getReturnX().getNCode() == 0) {
+                                                //暂时 先不管 会员卡预支付失败的结果
 
-                                        if (body.getReturnX().getNCode() == 0) {
-                                            //暂时 先不管 会员卡预支付失败的结果
-
+                                            }*/
                                         }
                                     }
-                                }
-                                @Override
-                                public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
-                                }
-                            });
+
+                                    @Override
+                                    public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
+                                    }
+                                });
+                            }
+                        } else {
+                            ToastUtil.showToast(CarItemsActicity.this, "商品录入通知", body.getReturnX().getStrInfo());
+
                         }
                     }
-                    else {
-                        ToastUtil.showToast(CarItemsActicity.this, "商品录入通知", body.getReturnX().getStrInfo());
+                    else
+                    {
+                        ToastUtil.showToast(CarItemsActicity.this, "接口通知", "接口访问异常");
+                        return;
 
                     }
                 }
@@ -350,6 +357,10 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             public void onResponse(Call<getCartItemsEntity> call, Response<getCartItemsEntity> response) {
                                 if (response != null) {
                                     getCartItemsEntity body = response.body();
+                                    if(null==body){
+                                        ToastUtil.showToast(CarItemsActicity.this, "商品查询通知", "接口访问异常，请重试");
+                                        return;
+                                    }
                                     if (body.getReturnX().getNCode() == 0) {
                                         //下面先  获取到 总价和总金额折扣这些
                                         CommonData.orderInfo.totalCount = body.getResponse().getTotalQty();
@@ -361,7 +372,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                             List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
                                             for (int sk = 0; sk < sub_itemsList.size(); sk++) {
                                                 //拿到产品编码
-                                                String spcode = sub_itemsList.get(sk).getSGoodsId();
+                                                String barcode = sub_itemsList.get(sk).getSBarcode();
                                                 double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
                                                /* //有会员登录，会员价低取会员价
                                                 //无会员登录，则获取 nPluPrice
@@ -371,15 +382,15 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                                 } else {
                                                     nRealPrice = sub_itemsList.get(sk).getNPluPrice();
                                                 }*/
-                                                if (MapList.containsKey(spcode)) {
+                                                if (MapList.containsKey(barcode)) {
 
                                                     //如果存在，拿到集合，增加数量，总价，折扣
-                                                    MapList.get(spcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
-                                                    MapList.get(spcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
+                                                    MapList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
+                                                    MapList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
 
                                                     //修改列表的数量
                                                     for (int k = 0; k < listmap.size(); k++) {
-                                                        if (listmap.get(k).get("id").equals(spcode)) {
+                                                        if (listmap.get(k).get("id").equals(barcode)) {
                                                             listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
                                                             listmap.get(k).put("MainPrice", String.valueOf(nRealPrice));
                                                             listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
@@ -401,12 +412,12 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                                                     uselist.add(usesplnfo);
                                                     //说明产品不存在，直接增加进去
-                                                    MapList.put(spcode, uselist);
+                                                    MapList.put(barcode, uselist);
 
 
                                                     //下面是只取几个字段去改变 界面显示的
                                                     map.put("barcode", sub_itemsList.get(sk).getSBarcode());
-                                                    map.put("id", spcode);
+                                                    map.put("id", barcode);
                                                     map.put("name", sub_itemsList.get(sk).getSGoodsName());
                                                     map.put("MainPrice", String.valueOf(nRealPrice));  //原价
                                                     map.put("disc", String.valueOf(sub_itemsList.get(sk).getPluDis()));  //折扣
@@ -524,7 +535,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
                                        int oldRight, int oldBottom) {
-                int heightNow = v.getHeight();//dialog当前的高度
+               /* int heightNow = v.getHeight();//dialog当前的高度
                 int widthNow = v.getWidth();//dialog当前的宽度
                 int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.8);//最小宽度为屏幕的0.7倍
                 int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
@@ -537,7 +548,11 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                     }
                     mView.setLayoutParams(new FrameLayout.LayoutParams(needWidth,
                             needHeight));
-                }
+                }*/
+
+                mView.setLayoutParams(new FrameLayout.LayoutParams(780,
+                        1400));
+
             }
         });
     }
@@ -688,16 +703,21 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call<ClearCarEntity> call, Response<ClearCarEntity> response) {
                 if (response!=null){
                     ClearCarEntity body = response.body();
-
-                    if (body.getReturnX().getNCode()==0){
-                        //购物车清空成功。，清空单据
-
+                    if (null!=body) {
+                        if (body.getReturnX().getNCode() == 0) {
+                            //购物车清空成功。，清空单据
+                            CommonData.hyMessage = null;
+                            CommonData.orderInfo = null;
+                        }
+                    }
+                    else{
+                        ToastUtil.showToast(CarItemsActicity.this, "异常通知", "接口请求异常，请耐心等待回复");
                     }
                 }
             }
             @Override
             public void onFailure(Call<ClearCarEntity> call, Throwable t) {
-                Toast.makeText(CarItemsActicity.this, "请检查网络配置...", Toast.LENGTH_LONG).show();
+                ToastUtil.showToast(CarItemsActicity.this, "异常通知", "请检查网络配置");
             }
         });
 
@@ -820,73 +840,6 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-//        CommonData.player.reset();
-//        CommonData.player=MediaPlayer.create(this,R.raw.paytype);
-//        CommonData.player.start();
-//        CommonData.player.setLooping(false);
-
-        //播放 支付成功的语音提示
-        /*textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == textToSpeech.SUCCESS) {
-
-                    textToSpeech.setPitch(1.0f);//方法用来控制音调
-                    textToSpeech.setSpeechRate(1.0f);//用来控制语速
-
-                    textToSpeech.speak("请先选择支付方式进行支付",//输入中文，若不支持的设备则不会读出来
-                            TextToSpeech.QUEUE_FLUSH, null);
-
-                } else {
-                    Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });*/
-
-
-//        final Dialog dialog1 = new Dialog(this, R.style.myNewsDialogStyle);
-//        // 自定义对话框布局
-//        layout_pay = View.inflate(this, R.layout.activity_chosepay, null);
-//        dialog1.setContentView(layout_pay);
-//        Window window = dialog1.getWindow();
-//        window.setGravity(Gravity.BOTTOM);
-//        window.setDimAmount(0f);
-//        dialog1.show();
-//        View zfb = (View) layout_pay.findViewById(R.id.zfb);
-//        View wx = (View) layout_pay.findViewById(R.id.wx);
-//        View wx_face = (View) layout_pay.findViewById(R.id.wx_face);
-//
-//        zfb.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog1.dismiss();
-//                payWay = "AliPaymentCodePay";
-//                sPayTypeExt="devicealimicropay";
-//                dialog_paycode(view,"支付宝");
-//
-//
-//            }
-//        });
-//        wx.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog1.dismiss();
-//                payWay = "WXPaymentCodePay";
-//                sPayTypeExt="devicewxmicropay";
-//                dialog_paycode(view,"微信");
-//            }
-//        });
-//        wx_face.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                sPayTypeExt="devicewxface";
-//                payWay = "WXFacePay";
-//
-//                wxFacepay();
-//            }
-//        });
-
         Intent intent = new Intent(CarItemsActicity.this, payWayActivity.class);
         startActivity(intent);
 
@@ -896,7 +849,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
      * 弹出输入支付码的页面
      */
 
-    public void dialog_paycode(View view,String payway) {
+   /* public void dialog_paycode(View view,String payway) {
 
         final Dialog dialog_paycode = new Dialog(this, R.style.myNewsDialogStyle);
 
@@ -916,7 +869,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         EditText input_code = layout_paycode.findViewById(R.id.pay_code);
 
 
-       /* textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+       *//* textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == textToSpeech.SUCCESS) {
@@ -932,7 +885,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 }
 
             }
-        });*/
+        });*//*
         CommonData.player.reset();
         if (payway.equals("支付宝")){
             CommonData.player=MediaPlayer.create(this,R.raw.alipay);
@@ -993,451 +946,9 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-    }
+    }*/
 
 
-    /**
-     * Moneypay
-     * Created by zhoupan on 2019/11/8.
-     * 选择支付方式之后进行支付
-     */
-
-    public void Moneypay() {
-
-        //默认值为 true，表示  可以支付了 ，只有为 true 的时候才可以进行支付
-        if (!isPay){
-            return;
-        }
-
-        isPay=false;   //说明 已经开始支付了，避免一次 扫码扫到连个触发两次
-
-        //1.0 初始化所有的产品信息,
-        List<RequestSignBean.PluMapBean> pluMap = new ArrayList<RequestSignBean.PluMapBean>();
-        MapList = CommonData.orderInfo.spList;
-        try {
-
-            for (Map.Entry<String, List<SplnfoList>> entry : MapList.entrySet()) {
-
-                RequestSignBean.PluMapBean payMapcls = new RequestSignBean.PluMapBean();
-                payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
-                payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
-                payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
-                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));  //单项实付金额
-                payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));  //单品单价
-                payMapcls.setPluDis(entry.getValue().get(0).getTotaldisc());  //单品优惠
-                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));   //单项小计
-                pluMap.add(payMapcls);
-            }
-        } catch (Exception ex) {
-
-        }
-
-        //2.0 选取支付方式 ,初始化支付信息
-        int PayTypeId = 1;
-
-        List<RequestSignBean.PayMapBean> payMap = new ArrayList<RequestSignBean.PayMapBean>();
-        RequestSignBean.PayMapBean pmp = new RequestSignBean.PayMapBean();
-        pmp.setPayTypeId(PayTypeId);
-        pmp.setPayVal(Double.valueOf(CommonData.orderInfo.totalPrice));
-        payMap.add(pmp);
-
-        //调用确认支付接口
-        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,"",pluMap, payMap);
-        ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
-            @Override
-            public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
-                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
-
-                if (response != null) {
-
-                    ResponseSignBean body = response.body();
-
-                    if (body.getReturnX().getNCode() == 0) {
-
-                        ResponseSignBean.ResponseBean response1 = body.getResponse();
-                        //说明当前支付时成功的，跳转到 支付等待界面
-                        Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
-
-                        startActivity(intent);
-
-                    } else {
-                        //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
-                        String Result = body.getReturnX().getStrText();
-
-                        //66是等待用户输入密码的过程。也会跳转到支付等待界面
-                        if ((Result.equals("支付等待") && body.getReturnX().getNCode() == 1) ||
-                                body.getReturnX().getNCode() == 66) {
-
-                            Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
-                            startActivity(intent);
-                            return;
-                        }
-                       /* else{
-
-                            Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
-                            startActivity(intent);
-                            return;
-
-                           *//* Intent intent = new Intent(CarItemsActicity.this, PayFailActivity.class);
-                            //参数传递
-                            Bundle bundle = new Bundle();
-
-                            bundle.putCharSequence("reason",Result);
-
-                            intent.putExtras(bundle);
-
-                            startActivity(intent);
-                            return;*//*
-                        }*/
-
-                        ToastUtil.showToast(CarItemsActicity.this, "支付通知", Result);
-                        center_dialog.dismiss();
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseSignBean> call, Throwable t) {
-
-                isPay=true;  //只有当这一笔支付完成 之后  才可以重新进行支付
-            }
-        });
-
-    }
-
-
-    //刷脸支付初始化
-    public  void wxFacepay(){
-        Map<String, String> m1 = new HashMap<>();
-        //m1.put("ip", "192.168.1.1"); //若没有代理,则不需要此行
-        //m1.put("port", "8888");//若没有代理,则不需要此行*/
-        try {
-            //1.0 刷脸支付初始化成功
-            WxPayFace.getInstance().initWxpayface(CarItemsActicity.this, m1, new IWxPayfaceCallback() {
-                @Override
-                public void response(Map info) throws RemoteException {
-                    if (!isSuccessInfo(info)) {
-                        return;
-                    }
-//                    textToSpeech = new TextToSpeech(CarItemsActicity.this, new TextToSpeech.OnInitListener() {
-//                        @Override
-//                        public void onInit(int status) {
-//                            if (status == textToSpeech.SUCCESS) {
-//
-//                                textToSpeech.setPitch(1.0f);//方法用来控制音调
-//                                textToSpeech.setSpeechRate(1.0f);//用来控制语速
-//
-//                                textToSpeech.speak("请按提示进行脸部识别，识别成功后请输入手机号后四位，进行支付",//输入中文，若不支持的设备则不会读出来
-//                                        TextToSpeech.QUEUE_FLUSH, null);
-//
-//
-//
-//                            } else {
-//                                Toast.makeText(CarItemsActicity.this, "数据丢失或不支持", Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                        }
-//                    });
-
-                    CommonData.player.reset();
-                    CommonData.player=MediaPlayer.create(CarItemsActicity.this,R.raw.facepay);
-                    CommonData.player.start();
-                    CommonData.player.setLooping(false);
-
-                    // 2.0微信刷脸  获取rawdata和AuthInfo 数据
-                    try {
-                        WxPayFace.getInstance().getWxpayfaceRawdata(new IWxPayfaceCallback() {
-                            @Override
-                            public void response(Map info) throws RemoteException {
-                                if (!isSuccessInfo(info)) {
-                                    return;
-                                }
-
-                                String rawdata = info.get("rawdata").toString();
-                                try {
-                                    //selfgetAuthInfo(rawdata);
-
-                                    InterfaceGetAuthInfo(rawdata);
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    }
-                    catch(Exception ex){
-                        //ToastUtil.showToast(OneActivity.this, "温馨提示", ex.toString());
-                    }
-
-                }
-            });
-        }
-        catch(Exception ex){
-            ToastUtil.showToast(CarItemsActicity.this, "温馨提示", "当前系统未安装微信刷脸程序");
-        }
-    }
-
-
-
-
-    private boolean isSuccessInfo(Map info) {
-        if (info == null) {
-
-            ToastUtil.showToast(CarItemsActicity.this, "温馨提示", "调用返回为空");
-            new RuntimeException("调用返回为空").printStackTrace();
-            return false;
-        }
-        String code = (String) info.get(RETURN_CODE);
-        String msg = (String) info.get(RETURN_MSG);
-
-
-        if (code == null || !code.equals(WxfacePayCommonCode.VAL_RSP_PARAMS_SUCCESS)) {
-            ToastUtil.showToast(CarItemsActicity.this, "温馨提示", "调用返回非成功信息, 请查看日志");
-            new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-
-
-    private void InterfaceGetAuthInfo(String rowdata) {
-
-        getWXFacepayAuthInfoCall = RetrofitHelper.getInstance().getWXFacepayAuthInfo(CommonData.khid, CommonData.userId, rowdata);
-        getWXFacepayAuthInfoCall.enqueue(new Callback<getWXFacepayAuthInfo>() {
-            @Override
-            public void onResponse(Call<getWXFacepayAuthInfo> call, Response<getWXFacepayAuthInfo> response) {
-
-                if (response != null) {
-                    getWXFacepayAuthInfo body = response.body();
-
-                    if (body.getReturnX().getNCode() == 0) {
-
-                        getWXFacepayAuthInfo.ResponseBean response1 = body.getResponse();
-                        mAuthInfo = response1.getAuthinfo();
-
-                        if (mAuthInfo == null) {
-
-                            ToastUtil.showToast(CarItemsActicity.this, "支付通知", "设备认证信息获取失败");
-                            return;
-                        }
-                        out_trade_no=response1.getOut_trade_no();
-                        responseAppid=response1.getAppid();
-                        responnse_subAppid=response1.getSubAppid();
-                        responsemachid=response1.getMch_id();
-                        responnse_submachid=response1.getSubMchId();
-
-                        double a = Double.valueOf(CommonData.orderInfo.totalPrice)*10*10;
-                        int total_fee= new Double(a).intValue();
-
-                        //3.0 然后调用首先获取  facecode。用于人脸支付
-                        Map<String, String> m1 = new HashMap<String, String>();
-                        m1.put("appid", responseAppid); // 公众号，必填
-                        m1.put("mch_id", responsemachid); // 商户号，必填
-                        m1.put("sub_appid", responnse_subAppid); // 商户号，必填
-                        m1.put("sub_mch_id", responnse_submachid); // 商户号，必填
-                        m1.put("store_id", CommonData.khid); // 门店编号，必填
-                        m1.put("out_trade_no", out_trade_no); // 商户订单号， 必填
-                        m1.put("total_fee", String.valueOf(total_fee)); // 订单金额（数字），单位：分，必填
-                        m1.put("face_authtype", "FACEPAY"); // FACEPAY：人脸凭证，常用于人脸支付    FACEPAY_DELAY：延迟支付   必填
-                        m1.put("authinfo", mAuthInfo);
-                        m1.put("ask_face_permit", "0"); // 展开人脸识别授权项，详情见上方接口参数，必填
-                        m1.put("ask_ret_page", "0"); // 是否展示微信支付成功页，可选值："0"，不展示；"1"，展示，非必填
-
-                        WxPayFace.getInstance().getWxpayfaceCode(m1, new IWxPayfaceCallback() {
-                            @Override
-                            public void response(final Map info) throws RemoteException {
-                                if (info == null) {
-                                    new RuntimeException("调用返回为空").printStackTrace();
-                                    return;
-                                }
-                                String code = (String) info.get("return_code"); // 错误码
-                                String msg = (String) info.get("return_msg"); // 错误码描述
-
-                                if (!code.equals("SUCCESS")) {
-
-                                    //没有成功需要关掉 人脸支付
-                                    HashMap<String, String> map = new HashMap<String, String>();
-                                    map.put("authinfo", mAuthInfo); // 调用凭证，必填
-                                    WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
-                                        @Override
-                                        public void response(Map info) throws RemoteException {
-                                            if (info == null) {
-                                                new RuntimeException("调用返回为空").printStackTrace();
-                                                return;
-                                            }
-                                            String code = (String) info.get("return_code"); // 错误码
-                                            String msg = (String) info.get("return_msg"); // 错误码描述
-                                            if (code == null || !code.equals("SUCCESS")) {
-                                                new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
-                                                return;
-                                            }
-                                        }
-                                    });
-                                }
-
-                                if(code.equals("SUCCESS")) {
-                                    String faceCode = info.get("face_code").toString(); // 人脸凭证，用于刷脸支付
-                                    openid = info.get("openid").toString(); // 人脸凭证，用于刷脸支付
-                                    //在这里处理业务逻辑
-                                    payAuthCode = faceCode;//将刷脸支付返回码进行订单调用
-
-                                    wxFaceMoneypay();
-                                }
-                               /* else if(code.equals("USER_CANCEL")){
-
-                                    WxPayFace.getInstance().releaseWxpayface(InputGoodsActivity.this);
-                                    //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户取消了支付，请重试");
-                                    return;
-
-                                }*/
-                                WxPayFace.getInstance().releaseWxpayface(CarItemsActicity.this);
-                                //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户取消了支付，请重试");
-                                return;
-
-                            }
-                        });
-
-                    } else {
-
-                        ToastUtil.showToast(CarItemsActicity.this, "支付通知", body.getReturnX().getStrText());
-
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<getWXFacepayAuthInfo> call, Throwable t) {
-
-            }
-        });
-
-
-    }
-
-
-    public void wxFaceMoneypay() {
-
-        //1.0 初始化所有的产品信息,
-        List<RequestSignBean.PluMapBean> pluMap = new ArrayList<RequestSignBean.PluMapBean>();
-        MapList = CommonData.orderInfo.spList;
-        try {
-
-            for (Map.Entry<String, List<SplnfoList>> entry : MapList.entrySet()) {
-
-                RequestSignBean.PluMapBean payMapcls = new RequestSignBean.PluMapBean();
-                payMapcls.setBarcode(entry.getValue().get(0).getBarcode());
-                payMapcls.setGoodsId(entry.getValue().get(0).getGoodsId());
-                payMapcls.setPluQty(entry.getValue().get(0).getPackNum());
-                payMapcls.setRealPrice(Double.valueOf(entry.getValue().get(0).getRealPrice()));  //单项实付金额
-                payMapcls.setPluPrice(Double.valueOf(entry.getValue().get(0).getMainPrice()));  //单品单价
-                payMapcls.setPluDis(Double.valueOf(entry.getValue().get(0).getTotaldisc()));  //单品优惠
-                payMapcls.setPluAmount(Double.valueOf(entry.getValue().get(0).getRealPrice()));   //单项小计
-                pluMap.add(payMapcls);
-            }
-        } catch (Exception ex) {
-            ToastUtil.showToast(CarItemsActicity.this, "温馨提示", ex.toString());
-
-        }
-
-        //2.0 选取支付方式 ,初始化支付信息
-        int PayTypeId = 1;
-
-        List<RequestSignBean.PayMapBean> payMap = new ArrayList<RequestSignBean.PayMapBean>();
-        RequestSignBean.PayMapBean pmp = new RequestSignBean.PayMapBean();
-        pmp.setPayTypeId(PayTypeId);
-        pmp.setPayVal(Double.valueOf(CommonData.orderInfo.totalPrice));
-        payMap.add(pmp);
-
-        //调用确认支付接口
-        ResponseSignBeanCall = RetrofitHelper.getInstance().getSign(payWay, payAuthCode, sPayTypeExt,openid,out_trade_no,pluMap, payMap);
-
-        ResponseSignBeanCall.enqueue(new Callback<ResponseSignBean>() {
-            @Override
-            public void onResponse(Call<ResponseSignBean> call, Response<ResponseSignBean> response) {
-                if (response!=null){
-                    ResponseSignBean body = response.body();
-                    if (payWay.equals("WXFacePay")){
-
-                        /*HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("appid", responseAppid); // 公众号，必填
-                        map.put("mch_id", responsemachid); // 商户号，必填
-                        map.put("store_id", CommonData.khid); // 门店编号，必填
-                        map.put("authinfo", mAuthInfo); // 调用凭证，必填
-                        map.put("payresult", "SUCCESS"); // 支付结果，SUCCESS:支付成功   ERROR:支付失败   必填
-                        WxPayFace.getInstance().updateWxpayfacePayResult(map, new IWxPayfaceCallback() {
-                            @Override
-                            public void response(Map info) throws RemoteException {
-                                if (info == null) {
-                                    new RuntimeException("调用返回为空").printStackTrace();
-                                    return;
-                                }
-                                String code = (String) info.get("return_code"); // 错误码
-                                String msg = (String) info.get("return_msg"); // 错误码描述
-                                if (code == null || !code.equals("SUCCESS")) {
-                                    new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
-                                    return ;
-                                }
-                            }
-                        });*/
-
-                        //没有成功需要关掉 人脸支付
-                        HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("authinfo", mAuthInfo); // 调用凭证，必填
-                        WxPayFace.getInstance().stopWxpayface(map, new IWxPayfaceCallback() {
-                            @Override
-                            public void response(Map info) throws RemoteException {
-                                if (info == null) {
-                                    new RuntimeException("调用返回为空").printStackTrace();
-                                    return;
-                                }
-                                String code = (String) info.get("return_code"); // 错误码
-                                String msg = (String) info.get("return_msg"); // 错误码描述
-                                if (code == null || !code.equals("SUCCESS")) {
-                                    new RuntimeException("调用返回非成功信息,return_msg:" + msg + "   ").printStackTrace();
-                                    return;
-                                }
-                            }
-                        });
-
-                    }
-                    if (body.getReturnX().getNCode()==0){
-
-                        ResponseSignBean.ResponseBean response1 = body.getResponse();
-                        //说明当前支付时成功的，跳转到 支付等待界面
-                        Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
-
-                        startActivity(intent);
-                    }
-                    else{
-                        //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
-                        String  Result=body.getReturnX().getStrText();
-
-                        //返回标识 66 是等待用户输入密码的过程。也会跳转到支付等待界面
-                        if ((Result.equals("支付等待")&&body.getReturnX().getNCode()==1)||
-                                body.getReturnX().getNCode()==66) {
-
-                            Intent intent = new Intent(CarItemsActicity.this, WaitingFinishActivity.class);
-                            startActivity(intent);
-                            return;
-                        }
-
-                        ToastUtil.showToast(CarItemsActicity.this, "支付通知", Result);
-
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseSignBean> call, Throwable t) {
-
-            }
-        });
-
-    }
 
 
 
