@@ -56,8 +56,12 @@ public class NewIndexActivity extends Activity {
 
         Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
         video.setVideoURI(uri);//为视频播放器设置视频路径
-        video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
+        //video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
 
+
+        MediaController mc = new MediaController(this);
+        mc.setVisibility(View.INVISIBLE);
+        video.setMediaController(mc);
 
         video.start();
 

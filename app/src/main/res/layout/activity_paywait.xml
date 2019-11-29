@@ -71,14 +71,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="40dp">
+        android:layout_marginTop="70dp">
         <TextView
             android:id="@+id/pay_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="支付等待"
             android:gravity="center"
-            android:textSize="38dp"
+            android:textSize="40dp"
             android:textStyle="bold"/>
     </LinearLayout>
     <!--支付等待文字-->
@@ -86,12 +86,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="40dp">
+        android:layout_marginTop="60dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="支付信息正在提交，请耐心等待"
             android:gravity="center"
-            android:textSize="30dp" />
+            android:textSize="34dp" />
     </LinearLayout>
 </LinearLayout>

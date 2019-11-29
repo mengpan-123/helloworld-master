@@ -825,7 +825,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                         if (body.getReturnX().getNCode() == 0) {
                             //购物车清空成功。，清空单据
                             CommonData.hyMessage = null;
-                            CommonData.orderInfo = null;
+                            CommonData.orderInfo.spList.clear();
                         }
                     }
                     else{

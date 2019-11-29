@@ -190,11 +190,11 @@ public class FinishActivity extends AppCompatActivity  {
 
 
         String Str="                   欢迎光临                   "+"\n";
-        Str+="             "+CommonData.machine_name+"             "+"\n";
+        Str+="门店编号:"+CommonData.khid+"       门店名称:"+CommonData.machine_name+"\n";
         Str+="流水号："+CommonData.ordernumber+"     "+"\n";
         Str+="日期   "+day+"     "+"\n";
         Str+="==============================================="+"\n";
-        Str+=" 品名    数量    成交价    单价     金额"+"\n";
+        Str+="品名    数量    成交价    单价     金额"+"\n";
 
         for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
 
@@ -215,15 +215,15 @@ public class FinishActivity extends AppCompatActivity  {
         Str+=printpaytype+"  "+CommonData.orderInfo.totalPrice+"\n";
 
         Str+="总数量         应收        找零"+"\n";
-        Str+=""+CommonData.orderInfo.totalCount+"         "+CommonData.orderInfo.totalPrice+"         0.00     "+"\n";
+        Str+=""+CommonData.orderInfo.totalCount+"             "+CommonData.orderInfo.totalPrice+"             0.00     "+"\n";
 
 
         //获取当前时间并 打印时间
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");// HH:mm:ss
         Date newdate = new Date(System.currentTimeMillis());
 
-        Str+="==================="+simpleDateFormat.format(newdate)+"================="+"\n";
-        Str+="               谢谢惠顾，请妥善保管小票              "+"\n";
+        Str+="====================="+simpleDateFormat.format(newdate)+"==================="+"\n";
+        Str+="             谢谢惠顾，请妥善保管小票            "+"\n";
         Str+="               开正式发票，当月有效              "+"\n";
 
         if (PrinterAPI.SUCCESS == mPrinter.connect(io))

@@ -40,7 +40,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="90dp"
             android:gravity="center">
             <TextView
                 android:id="@+id/havepaynet"
@@ -140,7 +140,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="200dp"
         android:gravity="center">
 
         <TextView
@@ -152,15 +152,15 @@
             android:padding="10dp"
             android:textColor="#EC1D1D"
             android:textSize="33dp" />
+
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colortext"
+            android:layout_height="31dp"
+            android:gravity="center"
             android:text="后自动返回到首页"
 
-            android:textSize="30dp"
-            android:gravity="center"
-            />
+            android:textColor="@color/colortext"
+            android:textSize="30dp" />
 
     </LinearLayout>
     <LinearLayout
