@@ -82,6 +82,9 @@ public class payWayActivity  extends Activity {
         ImageView wx = findViewById(R.id.wx);
         ImageView wx_face = findViewById(R.id.wx_face);
 
+        TextView returnback = findViewById(R.id.returnback);
+
+
         zfb.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -131,6 +134,17 @@ public class payWayActivity  extends Activity {
         });
 
 
+
+        //返回上一页
+
+        returnback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(payWayActivity.this, CarItemsActicity.class);
+
+                startActivity(intent);
+            }
+        });
     }
 
     //刷脸支付初始化

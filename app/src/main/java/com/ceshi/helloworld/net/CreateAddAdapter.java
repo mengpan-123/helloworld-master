@@ -101,12 +101,12 @@ public class CreateAddAdapter extends BaseAdapter {
             y_price.setText(list.get(position).get("MainPrice"));//原价
             price.setText(list.get(position).get("realprice"));//实际售价
             num.setText(list.get(position).get("count"));//商品数量
-            //describe.setText(list.get(position).get("actname"));//促销活动
+            describe.setText(list.get(position).get("actname"));//促销活动
 
             if ("0.00".equals(list.get(position).get("disc"))||"0".equals(list.get(position).get("disc"))||"0.0".equals(list.get(position).get("disc"))){
 
-                y_price.setVisibility(View.INVISIBLE);
-                y_title.setVisibility(View.INVISIBLE);
+                y_price.setVisibility(View.GONE);
+                y_title.setVisibility(View.GONE);
             }
             else {
 
@@ -118,84 +118,6 @@ public class CreateAddAdapter extends BaseAdapter {
 
 
         }
-
-
-        //商品数量减
-        /*reduce.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              *//*  CommonData.list_adaptor = new CreateAddAdapter(InputGoodsActivity.this, list);
-                listView.setAdapter(CommonData.list_adaptor);*//*
-
-                List<RequestDeleteGoods.ItemMapBean> itemMap =new ArrayList<RequestDeleteGoods.ItemMapBean>();
-                RequestDeleteGoods.ItemMapBean itemMapcls = new RequestDeleteGoods.ItemMapBean();
-                itemMapcls.setBarcode(list.get(position).get("id"));
-                itemMap.add(itemMapcls);
-                ResponseDeleteGoodsCall=RetrofitHelper.getInstance().responseDeleteGoods(itemMap);
-                ResponseDeleteGoodsCall.enqueue(new Callback<ResponseDeleteGoods>() {
-                    @Override
-                    public void onResponse(Call<ResponseDeleteGoods> call, Response<ResponseDeleteGoods> response) {
-                        if (response!=null){
-                            ResponseDeleteGoods body=response.body();
-                            if (body.getReturnX().getNCode()==0){
-                                ResponseDeleteGoods.ResponseBean response1 = body.getResponse();
-                                if (Integer.valueOf(list.get(position).get("count")) <= 1) {
-                                    // Toast.makeText(context, "数量不能再减啦,只能删除!", Toast.LENGTH_SHORT).show();
-                                    //list.remove(position);
-                                    try {
-                                        CommonData.orderInfo.spList.remove(list.get(position).get("id"));
-//                                        BigDecimal price= BigDecimal.valueOf(Double.valueOf(list.get(position).get("price")));
-
-                                        pitchOnMap.remove(list.get(position).get("id"));
-                                        list.remove(position);
-                                        CommonData.orderInfo.totalCount=CommonData.orderInfo.totalCount-1;
-
-                                        //CommonData.orderInfo.totalPrice=(BigDecimal.valueOf(CommonData.orderInfo.totalPrice).subtract(price)).doubleValue();
-
-
-                                    }
-                                    catch(Exception ex){}
-
-                                } else {
-                                    //pitchOnMap.remove(list.get(position).get("id"));
-                                    list.get(position).put("count", (Integer.valueOf(list.get(position).get("count")) - 1) + "");
-//                                    BigDecimal price= BigDecimal.valueOf(Double.valueOf(list.get(position).get("price")));
-                                    CommonData.orderInfo.totalCount=CommonData.orderInfo.totalCount-1;
-                                    //CommonData.orderInfo.totalPrice=(BigDecimal.valueOf(CommonData.orderInfo.totalPrice).subtract(price)).doubleValue();
-
-                                }
-
-                                //重新 设置 界面的显示值
-                                //InputGoodsActivity.shopcar_num.setText(CommonData.orderInfo.totalCount);
-
-                                  CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
-                                   listView1.setAdapter(CommonData.list_adaptor);
-                                 //   CommonData.list_adaptor.setRefreshPriceInterface(CreateAddAdapter.this);
-
-                                 notifyDataSetChanged();
-                               *//* pitchOnMap = new HashMap<>();
-                                for (int i = 0; i < list.size(); i++) {
-                                    pitchOnMap.put(list.get(i).get("id"), 0);
-                                }*//*
-                                mrefreshPriceInterface.refreshPrice(pitchOnMap);
-
-                            }else {
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseDeleteGoods> call, Throwable t) {
-
-                    }
-                });
-
-                mrefreshPriceInterface.refreshPrice(pitchOnMap);
-            }
-        });*/
-
-
 
 
         /**
@@ -214,7 +136,7 @@ public class CreateAddAdapter extends BaseAdapter {
                 //初始化报文信息
                 List<RequestDeleteGoods.ItemMapBean> itemMap =new ArrayList<RequestDeleteGoods.ItemMapBean>();
                 RequestDeleteGoods.ItemMapBean itemMapcls = new RequestDeleteGoods.ItemMapBean();
-                itemMapcls.setBarcode(list.get(position).get("barcode"));
+                itemMapcls.setBarcode(list.get(position).get("id"));
                 itemMap.add(itemMapcls);
 
                 ResponseDeleteGoodsCall=RetrofitHelper.getInstance().responseDeleteGoods(itemMap);
@@ -282,16 +204,19 @@ public class CreateAddAdapter extends BaseAdapter {
                                                 //界面上实现  增加一个元素
                                                 CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
                                                 listView1.setAdapter(CommonData.list_adaptor);
+                                                listView1.setSelection(listView1.getBottom());
+                                                listView1.setSelection(CommonData.list_adaptor.getCount()-1);
                                                 notifyDataSetChanged();
                                                 mrefreshPriceInterface.refreshPrice(pitchOnMap);
+                                            }else{
+                                                ToastUtil.showToast(context, "商品移除通知", body.getReturnX().getStrInfo());
                                             }
-
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Call<getCartItemsEntity> call, Throwable t) {
-
+                                        ToastUtil.showToast(context, "商品移除通知", "网络异常，请稍后重试");
                                     }
                                 });
                                 mrefreshPriceInterface.refreshPrice(pitchOnMap);
@@ -302,7 +227,7 @@ public class CreateAddAdapter extends BaseAdapter {
 
                     @Override
                     public void onFailure(Call<ResponseDeleteGoods> call, Throwable t) {
-
+                        ToastUtil.showToast(context, "商品移除通知", "网络异常，请稍后重试 ");
                     }
                 });
 
@@ -319,7 +244,7 @@ public class CreateAddAdapter extends BaseAdapter {
        add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inputbarcode=list.get(position).get("barcode");
+                String inputbarcode=list.get(position).get("id");
 
                 HashMap<String, String> map = new HashMap<>();
                 Addgoodsinfo = RetrofitHelper.getInstance().getgoodsinfo(inputbarcode, CommonData.khid, CommonData.userId, "0");
@@ -358,15 +283,29 @@ public class CreateAddAdapter extends BaseAdapter {
                                                             CommonData.orderInfo.spList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
 
                                                             //修改列表的数量
-                                                            list.get(position).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
+                                                            String  useqty=String.valueOf(sub_itemsList.get(sk).getNQty());
+
+                                                            /*list.get(position).put("count", useqty);
                                                             list.get(position).put("MainPrice", String.valueOf(nRealPrice));
                                                             list.get(position).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
-                                                            list.get(position).put("actname", itemsList.get(sm).getDisRule());
+                                                            list.get(position).put("actname", itemsList.get(sm).getDisRule());*/
+                                                            //修改列表的数量
+                                                            for (int k = 0; k < list.size(); k++) {
+                                                                if (list.get(k).get("id").equals(barcode)) {
+                                                                    list.get(k).put("count", useqty);
+                                                                    list.get(k).put("MainPrice", String.valueOf(nRealPrice));
+                                                                    list.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
+                                                                    list.get(k).put("actname", itemsList.get(sm).getDisRule());
+
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
                                                 CommonData.list_adaptor = new CreateAddAdapter(CreateAddAdapter.this.context, list);
                                                 listView1.setAdapter(CommonData.list_adaptor);
+                                                listView1.setSelection(listView1.getBottom());
+                                                listView1.setSelection(CommonData.list_adaptor.getCount()-1);
                                                 notifyDataSetChanged();
                                                 mrefreshPriceInterface.refreshPrice(pitchOnMap);
 

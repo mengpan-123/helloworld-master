@@ -75,12 +75,25 @@ public class ResponseSignBean implements Serializable {
 
         private long server_timestamp;
 
+
+        private String  out_transid;
+
         public long getServer_timestamp() {
             return server_timestamp;
         }
-
         public void setServer_timestamp(long server_timestamp) {
             this.server_timestamp = server_timestamp;
         }
+
+
+        public void setOut_TransId(String out_transid) {
+            this.out_transid = out_transid;
+        }
+        public String getOut_TransId() {
+            return out_transid;
+        }
+
+
+
     }
 }

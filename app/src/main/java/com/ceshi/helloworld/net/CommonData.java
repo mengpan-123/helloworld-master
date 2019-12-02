@@ -29,6 +29,10 @@ public  class CommonData  extends Application {
     public static  int    number=1;
 
     public static  String     ordernumber="";
+
+
+    public static  String     outTransId="";  //小票打印的商户订单号
+
     //门店注册登陆之后 返回的 userid，用于 支付时使用
     public static String    userId="";
 

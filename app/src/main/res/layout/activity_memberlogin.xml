@@ -232,7 +232,7 @@
             android:layout_height="110dp"
             android:background="@drawable/button_shape"
             android:textColor="#F0F0F0"
-            android:text="登陆"
+            android:text="登  录"
             android:textSize="45sp"
             android:gravity="center"
             android:id="@+id/closeHy"

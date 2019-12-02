@@ -202,6 +202,11 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
     public  void  MembersLogin(View view){
 
+
+        if (!phone_view.getText().equals("我是会员")){
+            return;
+
+        }
         // 创建一个Dialog
         final Dialog dialog = new Dialog(this,
                 R.style.myNewsDialogStyle);
@@ -318,16 +323,16 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         {
             //预加载之前的产品信息
             if (null!=CommonData.orderInfo.spList){
-                HashMap<String, String> temp_map = new HashMap<>();
+
                 for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()){
-                    temp_map.clear();
-                    temp_map.put("id", entry.getValue().get(0).getGoodsId());
+                    HashMap<String, String> temp_map = new HashMap<>();
+                    temp_map.put("id", entry.getValue().get(0).getBarcode());
                     temp_map.put("name", entry.getValue().get(0).getPluName());
                     temp_map.put("MainPrice", String.valueOf(entry.getValue().get(0).getMainPrice()));
                     temp_map.put("realprice", String.valueOf(entry.getValue().get(0).getRealPrice()));
                     temp_map.put("count", String.valueOf(entry.getValue().get(0).getPackNum()));
                     temp_map.put("actname", String.valueOf(entry.getValue().get(0).getActname()));
-
+                    temp_map.put("disc", String.valueOf(entry.getValue().get(0).getTotaldisc()));
                     listmap.add(temp_map);
                 }
                 MapList=CommonData.orderInfo.spList;
@@ -519,7 +524,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                         adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
                                         listview.setAdapter(adapter);
                                         listview.setSelection(listview.getBottom());  //加这一句话的目的是，超屏幕现实的时候，自动定位在底部
-
+                                        listview.setSelection(adapter.getCount()-1);
                                         adapter.setRefreshPriceInterface(CarItemsActicity.this);
                                         priceControl(adapter.getPitchOnMap());
                                     }

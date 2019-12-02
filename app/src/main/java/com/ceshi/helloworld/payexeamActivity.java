@@ -201,29 +201,36 @@ public class payexeamActivity extends AppCompatActivity {
                 if (response != null) {
 
                     ResponseSignBean body = response.body();
+                    if (null!=body) {
 
-                    if (body.getReturnX().getNCode() == 0) {
 
-                        ResponseSignBean.ResponseBean response1 = body.getResponse();
-                        //说明当前支付时成功的，跳转到 支付等待界面
-                        Intent intent = new Intent(payexeamActivity.this, WaitingFinishActivity.class);
 
-                        startActivity(intent);
+                        if (body.getReturnX().getNCode() == 0) {
 
-                    } else {
-                        //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
-                        String Result = body.getReturnX().getStrText();
+                            ResponseSignBean.ResponseBean response1 = body.getResponse();
 
-                        //66是等待用户输入密码的过程。也会跳转到支付等待界面
-                        if ((Result.equals("支付等待") && body.getReturnX().getNCode() == 1) ||
-                                body.getReturnX().getNCode() == 66) {
-
+                            CommonData.outTransId=response1.getOut_TransId();
+                            //说明当前支付时成功的，跳转到 支付等待界面
                             Intent intent = new Intent(payexeamActivity.this, WaitingFinishActivity.class);
+
                             startActivity(intent);
+
+                        } else {
+                            //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();
+                            String Result = body.getReturnX().getStrText();
+
+                            //66是等待用户输入密码的过程。也会跳转到支付等待界面
+                            if ((Result.equals("支付等待") && body.getReturnX().getNCode() == 1) ||
+                                    body.getReturnX().getNCode() == 66) {
+
+                                CommonData.outTransId=body.getResponse().getOut_TransId();
+                                Intent intent = new Intent(payexeamActivity.this, WaitingFinishActivity.class);
+                                startActivity(intent);
+                                return;
+                            }
+                            ToastUtil.showToast(payexeamActivity.this, "支付通知", Result);
                             return;
                         }
-                        ToastUtil.showToast(payexeamActivity.this, "支付通知", Result);
-                        return;
                     }
                 }
             }
