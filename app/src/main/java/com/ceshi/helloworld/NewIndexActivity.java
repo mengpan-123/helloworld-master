@@ -305,6 +305,8 @@ public class NewIndexActivity extends Activity {
                                        int oldRight, int oldBottom) {
                 mView.setLayoutParams(new FrameLayout.LayoutParams(780,
                         1100));
+
+
             }
         });
     }

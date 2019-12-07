@@ -74,9 +74,11 @@ public class ResponseSignBean implements Serializable {
          */
 
         private long server_timestamp;
+        private String transId;
+        private String outTransId;
 
+        private String nCurrentPoint;  //当前积分值
 
-        private String  out_transid;
 
         public long getServer_timestamp() {
             return server_timestamp;
@@ -86,13 +88,29 @@ public class ResponseSignBean implements Serializable {
         }
 
 
-        public void setOut_TransId(String out_transid) {
-            this.out_transid = out_transid;
-        }
-        public String getOut_TransId() {
-            return out_transid;
+        public String getTransId() {
+            return transId;
         }
 
+        public void setTransId(String transId) {
+            this.transId = transId;
+        }
+
+        public String getOutTransId() {
+            return outTransId;
+        }
+
+        public void setOutTransId(String outTransId) {
+            this.outTransId = outTransId;
+        }
+
+        public String getNCurrentPoint() {
+            return nCurrentPoint;
+        }
+
+        public void setNCurrentPoint(String nCurrentPoint) {
+            this.nCurrentPoint = nCurrentPoint;
+        }
 
 
     }

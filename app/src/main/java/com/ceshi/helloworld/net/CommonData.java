@@ -21,8 +21,11 @@ public  class CommonData  extends Application {
     //设备号deviceId
     public static String    machine_number= Build.SERIAL;
 
-    //门店编号
+    //接口返回的门店编号
     public static String    khid="";
+
+    //实际输入的门店编号
+    public static String    inputkhid="";
 
 
     //订单流水号，命名规则为 销售日期和 一个三位的序号,这里只使用序号
@@ -68,6 +71,10 @@ public  class CommonData  extends Application {
 
     //程序版本号
     public static String    app_version="";
+
+
+    //本次交易获得的积分值
+    public static String    get_jf="0.0";
 
 
     public static HyMessage  hyMessage=null;

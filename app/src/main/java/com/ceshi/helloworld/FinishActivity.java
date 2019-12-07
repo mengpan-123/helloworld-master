@@ -94,9 +94,9 @@ public class FinishActivity extends AppCompatActivity  {
 
         //倒计时30s立即返回到 首界面
 
-        time=(TextView) findViewById(R.id.tv_time);
+       /* time=(TextView) findViewById(R.id.tv_time);
         i=Integer.parseInt(time.getText().toString());
-        startTime();
+        startTime();*/
 
 
 
@@ -189,33 +189,53 @@ public class FinishActivity extends AppCompatActivity  {
         String day=form.format(date);
 
 
+
         String Str="                   欢迎光临                   "+"\n";
-        Str+="门店编号:"+CommonData.khid+"       门店名称:"+CommonData.machine_name+"\n";
-        Str+="流水号："+CommonData.ordernumber+"     "+"\n";
+        Str+="门店编号:"+CommonData.inputkhid+"       门店名称:"+CommonData.machine_name+"\n";
+        Str+="流水号："+CommonData.outTransId+"     "+"\n";
+        //Str+="商户订单号："+CommonData.outTransId+"     "+"\n";
         Str+="日期   "+day+"     "+"\n";
         Str+="==============================================="+"\n";
-        Str+="品名    数量    成交价    单价     金额"+"\n";
+        Str+="条码   名称    数量    成交价    单价     金额"+"\n";
 
         for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
 
             String  barcode=entry.getValue().get(0).getBarcode();
             String sname=entry.getValue().get(0).getPluName();
-            double qty=entry.getValue().get(0).getPackNum();
+            String  qty="0";
+            String weight=entry.getValue().get(0).getNweight();
+
+            if ((null!=weight&&weight.equals("0"))||(null!=weight&&weight.equals("0.00"))){
+                //净重含量存在值 则显示重量
+                qty=String.valueOf(entry.getValue().get(0).getPackNum());
+            }else {
+                //否则显示数量
+                qty = entry.getValue().get(0).getNweight();
+            }
+
             double dj=entry.getValue().get(0).getMainPrice();
 
             String zj=entry.getValue().get(0).getRealPrice();
-
-            Str+= barcode+"   "+sname+"   "+qty+"    "+dj+"  "+zj+" "+"\n";
+            Str+= barcode+"\n";
+            Str+= sname+"   "+qty+"    "+dj+"  "+zj+" "+"\n";
         }
 
         //付款方式
-        Str+="==============================================="+"\n";
-        Str+="付款方式         金额   "+"\n";
+        Str+="================================================="+"\n";
+        Str+="付款方式             金额   "+"\n";
 
-        Str+=printpaytype+"  "+CommonData.orderInfo.totalPrice+"\n";
+        Str+=printpaytype+"             "+CommonData.orderInfo.totalPrice+"\n";
 
         Str+="总数量         应收        找零"+"\n";
-        Str+=""+CommonData.orderInfo.totalCount+"             "+CommonData.orderInfo.totalPrice+"             0.00     "+"\n";
+        Str+=""+CommonData.orderInfo.totalCount+"             "+CommonData.orderInfo.totalPrice+"          0.00     "+"\n";
+
+
+        if (  CommonData.hyMessage!=null) {
+            //如果会员信息不等于null 的，则需要打印会员基础信息
+            Str += "会员卡号:" + CommonData.hyMessage.cardnumber + "\n";
+            Str += "本次消费获得会员积分：" + CommonData.get_jf;
+
+        }
 
 
         //获取当前时间并 打印时间
@@ -223,34 +243,33 @@ public class FinishActivity extends AppCompatActivity  {
         Date newdate = new Date(System.currentTimeMillis());
 
         Str+="====================="+simpleDateFormat.format(newdate)+"==================="+"\n";
-        Str+="             谢谢惠顾，请妥善保管小票            "+"\n";
+        Str+="            谢谢惠顾，请妥善保管小票         "+"\n";
         Str+="               开正式发票，当月有效              "+"\n";
 
-        if (PrinterAPI.SUCCESS == mPrinter.connect(io))
-        {
-            Toast.makeText(FinishActivity.this, "链接成功", Toast.LENGTH_SHORT).show();
-            try {
-                if (PrinterAPI.SUCCESS == mPrinter.printString(Str,"GBK", true))
-                {
+        try {
+            if (PrinterAPI.SUCCESS == mPrinter.connect(io)) {
+                Toast.makeText(FinishActivity.this, "链接成功", Toast.LENGTH_SHORT).show();
+                try {
+                    if (PrinterAPI.SUCCESS == mPrinter.printString(Str, "GBK", true)) {
 //                                Thread.sleep(time);
-                }
-                else
-                {
-                    Toast.makeText(FinishActivity.this, "，小票打印失败,请重试", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(FinishActivity.this, "，小票打印失败,请重试", Toast.LENGTH_SHORT).show();
 //                                handler.sendEmptyMessage(1);
+                    }
+
+                    mPrinter.printFeed();
+                    //清楚打印缓存区 避免对后面数据的影响 有些设置会恢复默认值
+                    mPrinter.init();
+                    mPrinter.cutPaper(66, 0);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //printstate.setText("小票打印失败,请重试");
                 }
-
-                mPrinter.printFeed();
-                //清楚打印缓存区 避免对后面数据的影响 有些设置会恢复默认值
-                mPrinter.init();
-                mPrinter.cutPaper(66, 0);
-
             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                //printstate.setText("小票打印失败,请重试");
-            }
+        }
+        catch(Exception ex){
+            ToastUtil.showToast(FinishActivity.this, "打印异常通知", "请检查当前打印机连接");
         }
     }
 

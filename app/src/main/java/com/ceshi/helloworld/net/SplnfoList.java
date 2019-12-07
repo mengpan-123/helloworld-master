@@ -79,6 +79,15 @@ public class  SplnfoList {
         this.realPrice = realPrice;
     }
 
+    public String getNweight() {
+        return nweight;
+    }
+
+    public void setNweight(String nweight) {
+        this.nweight = nweight;
+    }
+
+
     public String getActname() {
         return actname;
     }
@@ -114,6 +123,10 @@ public class  SplnfoList {
 
     //产品数量
     private int packNum;
+
+
+    //称重产品的重量
+    private String  nweight;
 
     //实际售价
     private String realPrice;

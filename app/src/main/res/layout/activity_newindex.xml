@@ -71,7 +71,7 @@
         android:background="#eeeeee"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="30dp">
 
         <TextView
             android:id="@+id/storename"

@@ -71,6 +71,7 @@
         android:layout_height="wrap_content"
 
      >
+        <!--//770-->
         <ImageView
             android:orientation="horizontal"
             android:id="@+id/wxuseinfo"
@@ -80,6 +81,7 @@
             >
         </ImageView>
     </LinearLayout>
+
 
     <!--//整单优惠-->
     <LinearLayout

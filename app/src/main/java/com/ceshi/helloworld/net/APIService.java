@@ -96,7 +96,7 @@ public interface APIService {
             //String sBindMobile,String sCorpId,CommonData.lCorpId,String sUserId
             @Field("sBindMobile") String sBindMobile,
             @Field("sCorpId") String sCorpId,
-            @Field("ICorpId") String lCorpId,
+            @Field("lCorpId") String lCorpId,
             @Field("sUserId") String sUserId
     );
 

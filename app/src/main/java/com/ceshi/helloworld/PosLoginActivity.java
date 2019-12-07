@@ -9,8 +9,10 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.bean.UpdateVersionEntity;
@@ -28,6 +31,8 @@ import com.ceshi.helloworld.net.MyDatabaseHelper;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.ToastUtil;
 
+import java.io.File;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -123,6 +128,7 @@ public class PosLoginActivity extends AppCompatActivity {
 
         }
 
+        app_version=getAppVersion(this);
 
 
         //否则的话就需要登录，然后绑定相应的登陆事件
@@ -135,8 +141,11 @@ public class PosLoginActivity extends AppCompatActivity {
                 //创建成功之后进行写数据
                 TextView inputmachine = findViewById(R.id.inputmachine);
                 TextView inputkhid = findViewById(R.id.inputkhid);
+
                 s_inputmachine = inputmachine.getText().toString();
                 s_inputkhid = inputkhid.getText().toString();
+
+                CommonData.inputkhid=s_inputkhid;
 
                 if (s_inputmachine.length() == 0 || s_inputkhid.length() == 0) {
                     ToastUtil.showToast(PosLoginActivity.this, "输入消息通知", "请输入完整的门店号或者设备号");
@@ -177,8 +186,10 @@ public class PosLoginActivity extends AppCompatActivity {
                             userId = response1.getUserId();
 
 
+                            WirttenDataToSqlite();
+
                             //然后根据获取到的 门店的值 ，进行下一次门店商户号的获取
-                            StoreIdEntityCall = RetrofitHelper.getInstance().getStoreId(use_khid);
+                           /* StoreIdEntityCall = RetrofitHelper.getInstance().getStoreId(use_khid);
 
                             StoreIdEntityCall.enqueue(new Callback<StoreIdEntity>() {
                                 @Override
@@ -213,7 +224,7 @@ public class PosLoginActivity extends AppCompatActivity {
                                 public void onFailure(Call<StoreIdEntity> call, Throwable t) {
 
                                 }
-                            });
+                            });*/
 
 
                         }
@@ -225,7 +236,7 @@ public class PosLoginActivity extends AppCompatActivity {
                     }
                 });
 
-                app_version = getAppVersion(PosLoginActivity.this);
+                //app_version = getAppVersion(PosLoginActivity.this);
                 //Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
                 //startActivity(intent);
             }
@@ -259,6 +270,9 @@ public class PosLoginActivity extends AppCompatActivity {
                     //用户信息
                     CommonData.userId = cursor.getString(cursor.getColumnIndex("userId"));
 
+
+                    CommonData.inputkhid=cursor.getString(cursor.getColumnIndex("sub_mch_id"));
+
                     //CommonData.machine_number = cursor.getString(cursor.getColumnIndex("machine_number"));
 
                 }
@@ -272,6 +286,18 @@ public class PosLoginActivity extends AppCompatActivity {
 
 
     //获取程序的版本号
+    public static int getAppVersioncode(Context context) {
+        PackageManager manager = context.getPackageManager();
+        int code = 0;
+        try {
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            code = info.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return code;
+    }
+    //版本号名称
     public static String getAppVersion(Context context) {
         PackageManager manager = context.getPackageManager();
         String code = "";
@@ -283,7 +309,6 @@ public class PosLoginActivity extends AppCompatActivity {
         }
         return code;
     }
-
 
     public void WirttenDataToSqlite() {
 
@@ -305,7 +330,7 @@ public class PosLoginActivity extends AppCompatActivity {
 
             values.put("date_lr", today);
             values.put("mch_id", mch_id);
-            values.put("sub_mch_id", sub_mch_id);
+            values.put("sub_mch_id", CommonData.inputkhid); //2019-12-07暂时存储这个字段
             values.put("number", 1);
 
             db.insert(CommonData.tablename, null, values);
@@ -339,7 +364,16 @@ public class PosLoginActivity extends AppCompatActivity {
     public   void PrepareUpdateVersion(){
 
         try {
-            UpdateVersionEntityCall = RetrofitHelper.getInstance().UpdateVersion(CommonData.machine_name, "", CommonData.khid);
+            String info="";
+
+            if (CommonData.machine_name.equals("")){
+                info="未登录";
+            }
+            else{
+                info=CommonData.machine_name;
+            }
+
+            UpdateVersionEntityCall = RetrofitHelper.getInstance().UpdateVersion(info, "selfdevice", CommonData.khid);
             UpdateVersionEntityCall.enqueue(new Callback<UpdateVersionEntity>() {
                 @Override
                 public void onResponse(Call<UpdateVersionEntity> call, Response<UpdateVersionEntity> response) {
@@ -348,29 +382,36 @@ public class PosLoginActivity extends AppCompatActivity {
                         if (null!=body) {
                             if (body.getReturnX().getNCode() == 0) {
                                 //接口返回的版本号，进行比较，然后拿到URL进行下载
+                                String returnversion=body.getResponse().getAppVersion();
 
+                                returnversion=returnversion.replace(".","");
 
                                 //获取到本地文件的版本，判断是否需要升级
-                                String newversion = getAppVersion(PosLoginActivity.this);
+                                int newversion = getAppVersioncode(PosLoginActivity.this);
 
+                                url=body.getResponse().getUpdatePath();
+
+                                if (Double.valueOf(returnversion)>newversion) {
+                                    EnsureUPdate();
+                                }
 
                             }
+                            else{
+                                ToastUtil.showToast(PosLoginActivity.this, "接口返回", body.getReturnX().getStrInfo());
+                                return;
+                            }
                         }
-                        else
-                        {
-                            ToastUtil.showToast(PosLoginActivity.this, "接口异常", "接口请求异常");
+                        else {
+                            ToastUtil.showToast(PosLoginActivity.this, "接口返回", "接口请求异常,请稍后重试");
                             return;
                         }
-
-                        //EnsureUPdate();
-
                     }
-
                 }
 
                 @Override
                 public void onFailure(Call<UpdateVersionEntity> call, Throwable t) {
-
+                    ToastUtil.showToast(PosLoginActivity.this, "接口异常", "接口请求异常");
+                    return;
                 }
             });
         }
@@ -385,14 +426,15 @@ public class PosLoginActivity extends AppCompatActivity {
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         //设置在什么网络情况下进行下载
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+        //request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+
         //设置通知栏标题
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         request.setTitle("任务进行中");
-        request.setDescription("zhoupan 的测试apk正在下载");
+        request.setDescription("应用程序正在下载中");
         request.setAllowedOverRoaming(false);
         //设置文件存放目录
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "AIINBINEW.apk");
+        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "AIINBI.apk");
 
         DownloadManager downManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long id= downManager.enqueue(request);
@@ -418,15 +460,37 @@ public class PosLoginActivity extends AppCompatActivity {
                     switch (state) {
                         case DownloadManager.STATUS_SUCCESSFUL://下载成功
                             isGoging=false;
-
+                            Uri downloadFileUri;
+                            Intent install = new Intent(Intent.ACTION_VIEW);
                             //调用安装方法,进行自动升级
-                            Uri downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
+                            //Uri downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
+                            //Uri downloadFileUri = DownloadManager.COLUMN_LOCAL_URI;
+                            boolean haveInstallPermission;
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0以下
+                                downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
+
+                            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) { // 6.0 - 7.0
+                                String uriString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                                File apkFile = new File(Uri.parse(uriString).getPath());
+                                downloadFileUri = Uri.fromFile(apkFile);
+
+                            } else { // Android 7.0 以上
+
+                                //haveInstallPermission = getPackageManager().canRequestPackageInstalls();  //需要 level版本支持
+
+
+                                downloadFileUri = FileProvider.getUriForFile(context,
+                                        "com.ceshi.helloworld.fileProvider",
+                                        new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "AIINBI.apk"));
+                                install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            }
+
+
                             if (downloadFileUri != null) {
-                                Intent install = new Intent(Intent.ACTION_VIEW);
+
                                 install.setDataAndType(downloadFileUri, "application/vnd.android.package-archive");
                                 install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(install);
-
                             }
 
                             //handler.obtainMessage(downloadManager.STATUS_SUCCESSFUL).sendToTarget();//发送到主线程，更新ui

@@ -473,7 +473,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                                                     //如果存在，拿到集合，增加数量，总价，折扣
                                                     MapList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
-                                                    MapList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
+                                                    MapList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());  //原价
+                                                    MapList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));  //实际总售价
 
                                                     //修改列表的数量
                                                     for (int k = 0; k < listmap.size(); k++) {
@@ -496,6 +497,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                                     usesplnfo.setTotaldisc(sub_itemsList.get(sk).getPluDis());// 总折扣
                                                     usesplnfo.setRealPrice(sub_itemsList.get(sk).getPluRealAmount());  //总实际售价
                                                     usesplnfo.setActname(itemsList.get(sm).getDisRule());
+                                                    usesplnfo.setNweight(sub_itemsList.get(sk).getNWeight());  //产品的重量
+
 
                                                     uselist.add(usesplnfo);
                                                     //说明产品不存在，直接增加进去
@@ -639,6 +642,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                 mView.setLayoutParams(new FrameLayout.LayoutParams(780,
                         1400));
+
+
 
             }
         });
@@ -791,7 +796,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
      */
     public void   hydeleteClick(View view) {
 
-        EditText editText = layout.findViewById(R.id.username);
+        EditText editText = layout.findViewById(R.id.phoneorhyNum);
         if (null != editText.getText().toString() && editText.getText().toString().length() > 0) {
             String old_text = editText.getText().toString();
             editText.setText(old_text.substring(0, old_text.length() - 1));
@@ -963,7 +968,9 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        Intent intent = new Intent(CarItemsActicity.this, payWayActivity.class);
+        //Intent intent = new Intent(CarItemsActicity.this, payWayActivity.class);
+        Intent intent = new Intent(CarItemsActicity.this, FinishActivity.class);
+
         startActivity(intent);
 
     }

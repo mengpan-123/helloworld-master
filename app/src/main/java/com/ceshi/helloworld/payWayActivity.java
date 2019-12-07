@@ -172,6 +172,7 @@ public class payWayActivity  extends Activity {
                             @Override
                             public void response(Map info) throws RemoteException {
                                 if (!isSuccessInfo(info)) {
+                                    ToastUtil.showToast(payWayActivity.this, "接口获取失败", "当前调用微信SDK获取rawdata异常");
                                     return;
                                 }
 
@@ -183,12 +184,13 @@ public class payWayActivity  extends Activity {
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    ToastUtil.showToast(payWayActivity.this, "温馨提示", "当前调用接口获取设备认证信息异常");
                                 }
                             }
                         });
                     }
                     catch(Exception ex){
-                        //ToastUtil.showToast(OneActivity.this, "温馨提示", ex.toString());
+                        ToastUtil.showToast(payWayActivity.this, "接口获取失败", "当前系统未安装微信刷脸程序");
                     }
 
                 }
@@ -232,6 +234,10 @@ public class payWayActivity  extends Activity {
                 if (response != null) {
                     getWXFacepayAuthInfo body = response.body();
 
+                    if(null==body) {
+                        ToastUtil.showToast(payWayActivity.this, "接口信息获取异常", "接口请求获取设备认证信息获取失败");
+                        return;
+                    }
                     if (body.getReturnX().getNCode() == 0) {
 
                         getWXFacepayAuthInfo.ResponseBean response1 = body.getResponse();
@@ -426,6 +432,16 @@ public class payWayActivity  extends Activity {
                     if (body.getReturnX().getNCode()==0){
 
                         ResponseSignBean.ResponseBean response1 = body.getResponse();
+
+                        try {
+                            CommonData.ordernumber = response1.getTransId();
+                            CommonData.outTransId = response1.getOutTransId();
+                            CommonData.get_jf=response1.getNCurrentPoint();
+                        }
+                        catch(Exception ex){
+
+                        }
+
                         //说明当前支付时成功的，跳转到 支付等待界面
                         Intent intent = new Intent(payWayActivity.this, WaitingFinishActivity.class);
 
@@ -438,6 +454,16 @@ public class payWayActivity  extends Activity {
                         //返回标识 66 是等待用户输入密码的过程。也会跳转到支付等待界面
                         if ((Result.equals("支付等待")&&body.getReturnX().getNCode()==1)||
                                 body.getReturnX().getNCode()==66) {
+
+                            try {
+                                ResponseSignBean.ResponseBean response1 = body.getResponse();
+                                CommonData.ordernumber = response1.getTransId();
+                                CommonData.outTransId = response1.getOutTransId();
+                                CommonData.get_jf=response1.getNCurrentPoint();
+                            }
+                            catch(Exception ex){
+
+                            }
 
                             Intent intent = new Intent(payWayActivity.this, WaitingFinishActivity.class);
                             startActivity(intent);

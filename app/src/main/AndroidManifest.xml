@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+
     <application
         android:name=".net.CommonData"
         android:allowBackup="true"
@@ -40,6 +43,8 @@
         </activity>
         <activity android:name=".CarItemsActicity"></activity>
         <activity android:name=".FinishActivity">
+
+
 
 
         </activity>
@@ -79,38 +84,39 @@
                 <action android:name="android.intent.action.HOME" />   <!--&lt;!&ndash;用于返回的首界面，和上面差不多&ndash;&gt;-->
                 <category android:name="android.intent.category.LAUNCHER" />   <!--&lt;!&ndash;让 Activity 在顶层启动器中显示&ndash;&gt;-->
             </intent-filter>
-
         </activity>
 
-       <!-- <receiver
-            android:name=".InstallApkBroadcast">
+        <!--// 指向v4包里的FileProvider类-->
+        <provider
+
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.ceshi.helloworld.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/apk_provider_paths" /> <!--// 用于设置FileProvider的文件访问路径-->
+        </provider>
+
+
+       <!-- <receiver android:name=".BootReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>-->
 
-       <!-- <receiver
-            android:name=".MyReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-
-                <action android:name="MLY" />
-            </intent-filter>
-        </receiver>-->
-
-        <!--<receiver
-            android:name=".MyReceiver"
-            android:enabled="true"
-            android:exported="true">
-
-            <intent-filter android:priority="1000">
-                <action android:name="panhouye" />
-            </intent-filter>
-        </receiver>-->
 
     </application>
+
+
+
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
+
 
 
 

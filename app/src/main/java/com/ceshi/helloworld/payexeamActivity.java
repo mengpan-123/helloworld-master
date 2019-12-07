@@ -209,7 +209,14 @@ public class payexeamActivity extends AppCompatActivity {
 
                             ResponseSignBean.ResponseBean response1 = body.getResponse();
 
-                            CommonData.outTransId=response1.getOut_TransId();
+                            try {
+                                CommonData.ordernumber = response1.getTransId();
+                                CommonData.outTransId = response1.getOutTransId();
+                                CommonData.get_jf=response1.getNCurrentPoint();
+                            }
+                            catch(Exception ex){
+
+                            }
                             //说明当前支付时成功的，跳转到 支付等待界面
                             Intent intent = new Intent(payexeamActivity.this, WaitingFinishActivity.class);
 
@@ -223,7 +230,16 @@ public class payexeamActivity extends AppCompatActivity {
                             if ((Result.equals("支付等待") && body.getReturnX().getNCode() == 1) ||
                                     body.getReturnX().getNCode() == 66) {
 
-                                CommonData.outTransId=body.getResponse().getOut_TransId();
+                                try {
+                                    ResponseSignBean.ResponseBean response1 = body.getResponse();
+                                    CommonData.ordernumber = response1.getTransId();
+                                    CommonData.outTransId = response1.getOutTransId();
+                                    CommonData.get_jf=response1.getNCurrentPoint();
+                                }
+                                catch(Exception ex){
+
+                                }
+
                                 Intent intent = new Intent(payexeamActivity.this, WaitingFinishActivity.class);
                                 startActivity(intent);
                                 return;
