@@ -132,7 +132,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         if (CommonData.hyMessage == null) {
             phone_view.setText("我是会员");
         } else {
-            phone_view.setText("欢迎你，"+CommonData.hyMessage.hySname);
+            phone_view.setText("你好"+CommonData.hyMessage.hySname);
         }
 
 
@@ -257,7 +257,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
                                         //给会员信息赋值
                                         CommonData.hyMessage=hyinfo;
-                                        phone_view.setText("欢迎你，会员"+hyinfo.hySname);
+                                        phone_view.setText("你好"+hyinfo.hySname);
 
 
                                     }else
@@ -611,6 +611,12 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+
+//                EditText editText1 = layout.findViewById(R.id.username);
+//                String inputbarcode = editText1.getText().toString();
+//
+//                AddnewSpid(inputbarcode);
+//                dialog.dismiss();
 
             }
         });
@@ -968,8 +974,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        //Intent intent = new Intent(CarItemsActicity.this, payWayActivity.class);
-        Intent intent = new Intent(CarItemsActicity.this, FinishActivity.class);
+        Intent intent = new Intent(CarItemsActicity.this, payWayActivity.class);
+        //Intent intent = new Intent(CarItemsActicity.this, FinishActivity.class);
 
         startActivity(intent);
 

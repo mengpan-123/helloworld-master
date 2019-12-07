@@ -25,6 +25,8 @@ import com.szsicod.print.io.InterfaceAPI;
 import com.szsicod.print.io.SerialAPI;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -191,12 +193,14 @@ public class FinishActivity extends AppCompatActivity  {
 
 
         String Str="                   欢迎光临                   "+"\n";
-        Str+="门店编号:"+CommonData.inputkhid+"       门店名称:"+CommonData.machine_name+"\n";
+        //Str+="门店编号:"+CommonData.inputkhid+"       门店名称:"+CommonData.machine_name+"\n";
+        Str+="门店名称:"+CommonData.machine_name+"\n";
+
         Str+="流水号："+CommonData.outTransId+"     "+"\n";
         //Str+="商户订单号："+CommonData.outTransId+"     "+"\n";
         Str+="日期   "+day+"     "+"\n";
         Str+="==============================================="+"\n";
-        Str+="条码   名称    数量    成交价    单价     金额"+"\n";
+        Str+="条码     名称     数量        单价     金额"+"\n";
 
         for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()) {
 
@@ -204,27 +208,35 @@ public class FinishActivity extends AppCompatActivity  {
             String sname=entry.getValue().get(0).getPluName();
             String  qty="0";
             String weight=entry.getValue().get(0).getNweight();
+            String   dj="0";
+            if (weight.equals("0")||weight.equals("0.0")||weight.equals("0.00")){
+                //说明重量是 0.  那就取显示数量
+                qty = String.valueOf(entry.getValue().get(0).getPackNum());
+                dj=String.valueOf(entry.getValue().get(0).getMainPrice());
 
-            if ((null!=weight&&weight.equals("0"))||(null!=weight&&weight.equals("0.00"))){
-                //净重含量存在值 则显示重量
-                qty=String.valueOf(entry.getValue().get(0).getPackNum());
             }else {
-                //否则显示数量
+                //净重含量存在值 则显示重量
                 qty = entry.getValue().get(0).getNweight();
-            }
+                //根据 实际售价/重量  计算  单价
+                double a = entry.getValue().get(0).getMainPrice();
+                try{
+                dj = txfloat(a, Double.valueOf(qty));}
+                catch(Exception ex)
+                {
 
-            double dj=entry.getValue().get(0).getMainPrice();
+                }
+            }
 
             String zj=entry.getValue().get(0).getRealPrice();
             Str+= barcode+"\n";
-            Str+= sname+"   "+qty+"    "+dj+"  "+zj+" "+"\n";
+            Str+= sname+"     "+qty+"     "+dj+"    "+zj+"  "+"\n";
         }
 
         //付款方式
-        Str+="================================================="+"\n";
-        Str+="付款方式             金额   "+"\n";
+        Str+="==============================================="+"\n";
+        Str+="付款方式             金额          总折扣"+"\n";
 
-        Str+=printpaytype+"             "+CommonData.orderInfo.totalPrice+"\n";
+        Str+=printpaytype+"             "+CommonData.orderInfo.totalPrice+ "      "+CommonData.orderInfo.totalDisc+"\n";
 
         Str+="总数量         应收        找零"+"\n";
         Str+=""+CommonData.orderInfo.totalCount+"             "+CommonData.orderInfo.totalPrice+"          0.00     "+"\n";
@@ -233,7 +245,7 @@ public class FinishActivity extends AppCompatActivity  {
         if (  CommonData.hyMessage!=null) {
             //如果会员信息不等于null 的，则需要打印会员基础信息
             Str += "会员卡号:" + CommonData.hyMessage.cardnumber + "\n";
-            Str += "本次消费获得会员积分：" + CommonData.get_jf;
+            Str += "本次消费获得会员积分：" + CommonData.get_jf+ "\n";
 
         }
 
@@ -271,6 +283,29 @@ public class FinishActivity extends AppCompatActivity  {
         catch(Exception ex){
             ToastUtil.showToast(FinishActivity.this, "打印异常通知", "请检查当前打印机连接");
         }
+    }
+
+
+
+    /**
+     * TODO 除法运算，保留小数
+     * @author 袁忠明
+     * @date 2018-4-17下午2:24:48
+     * @param num1 被除数
+     * @param num2 除数
+     * @return 商
+     */
+    public static String txfloat(double num1,double num2) {
+        // TODO 自动生成的方法存根
+
+        DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
+
+        return df.format((float)num1/num2);
+
+    /*   BigDecimal  bignum = new  BigDecimal(num1/num2);
+        double myNum3 = bignum.setScale(2, java.math.BigDecimal.ROUND_CEILING).doubleValue();
+
+        return myNum3;*/
     }
 
 
