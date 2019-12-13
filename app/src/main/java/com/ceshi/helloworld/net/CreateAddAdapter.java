@@ -88,7 +88,7 @@ public class CreateAddAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.shopcar_list, null);
             final CheckBox checkBox;
             ImageView icon;
-            final TextView name, price, num, type, reduce, add, describe, y_price, y_title;
+            final TextView name, price, num, type, reduce, add, describe, y_price, y_title,barcode;
 
             name = convertView.findViewById(R.id.tv_goods_name);//商品名称
             price = convertView.findViewById(R.id.tv_goods_price);//商品价格
@@ -101,12 +101,16 @@ public class CreateAddAdapter extends BaseAdapter {
 
             add = convertView.findViewById(R.id.tv_add);
 
+            barcode=convertView.findViewById(R.id.barcode);
+
 
             name.setText(list.get(position).get("name"));//产品名称
             y_price.setText(list.get(position).get("MainPrice"));//原价
             price.setText(list.get(position).get("realprice"));//实际售价
             num.setText(list.get(position).get("count"));//商品数量
             describe.setText(list.get(position).get("actname"));//促销活动
+            barcode.setText(list.get(position).get("id"));
+
 
             if ("0.00".equals(list.get(position).get("disc")) || "0".equals(list.get(position).get("disc")) || "0.0".equals(list.get(position).get("disc"))) {
 
@@ -203,8 +207,15 @@ public class CreateAddAdapter extends BaseAdapter {
                                                                 if (CommonData.orderInfo.spList.containsKey(usebarcode)) {
 
                                                                     //如果存在本产品，重新拿到，拿到集合，增加数量，总价，折扣
+                                                                   /* CommonData.orderInfo.spList.get(usebarcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
+                                                                    CommonData.orderInfo.spList.get(usebarcode).get(0).setpluPrice(Double.valueOf(sub_itemsList.get(sk).getPluRealAmount()));*/
+
+                                                                    //如果存在，拿到集合，增加数量，总价，折扣
                                                                     CommonData.orderInfo.spList.get(usebarcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
-                                                                    CommonData.orderInfo.spList.get(usebarcode).get(0).setpluPrice(Double.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
+                                                                    CommonData.orderInfo.spList.get(usebarcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());
+                                                                    CommonData.orderInfo.spList.get(usebarcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));  //实际总售价
+
+
 
                                                                     //修改列表的数量
                                                                     for (int k = 0; k < list.size(); k++) {

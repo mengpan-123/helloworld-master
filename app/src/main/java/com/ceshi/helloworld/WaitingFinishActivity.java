@@ -38,10 +38,10 @@ public class WaitingFinishActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     //应该是界面先显示，然后再来执行这个轮询。轮询支付界面，最多10次进行等待
-                    while (i < 6) {
+                    while (i < 50) {
                         //Thread.sleep(1000);
 
-                        SystemClock.sleep(2000);
+                        SystemClock.sleep(3000);
 
                         if (getPayresult().equals("OK")) {
                             Intent intent = new Intent(WaitingFinishActivity.this, FinishActivity.class);

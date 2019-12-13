@@ -221,8 +221,7 @@ public class FinishActivity extends AppCompatActivity  {
                 double a = entry.getValue().get(0).getMainPrice();
                 try{
                 dj = txfloat(a, Double.valueOf(qty));}
-                catch(Exception ex)
-                {
+                catch(Exception ex) {
 
                 }
             }
@@ -236,7 +235,7 @@ public class FinishActivity extends AppCompatActivity  {
         Str+="==============================================="+"\n";
         Str+="付款方式             金额          总折扣"+"\n";
 
-        Str+=printpaytype+"             "+CommonData.orderInfo.totalPrice+ "      "+CommonData.orderInfo.totalDisc+"\n";
+        Str+=printpaytype+"             "+CommonData.orderInfo.totalPrice+ "          "+CommonData.orderInfo.totalDisc+"\n";
 
         Str+="总数量         应收        找零"+"\n";
         Str+=""+CommonData.orderInfo.totalCount+"             "+CommonData.orderInfo.totalPrice+"          0.00     "+"\n";

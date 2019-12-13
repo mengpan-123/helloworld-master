@@ -469,7 +469,8 @@ public class PosLoginActivity extends AppCompatActivity {
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0以下
                                 downloadFileUri = downloadManager.getUriForDownloadedFile(requestId);
 
-                            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) { // 6.0 - 7.0
+                            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
+                            { // 6.0 - 7.0
                                 String uriString = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
                                 File apkFile = new File(Uri.parse(uriString).getPath());
                                 downloadFileUri = Uri.fromFile(apkFile);

@@ -7,15 +7,15 @@ android {
         applicationId "com.ceshi.helloworld"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 3016
-        versionName "2.7.7"  //文件版本号
+        versionCode 3021
+        versionName "3.0.1"  //文件版本号
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "AIINBI.apk"
+                outputFileName = "AIINBI.apdk"
             }
     }
     buildTypes {
@@ -53,9 +53,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+
+    //网络okhttp3请求框架
     implementation 'com.squareup.okhttp3:logging-interceptor:3.7.0'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    //阿里巴巴提供的开源 json处理框架,后来引入的，发现使用效果比普通的好
     implementation 'com.alibaba:fastjson:1.1.54.android'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     implementation files('libs/icod_3.1.1.jar')

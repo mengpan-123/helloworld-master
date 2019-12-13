@@ -129,6 +129,7 @@ public class payWayActivity  extends Activity {
                 sPayTypeExt="devicewxface";
                 payWay = "WXFacePay";
 
+                CommonData.usepayway="WXFacePay";
                 wxFacepay();
             }
         });

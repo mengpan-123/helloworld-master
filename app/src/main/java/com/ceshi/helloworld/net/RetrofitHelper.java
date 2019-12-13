@@ -99,9 +99,9 @@ public class RetrofitHelper {
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl(CommonData.CommonUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(getBuilder().build())
-                .build();
+                .addConverterFactory(GsonConverterFactory.create())  //添加JSON解析器，对接口返回的内容进行一定的解析
+                .client(getBuilder().build())  //创建这个网络请求是用OkHttp进行访问
+                .build();   //开始创建/访问
         mAPIService = retrofit.create(APIService.class);
     }
 

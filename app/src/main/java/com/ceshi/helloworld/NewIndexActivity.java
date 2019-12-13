@@ -54,9 +54,9 @@ public class NewIndexActivity extends Activity {
 
         String path = Environment.getExternalStorageDirectory().getPath()+"/"+"index.mp4";//获取视频路径
 
-        Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
+       Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
         video.setVideoURI(uri);//为视频播放器设置视频路径
-        //video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
+        video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
 
 
         MediaController mc = new MediaController(this);
@@ -77,6 +77,10 @@ public class NewIndexActivity extends Activity {
         //设置底部的显示信息
         TextView storename=findViewById(R.id.storename);
         storename.setText("门店编号:"+ CommonData.khid);
+        TextView storechinesename=findViewById(R.id.idnexstorename);
+        storechinesename.setText(CommonData.machine_name);
+
+
 
         TextView appmachine=findViewById(R.id.appmachine);
         appmachine.setText("设备编号:"+ CommonData.machine_number);
