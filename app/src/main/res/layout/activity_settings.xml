@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+
+    >
+
+    <LinearLayout
+
+
+        android:id="@+id/Settings"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical"
+        android:background="@drawable/borderinfo"
+        android:layout_alignTop="@+id/appmachine"
+        >
+
+        <TextView
+
+            android:id="@+id/txt1"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="扫码重打小票"
+            android:background="@drawable/borderbutton"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="20dp" />
+        <TextView
+            android:padding="12dp"
+            android:id="@+id/txt2"
+            android:background="@drawable/borderbutton"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="近期单据打印"
+            android:gravity="center"
+            android:textSize="20dp" />
+        <TextView
+            android:id="@+id/txt3"
+            android:background="@drawable/borderbutton"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="退出应用"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

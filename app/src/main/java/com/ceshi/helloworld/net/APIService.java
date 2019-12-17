@@ -3,6 +3,8 @@ package com.ceshi.helloworld.net;
 import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
+import com.ceshi.helloworld.bean.OrderDetailEntity;
+import com.ceshi.helloworld.bean.OrderListEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestDeleteGoods;
 import com.ceshi.helloworld.bean.ResponseDeleteGoods;
@@ -200,4 +202,33 @@ public interface APIService {
             @Field("deviceId") String deviceId,
             @Field("rawdata") String nBizType
     );
+
+    /**
+     * 获取 authinfo
+     * @param
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("base/rest/v3.2/OrderService/getorderidlist")
+    Call<OrderListEntity> getgetorderidlist(
+            @Field("userId") String userId,
+            @Field("storeId") String storeId,
+            @Field("page") String page
+    );
+
+
+    /**
+     * 获取 authinfo
+     * @param
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("base/rest/v1/OrderService/upgetorderbyid")
+    Call<OrderDetailEntity> upgetorderbyid(
+            @Field("userId") String userId,
+            @Field("storeId") String storeId,
+            @Field("transId") String transId,
+            @Field("showActivity") String showActivity
+    );
+
 }

@@ -7,15 +7,15 @@ android {
         applicationId "com.ceshi.helloworld"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 3021
-        versionName "3.0.1"  //文件版本号
+        versionCode 3023
+        versionName "3.4.1"  //文件版本号
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     android.applicationVariants.all {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "AIINBI.apdk"
+                outputFileName = "AIINBI.apk"
             }
     }
     buildTypes {

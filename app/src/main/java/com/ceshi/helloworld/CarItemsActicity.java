@@ -2,6 +2,7 @@ package com.ceshi.helloworld;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -10,8 +11,10 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,10 +35,9 @@ import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
 import com.ceshi.helloworld.bean.RequestSignBean;
 import com.ceshi.helloworld.bean.ResponseSignBean;
-import com.ceshi.helloworld.bean.createPrepayIdEntity;
-import com.ceshi.helloworld.bean.getCartItemsEntity;
+
 import com.ceshi.helloworld.bean.getWXFacepayAuthInfo;
-import com.ceshi.helloworld.bean.upCardCacheEntity;
+import com.ceshi.helloworld.bean.*;
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.CreateAddAdapter;
 import com.ceshi.helloworld.net.HyMessage;
@@ -146,6 +149,9 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         });
 
 
+
+
+
     }
 
     private void initView() {
@@ -249,6 +255,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                 GetHyInfoEntity body = response.body();
                                 if ( null!=body) {
                                     if (body.getReturnX().getNCode()==0){
+
                                         GetHyInfoEntity.ResponseBean response1 = body.getResponse();
                                         HyMessage hyinfo=new  HyMessage();
                                         hyinfo.cardnumber=response1.getCdoData().getSMemberId();
@@ -663,6 +670,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     public void input_bags(View view) {
 
 
+
         final Dialog dialog = new Dialog(this,
                 R.style.myNewsDialogStyle);
 
@@ -709,7 +717,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             Map<String, Object> map = new HashMap<String, Object>();
                             map.put("img_expense", R.mipmap.gwd);
                             map.put("tv_bagname", maps.get(m).getPluName());
-                            map.put("tv_bagpic", String.valueOf(maps.get(m).getPluPrice()));
+                            map.put("tv_bagpic", ""+String.valueOf(maps.get(m).getPluPrice()));
                             map.put("tv_goodsid", maps.get(m).getGoodsId());
                             listitem.add(map);
                         }
@@ -751,7 +759,6 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
             }
         });
-
 
     }
 

@@ -50,9 +50,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(CREATE_SQL);
-
-        Toast.makeText(mContext, "Create succeeded", Toast.LENGTH_SHORT).show();
-
+        
     }
 
 

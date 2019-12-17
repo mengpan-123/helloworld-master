@@ -83,9 +83,12 @@ public class PosLoginActivity extends AppCompatActivity {
     private DownloadManager mDownloadManager;
     private String url = "http://192.168.0.108/222/MyApp1.apk";
 
+    public  String  Tag="PosLoginActivity";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
 
         //1.0  首先创建出数据库  BaseInfo ，用于保存信息

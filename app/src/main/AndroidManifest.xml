@@ -66,14 +66,14 @@
 
 
         </activity>
+        <activity android:name=".NewPrintActivity">
+
+
+        </activity>
         <activity
             android:name=".IndexActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
 
-
-        <activity android:name=".DowmLoadActivity">
-
-        </activity>
 
         <!-- 这里的intent-filter  MAIN表示进入的第一个页面  现在启动app进入的第一个页面就是这个 -->
         <activity android:name=".PosLoginActivity">
@@ -99,13 +99,13 @@
         </provider>
 
 
-       <!-- <receiver android:name=".BootReceiver">
+        <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
 
 
     </application>

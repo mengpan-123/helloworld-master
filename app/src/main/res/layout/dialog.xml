@@ -171,17 +171,15 @@
         android:layout_marginBottom="10dp"
         >
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
+            android:layout_width="340dp"
+            android:layout_height="90dp"
             android:text="0"
             android:background="@drawable/btn_bg1"
             android:textSize="35dp"
             android:onClick="numClick" />
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:layout_height="90dp"
             android:background="@drawable/delete"
             android:textSize="35dp"
             android:onClick="deleteClick"

@@ -4,6 +4,8 @@ package com.ceshi.helloworld.net;
 import com.alibaba.fastjson.JSON;
 import com.ceshi.helloworld.bean.Addgoods;
 import com.ceshi.helloworld.bean.ClearCarEntity;
+import com.ceshi.helloworld.bean.OrderDetailEntity;
+import com.ceshi.helloworld.bean.OrderListEntity;
 import com.ceshi.helloworld.bean.ResponseDeleteGoods;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.PurchaseBag;
@@ -108,6 +110,7 @@ public class RetrofitHelper {
     private OkHttpClient.Builder getBuilder() {
 
         Interceptor controlInterceptor = chain -> {
+
             Request request = chain.request();
             RequestBody oldBody = request.body();
             Buffer buffer = new Buffer();
@@ -333,4 +336,16 @@ public class RetrofitHelper {
 
     }
 
+
+    //获取最近的十笔销售单据
+    public Call<OrderListEntity> getgetorderidlist(String userId, String storeId, String page){
+
+        return mAPIService.getgetorderidlist(userId,storeId,page);
+
+    }
+    public Call<OrderDetailEntity> upgetorderbyid(String userId, String storeId, String transId){
+
+        return mAPIService.upgetorderbyid(userId,storeId,transId,"0");
+
+    }
 }

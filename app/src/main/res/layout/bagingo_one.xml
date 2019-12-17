@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="购  物  袋"
+                android:text="购物袋"
                 android:textSize="35dp"
                 android:gravity="center"
                 android:textColor="#272727"

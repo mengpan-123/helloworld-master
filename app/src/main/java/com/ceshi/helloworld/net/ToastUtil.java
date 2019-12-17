@@ -66,6 +66,7 @@ public class ToastUtil {
         require_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CommonData.is_click=true;
                 dialog_paycode.dismiss();
             }
         });

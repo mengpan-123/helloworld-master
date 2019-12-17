@@ -96,9 +96,9 @@ public class FinishActivity extends AppCompatActivity  {
 
         //倒计时30s立即返回到 首界面
 
-       /* time=(TextView) findViewById(R.id.tv_time);
+        time=(TextView) findViewById(R.id.tv_time);
         i=Integer.parseInt(time.getText().toString());
-        startTime();*/
+        startTime();
 
 
 
