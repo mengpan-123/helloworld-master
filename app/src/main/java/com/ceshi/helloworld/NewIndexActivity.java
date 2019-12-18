@@ -61,7 +61,7 @@ public class NewIndexActivity extends Activity {
     View layout=null;
     private  VideoView  video;
 
-
+   public  String   Str="";
     private  Call<ClearCarEntity>  ClearCarEntityCall;
 
     @Override
@@ -70,29 +70,29 @@ public class NewIndexActivity extends Activity {
         setContentView(R.layout.activity_newindex);
 
 
-        /*video = (VideoView) findViewById(R.id.video);
-
-        String path = Environment.getExternalStorageDirectory().getPath()+"/"+"index.mp4";//获取视频路径
-
-       Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
-        video.setVideoURI(uri);//为视频播放器设置视频路径
-        video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
-
-
-        MediaController mc = new MediaController(this);
-        mc.setVisibility(View.INVISIBLE);
-        video.setMediaController(mc);
-
-        video.start();
-
-
-        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-                mp.setLooping(true);
-            }
-        });*/
+//        video = (VideoView) findViewById(R.id.video);
+//
+//        String path = Environment.getExternalStorageDirectory().getPath()+"/"+"index.mp4";//获取视频路径
+//
+//       Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
+//        video.setVideoURI(uri);//为视频播放器设置视频路径
+//        video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
+//
+//
+//        MediaController mc = new MediaController(this);
+//        mc.setVisibility(View.INVISIBLE);
+//        video.setMediaController(mc);
+//
+//        video.start();
+//
+//
+//        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mp) {
+//                mp.start();
+//                mp.setLooping(true);
+//            }
+//        });
 
         //设置底部的显示信息
         TextView storename=findViewById(R.id.storename);
@@ -259,14 +259,14 @@ public class NewIndexActivity extends Activity {
             }
         });
 
+
         TextView text2=  view.findViewById(R.id.txt2);
         text2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-              if (CommonData.is_click) {
+              /*if (isFastClick()) {
 
-                  CommonData.is_click=false;
                   //首先检查打印机连接
                   PrinterAPI mPrinter = PrinterAPI.getInstance();  //打印机部分
                   InterfaceAPI io = null;
@@ -276,14 +276,28 @@ public class NewIndexActivity extends Activity {
                           1);
                   if (PrinterAPI.SUCCESS == mPrinter.connect(io)) {
 
-                      CommonData.is_click=true;
                   } else {
 
-                      ToastUtil.showToast(NewIndexActivity.this, "异常通知", "请检查当前打印机连接");
+                      //ToastUtil.showToast(NewIndexActivity.this, "异常通知", "请检查当前打印机连接");
+                      Toast.makeText(NewIndexActivity.this, "我自启动成功了哈", Toast.LENGTH_LONG).show();
                       return;
                   }
 
-              }
+              }*/
+
+
+                final Dialog dialog = new Dialog(NewIndexActivity.this, R.style.myNewsDialogStyle);
+
+                // 自定义对话框布局
+                layout = View.inflate(NewIndexActivity.this, R.layout.acticity_dialog,
+                        null);
+                dialog.setContentView(layout);
+                ComsetDialogSize(layout);
+
+                ListView listView = (ListView) layout.findViewById(R.id.ten_xsprint);
+
+                listView.setDividerHeight(20);
+                List<Map<String, Object>> listitem = new ArrayList<Map<String, Object>>();
 
                //打印最近十比销售单据
                 Call<OrderListEntity>  OrderListEntityCall=RetrofitHelper.getInstance().getgetorderidlist(CommonData.userId,CommonData.khid,"0");
@@ -327,7 +341,7 @@ public class NewIndexActivity extends Activity {
                                                             String storename = body.getResponse().getStoreName();
 
 
-                                                            String Str = "                   欢迎光临                   " + "\n";
+                                                            Str = "                   欢迎光临                   " + "\n";
                                                             Str += "门店名称:" + storename + "\n";
                                                             Str += "流水号：" + body.getResponse().getOutTransId() + "     " + "\n";
                                                             //Str+="商户订单号："+CommonData.outTransId+"     "+"\n";
@@ -374,7 +388,24 @@ public class NewIndexActivity extends Activity {
                                                             Str += "            谢谢惠顾，请妥善保管小票         " + "\n";
                                                             Str += "               开正式发票，当月有效              " + "\n";
 
-                                                            usePrint(Str);
+                                                            Map<String, Object> map = new HashMap<String, Object>();
+                                                            map.put("xs_bill", body.getResponse().getOutTransId());
+                                                            map.put("xsnet", String.valueOf(paynet));
+                                                            map.put("xsdisc", body.getResponse().getDisAmount());
+                                                            map.put("xs_date","销售日期:"+body.getResponse().getTrnTime() );
+                                                            listitem.add(map);
+
+
+                                                            SimpleAdapter adapter = new SimpleAdapter(NewIndexActivity.this, listitem,
+                                                                    R.layout.activity_tenprint, new String[]{"xs_bill", "xsnet", "xsdisc", "xs_date"},
+                                                                    new int[]{R.id.xsbill, R.id.tv_yuan_price, R.id.tv_disc, R.id.tv_goods_name});
+                                                            listView.setAdapter(adapter);
+                                                            dialog.show();
+                                                            //usePrint(Str);
+
+
+
+
 
                                                         }
 
@@ -407,6 +438,29 @@ public class NewIndexActivity extends Activity {
 
                     }
                 });
+
+
+
+                //绑定点击事件
+                TextView print=layout.findViewById(R.id.SurePrint);
+                print.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        usePrint(Str);
+                    }
+                });
+
+
+                TextView closemem=layout.findViewById(R.id.closewindow);
+                //设置关闭按钮的事件
+                closemem.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
 
@@ -415,12 +469,27 @@ public class NewIndexActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //退出应用
-                System.exit(1);
+                //System.exit(0);//仅会关闭当前的会话activity，其他并不会关闭
                 //android.os.Process.killProcess(android.os.Process.myPid());
 
 
             }
         });
+    }
+
+
+
+    private static final int MIN_CLICK_DELAY_TIME = 10000;
+    private static long lastClickTime;
+
+    public static boolean isFastClick() {
+        boolean flag = false;
+        long curClickTime = System.currentTimeMillis();
+        if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME) {
+            flag = true;
+        }
+        lastClickTime = curClickTime;
+        return flag;
     }
 
 
@@ -549,7 +618,7 @@ public class NewIndexActivity extends Activity {
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
                                        int oldRight, int oldBottom) {
                 mView.setLayoutParams(new FrameLayout.LayoutParams(780,
-                        1100));
+                        1000));
 
 
             }
@@ -571,6 +640,38 @@ public class NewIndexActivity extends Activity {
         }
     }
 
+
+    /**
+     * 动态控制弹出框的大小
+     */
+    private void ComsetDialogSize(final View mView) {
+        mView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
+                                       int oldRight, int oldBottom) {
+               /* int heightNow = v.getHeight();//dialog当前的高度
+                int widthNow = v.getWidth();//dialog当前的宽度
+                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.8);//最小宽度为屏幕的0.7倍
+                int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
+                if (widthNow < needWidth || heightNow > needHeight) {
+                    if (widthNow > needWidth) {
+                        needWidth = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    if (heightNow < needHeight) {
+                        needHeight = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    mView.setLayoutParams(new FrameLayout.LayoutParams(needWidth,
+                            needHeight));
+                }*/
+
+                mView.setLayoutParams(new FrameLayout.LayoutParams(980,
+                        1300));
+
+
+
+            }
+        });
+    }
 
 
     public  String   usePrint(String  printstr){
@@ -605,7 +706,7 @@ public class NewIndexActivity extends Activity {
             }
             else
             {
-                return null;
+                Toast.makeText(NewIndexActivity.this, "打印机连接失败", Toast.LENGTH_SHORT).show();
             }
         }
         catch(Exception ex){

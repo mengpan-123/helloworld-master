@@ -22,8 +22,8 @@ public class BootReceiver extends BroadcastReceiver {
         Toast.makeText(context,"我自启动成功了哈", Toast.LENGTH_LONG).show();*/
 
 
-        Toast.makeText(context, "我自启动成功了哈", Toast.LENGTH_LONG).show();
-        Log.d("XRGPS", "BootReceiver.onReceive: " + intent.getAction());
+        //Toast.makeText(context, "我自启动成功了哈", Toast.LENGTH_LONG).show();
+        //Log.d("XRGPS", "BootReceiver.onReceive: " + intent.getAction());
 
         if (ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Intent mBootIntent = new Intent(context, PosLoginActivity.class);

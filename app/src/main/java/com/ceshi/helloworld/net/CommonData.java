@@ -57,7 +57,6 @@ public  class CommonData  extends Application {
     //微信支付商户密钥
     public static String    appKey="aiinbiaiinbiaiinbiaiinbiaiinbiai";
 
-    public static boolean   is_click=true;
 
     //微信支付商户号
     public static String    mch_id="";

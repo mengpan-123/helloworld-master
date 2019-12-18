@@ -226,7 +226,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
 
         //closemember 关闭页面
         TextView closemem=layout.findViewById(R.id.closemem);
-        setDialogSize(layout);
+        HYsetDialogSize(layout);
         dialog.show();
         EditText hyedit=(EditText)layout.findViewById(R.id.phoneorhyNum);
         hyedit.setInputType(InputType.TYPE_NULL);
@@ -353,68 +353,6 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         CommonData.player.setLooping(false);
 
 
-
-        //预支付 相关的操作，给公共订单类赋值,每一次都重新生成单号，单号暂时设置为不能重复
-
-        //调用接口拿到订单号
-        createPrepayIdEntityCall = RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
-        createPrepayIdEntityCall.enqueue(new Callback<createPrepayIdEntity>() {
-            @Override
-            public void onResponse(Call<createPrepayIdEntity> call, Response<createPrepayIdEntity> response) {
-                if (response != null) {
-                    createPrepayIdEntity body = response.body();
-                    if(null!=body) {
-                        if (body.getReturnX().getNCode() == 0) {
-
-                            createPrepayIdEntity.ResponseBean response1 = body.getResponse();
-
-                            //拿到预支付流水号
-                            if (null != CommonData.orderInfo) {
-                                //重新生成 订单号
-                                CommonData.orderInfo.prepayId = response1.getPrepayId();
-                            }
-
-                            //会员预支付必须要等到 拿到上面的 订单流水号才可以支付，预支付，不成功也无所谓的
-                            if (null != CommonData.hyMessage) {
-                                //进行会员卡预支付设置
-                                upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, CommonData.orderInfo.prepayId);
-                                upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
-                                    @Override
-                                    public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
-                                        if (response != null) {
-                                            upCardCacheEntity body = response.body();
-
-                                            /*if (body.getReturnX().getNCode() == 0) {
-                                                //暂时 先不管 会员卡预支付失败的结果
-
-                                            }*/
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
-                                    }
-                                });
-                            }
-                        } else {
-                            ToastUtil.showToast(CarItemsActicity.this, "商品录入通知", body.getReturnX().getStrInfo());
-
-                        }
-                    }
-                    else
-                    {
-                        ToastUtil.showToast(CarItemsActicity.this, "接口通知", "接口访问异常");
-                        return;
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<createPrepayIdEntity> call, Throwable t) {
-
-            }
-        });
     }
 
 
@@ -662,6 +600,39 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+
+
+    /**
+     * 动态控制弹出框的大小
+     */
+    private void HYsetDialogSize(final View mView) {
+        mView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop,
+                                       int oldRight, int oldBottom) {
+               /* int heightNow = v.getHeight();//dialog当前的高度
+                int widthNow = v.getWidth();//dialog当前的宽度
+                int needWidth = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.8);//最小宽度为屏幕的0.7倍
+                int needHeight = (int) (getWindowManager().getDefaultDisplay().getHeight() * 1);//最大高度为屏幕的0.6倍
+                if (widthNow < needWidth || heightNow > needHeight) {
+                    if (widthNow > needWidth) {
+                        needWidth = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    if (heightNow < needHeight) {
+                        needHeight = FrameLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    mView.setLayoutParams(new FrameLayout.LayoutParams(needWidth,
+                            needHeight));
+                }*/
+
+                mView.setLayoutParams(new FrameLayout.LayoutParams(780,
+                        1000));
+
+
+
+            }
+        });
+    }
 
     /**
      * 选择购物袋
@@ -980,6 +951,71 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             ToastUtil.showToast(CarItemsActicity.this, "支付通知", "请先录入要支付的商品");
             return;
         }
+
+
+
+        //预支付 相关的操作，给公共订单类赋值,每一次都重新生成单号，单号暂时设置为不能重复
+
+        //调用接口拿到订单号
+        createPrepayIdEntityCall = RetrofitHelper.getInstance().createPrepayId(CommonData.khid);
+        createPrepayIdEntityCall.enqueue(new Callback<createPrepayIdEntity>() {
+            @Override
+            public void onResponse(Call<createPrepayIdEntity> call, Response<createPrepayIdEntity> response) {
+                if (response != null) {
+                    createPrepayIdEntity body = response.body();
+                    if(null!=body) {
+                        if (body.getReturnX().getNCode() == 0) {
+
+                            createPrepayIdEntity.ResponseBean response1 = body.getResponse();
+
+                            //拿到预支付流水号
+                            if (null != CommonData.orderInfo) {
+                                //重新生成 订单号
+                                CommonData.orderInfo.prepayId = response1.getPrepayId();
+                            }
+
+                            //会员预支付必须要等到 拿到上面的 订单流水号才可以支付，预支付，不成功也无所谓的
+                            if (null != CommonData.hyMessage) {
+                                //进行会员卡预支付设置
+                                upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, CommonData.orderInfo.prepayId);
+                                upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
+                                    @Override
+                                    public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {
+                                        if (response != null) {
+                                            upCardCacheEntity body = response.body();
+
+                                            /*if (body.getReturnX().getNCode() == 0) {
+                                                //暂时 先不管 会员卡预支付失败的结果
+
+                                            }*/
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<upCardCacheEntity> call, Throwable t) {
+                                    }
+                                });
+                            }
+                        } else {
+                            ToastUtil.showToast(CarItemsActicity.this, "商品录入通知", body.getReturnX().getStrInfo());
+
+                        }
+                    }
+                    else
+                    {
+                        ToastUtil.showToast(CarItemsActicity.this, "接口通知", "接口访问异常");
+                        return;
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<createPrepayIdEntity> call, Throwable t) {
+
+            }
+        });
+
 
         Intent intent = new Intent(CarItemsActicity.this, payWayActivity.class);
         //Intent intent = new Intent(CarItemsActicity.this, FinishActivity.class);
