@@ -103,7 +103,7 @@ public class PosLoginActivity extends AppCompatActivity {
             return;
         }
 
-
+        app_version=getAppVersion(this);
 
         //2.0  先从本地选取初始化数据，如果拿到了，说明初始化过，则直接跳转，跳过登录
         InitData(querydb);
@@ -131,7 +131,7 @@ public class PosLoginActivity extends AppCompatActivity {
 
         }
 
-        app_version=getAppVersion(this);
+
 
 
         //否则的话就需要登录，然后绑定相应的登陆事件
@@ -261,7 +261,7 @@ public class PosLoginActivity extends AppCompatActivity {
                 do {
                     CommonData.khid = cursor.getString(cursor.getColumnIndex("khid"));
 
-                    CommonData.app_version = cursor.getString(cursor.getColumnIndex("app_version"));
+                    CommonData.app_version = app_version;
 
                     CommonData.lCorpId = cursor.getString(cursor.getColumnIndex("lCorpId"));
 
@@ -441,6 +441,11 @@ public class PosLoginActivity extends AppCompatActivity {
 
         DownloadManager downManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long id= downManager.enqueue(request);
+
+        //确认要下载时 ，先删除 sqlite里面的表数据
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(CommonData.tablename,null,null);
+
 
         queryDownloadProgress(this,id,downManager);
     }

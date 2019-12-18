@@ -7,8 +7,8 @@ android {
         applicationId "com.ceshi.helloworld"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 3023
-        versionName "3.4.1"  //文件版本号
+        versionCode 3038
+        versionName "3.9.9"  //文件版本号
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     android.applicationVariants.all {
@@ -63,4 +63,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.1.54.android'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     implementation files('libs/icod_3.1.1.jar')
+
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
 }

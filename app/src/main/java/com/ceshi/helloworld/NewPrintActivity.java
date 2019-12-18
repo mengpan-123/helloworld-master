@@ -99,7 +99,7 @@ public class NewPrintActivity   extends  Activity {
                             Str += "门店名称:" + storename + "\n";
                             Str += "流水号：" + body.getResponse().getOutTransId() + "     " + "\n";
                             //Str+="商户订单号："+CommonData.outTransId+"     "+"\n";
-                            Str += "日期   " + day + "     " + "\n";
+                            Str += "打印日期   " + day + "     " + "\n";
                             Str += "===============================================" + "\n";
                             Str += "条码     名称     数量        单价     金额" + "\n";
 
@@ -130,15 +130,16 @@ public class NewPrintActivity   extends  Activity {
                             //付款方式
                             String paytype = body.getResponse().getPayMap().getPayTypeName();
                             double paynet = body.getResponse().getPayMap().getPayVal();
+                            int paycount = body.getResponse().getTotQty();
                             Str += "===============================================" + "\n";
                             Str += "付款方式             金额          总折扣" + "\n";
 
                             Str += paytype + "             " + paynet + "          " + body.getResponse().getDisAmount() + "\n";
 
                             Str += "总数量         应收        找零" + "\n";
-                            Str += "" + paynet + "             " + body.getResponse().getDisAmount() + "          0.00     " + "\n";
+                            Str += "" + paycount + "             " + paynet + "          0.00     " + "\n";
 
-                            Str += "=====================" + body.getResponse().getTrnTime() + "===================" + "\n";
+                            Str += "===============" + body.getResponse().getTrnTime() + "=============" + "\n";
                             Str += "            谢谢惠顾，请妥善保管小票         " + "\n";
                             Str += "               开正式发票，当月有效              " + "\n";
 
@@ -195,6 +196,11 @@ public class NewPrintActivity   extends  Activity {
                     e.printStackTrace();
                     //printstate.setText("小票打印失败,请重试");
                 }
+            }
+            else
+            {
+                ToastUtil.showToast(NewPrintActivity.this,"打印通知","打印机连接失败，请检查");
+
             }
         }
         catch(Exception ex){

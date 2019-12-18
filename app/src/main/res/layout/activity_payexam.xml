@@ -120,9 +120,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="700dp"
+        android:layout_height="770dp"
         android:layout_marginTop="100dp"
-        android:background="@mipmap/alipayexe"
+        android:background="@mipmap/aliapyexam"
         android:id="@+id/wxuseinfo"
         android:orientation="vertical"
         >

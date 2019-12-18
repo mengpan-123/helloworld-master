@@ -8,4 +8,6 @@ public class HyMessage {
     public String hytelphone = "";
     //会员的名称
     public String hySname = "";
+
+    public String sMemberId = "";
 }

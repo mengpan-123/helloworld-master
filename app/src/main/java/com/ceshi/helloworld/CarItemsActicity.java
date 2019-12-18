@@ -261,6 +261,8 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                         hyinfo.cardnumber=response1.getCdoData().getSMemberId();
                                         hyinfo.hySname=response1.getCdoData().getStrName();
                                         hyinfo.hytelphone=response1.getCdoData().getSBindMobile();
+                                        hyinfo.sMemberId=response1.getCdoData().getSMemberId();
+
 
                                         //给会员信息赋值
                                         CommonData.hyMessage=hyinfo;
@@ -977,7 +979,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             //会员预支付必须要等到 拿到上面的 订单流水号才可以支付，预支付，不成功也无所谓的
                             if (null != CommonData.hyMessage) {
                                 //进行会员卡预支付设置
-                                upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.khid, CommonData.orderInfo.prepayId);
+                                upCardCacheEntityCall = RetrofitHelper.getInstance().upCardCache(CommonData.hyMessage.sMemberId, CommonData.orderInfo.prepayId);
                                 upCardCacheEntityCall.enqueue(new Callback<upCardCacheEntity>() {
                                     @Override
                                     public void onResponse(Call<upCardCacheEntity> call, Response<upCardCacheEntity> response) {

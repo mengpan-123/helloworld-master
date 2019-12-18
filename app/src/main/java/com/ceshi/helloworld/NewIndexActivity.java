@@ -1,14 +1,18 @@
 package com.ceshi.helloworld;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.InputType;
@@ -17,6 +21,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -29,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.OrderDetailEntity;
@@ -64,35 +70,39 @@ public class NewIndexActivity extends Activity {
    public  String   Str="";
     private  Call<ClearCarEntity>  ClearCarEntityCall;
 
+    private  Context  context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newindex);
 
 
-//        video = (VideoView) findViewById(R.id.video);
-//
-//        String path = Environment.getExternalStorageDirectory().getPath()+"/"+"index.mp4";//获取视频路径
-//
-//       Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
-//        video.setVideoURI(uri);//为视频播放器设置视频路径
-//        video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
-//
-//
-//        MediaController mc = new MediaController(this);
-//        mc.setVisibility(View.INVISIBLE);
-//        video.setMediaController(mc);
-//
-//        video.start();
-//
-//
-//        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(MediaPlayer mp) {
-//                mp.start();
-//                mp.setLooping(true);
-//            }
-//        });
+
+
+
+        video = (VideoView) findViewById(R.id.video);
+
+        String path = Environment.getExternalStorageDirectory().getPath()+"/"+"index.mp4";//获取视频路径
+
+       Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
+        video.setVideoURI(uri);//为视频播放器设置视频路径
+        video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
+
+
+        MediaController mc = new MediaController(this);
+        mc.setVisibility(View.INVISIBLE);
+        video.setMediaController(mc);
+
+        video.start();
+
+
+        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+                mp.setLooping(true);
+            }
+        });
 
         //设置底部的显示信息
         TextView storename=findViewById(R.id.storename);
@@ -264,28 +274,6 @@ public class NewIndexActivity extends Activity {
         text2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-              /*if (isFastClick()) {
-
-                  //首先检查打印机连接
-                  PrinterAPI mPrinter = PrinterAPI.getInstance();  //打印机部分
-                  InterfaceAPI io = null;
-                  io = new SerialAPI(new File(
-                          "/dev/ttyS1"),
-                          38400,
-                          1);
-                  if (PrinterAPI.SUCCESS == mPrinter.connect(io)) {
-
-                  } else {
-
-                      //ToastUtil.showToast(NewIndexActivity.this, "异常通知", "请检查当前打印机连接");
-                      Toast.makeText(NewIndexActivity.this, "我自启动成功了哈", Toast.LENGTH_LONG).show();
-                      return;
-                  }
-
-              }*/
-
-
                 final Dialog dialog = new Dialog(NewIndexActivity.this, R.style.myNewsDialogStyle);
 
                 // 自定义对话框布局
@@ -339,15 +327,16 @@ public class NewIndexActivity extends Activity {
                                                             String day = form.format(date);
 
                                                             String storename = body.getResponse().getStoreName();
+                                                            String  Str="";
 
 
                                                             Str = "                   欢迎光临                   " + "\n";
                                                             Str += "门店名称:" + storename + "\n";
                                                             Str += "流水号：" + body.getResponse().getOutTransId() + "     " + "\n";
                                                             //Str+="商户订单号："+CommonData.outTransId+"     "+"\n";
-                                                            Str += "日期   " + day + "     " + "\n";
+                                                            Str += "打印日期   " + day + "     " + "\n";
                                                             Str += "===============================================" + "\n";
-                                                            Str += "条码     名称     数量        单价     金额" + "\n";
+                                                            Str += "条码      名称      数量       单价     金额" + "\n";
 
                                                             List<OrderDetailEntity.ResponseBean.PluMapBean> plumap = body.getResponse().getPluMap();
 
@@ -376,15 +365,16 @@ public class NewIndexActivity extends Activity {
                                                             //付款方式
                                                             String paytype = body.getResponse().getPayMap().getPayTypeName();
                                                             double paynet = body.getResponse().getPayMap().getPayVal();
+                                                            int paycount = body.getResponse().getTotQty();
                                                             Str += "===============================================" + "\n";
                                                             Str += "付款方式             金额          总折扣" + "\n";
 
                                                             Str += paytype + "             " + paynet + "          " + body.getResponse().getDisAmount() + "\n";
 
                                                             Str += "总数量         应收        找零" + "\n";
-                                                            Str += "" + paynet + "             " + body.getResponse().getDisAmount() + "          0.00     " + "\n";
+                                                            Str += "" + paycount + "             " + paynet+ "          0.00     " + "\n";
 
-                                                            Str += "=====================" + body.getResponse().getTrnTime() + "===================" + "\n";
+                                                            Str += "===============" + body.getResponse().getTrnTime() + "=============" + "\n";
                                                             Str += "            谢谢惠顾，请妥善保管小票         " + "\n";
                                                             Str += "               开正式发票，当月有效              " + "\n";
 
@@ -393,12 +383,13 @@ public class NewIndexActivity extends Activity {
                                                             map.put("xsnet", String.valueOf(paynet));
                                                             map.put("xsdisc", body.getResponse().getDisAmount());
                                                             map.put("xs_date","销售日期:"+body.getResponse().getTrnTime() );
+                                                            map.put("printstr",Str);
                                                             listitem.add(map);
 
 
                                                             SimpleAdapter adapter = new SimpleAdapter(NewIndexActivity.this, listitem,
-                                                                    R.layout.activity_tenprint, new String[]{"xs_bill", "xsnet", "xsdisc", "xs_date"},
-                                                                    new int[]{R.id.xsbill, R.id.tv_yuan_price, R.id.tv_disc, R.id.tv_goods_name});
+                                                                    R.layout.activity_tenprint, new String[]{"xs_bill", "xsnet", "xsdisc", "xs_date","printstr"},
+                                                                    new int[]{R.id.xsbill, R.id.tv_yuan_price, R.id.tv_disc, R.id.tv_goods_name,R.id.printstr});
                                                             listView.setAdapter(adapter);
                                                             dialog.show();
                                                             //usePrint(Str);
@@ -442,12 +433,24 @@ public class NewIndexActivity extends Activity {
 
 
                 //绑定点击事件
-                TextView print=layout.findViewById(R.id.SurePrint);
-                print.setOnClickListener(new View.OnClickListener() {
+//                TextView print=layout.findViewById(R.id.SurePrint);
+//                print.setOnClickListener(new View.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(View v) {
+//                        usePrint(Str);
+//                    }
+//                });
 
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        usePrint(Str);
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        HashMap<String, String> map = (HashMap<String, String>) listView.getItemAtPosition(position);
+                        String pr_Str = map.get("printstr");
+
+                        usePrint(pr_Str);
+
+                        dialog.dismiss();
                     }
                 });
 
@@ -469,27 +472,21 @@ public class NewIndexActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //退出应用
-                //System.exit(0);//仅会关闭当前的会话activity，其他并不会关闭
-                //android.os.Process.killProcess(android.os.Process.myPid());
-
-
+                exitAPP();
             }
         });
     }
 
 
 
-    private static final int MIN_CLICK_DELAY_TIME = 10000;
-    private static long lastClickTime;
-
-    public static boolean isFastClick() {
-        boolean flag = false;
-        long curClickTime = System.currentTimeMillis();
-        if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME) {
-            flag = true;
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void exitAPP() {
+        Context  context=NewIndexActivity.this;
+        ActivityManager activityManager = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.AppTask> appTaskList = activityManager.getAppTasks();
+        for (ActivityManager.AppTask appTask : appTaskList) {
+            appTask.finishAndRemoveTask();
         }
-        lastClickTime = curClickTime;
-        return flag;
     }
 
 
@@ -547,7 +544,7 @@ public class NewIndexActivity extends Activity {
                                         hyinfo.cardnumber=response1.getCdoData().getSMemberId();
                                         hyinfo.hySname=response1.getCdoData().getStrName();
                                         hyinfo.hytelphone=response1.getCdoData().getSBindMobile();
-
+                                        hyinfo.sMemberId=response1.getCdoData().getSMemberId();
                                         //给会员信息赋值
                                         CommonData.hyMessage=hyinfo;
 
@@ -706,7 +703,8 @@ public class NewIndexActivity extends Activity {
             }
             else
             {
-                Toast.makeText(NewIndexActivity.this, "打印机连接失败", Toast.LENGTH_SHORT).show();
+                ToastUtil.showToast(NewIndexActivity.this,"打印通知","打印机连接失败，请检查");
+                return null;
             }
         }
         catch(Exception ex){

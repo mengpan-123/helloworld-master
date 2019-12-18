@@ -144,6 +144,18 @@
                             android:textColor="#6F6D6D"
                             android:textSize="28dp"
                              />
+
+                        <TextView
+                            android:id="@+id/printstr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="65dp"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="价格"
+                            android:visibility="gone"
+                            android:textColor="#6F6D6D"
+                            android:textSize="28dp"
+                            />
                     </LinearLayout>
                 </LinearLayout>
 
