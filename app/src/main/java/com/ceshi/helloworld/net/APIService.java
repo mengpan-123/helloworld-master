@@ -231,4 +231,17 @@ public interface APIService {
             @Field("showActivity") String showActivity
     );
 
+    /**
+     * 获取 微信支付商户号
+     * @param
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("base/rest/v3/CartService/getMchIdByStoreId")
+    Call<OrderDetailEntity> getMchIdByStoreId(
+            @Field("storeId") String storeId
+
+    );
+
+
 }

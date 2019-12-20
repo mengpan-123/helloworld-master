@@ -157,7 +157,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     private void initView() {
         //一进来就得执行。初始化会员支付，初始化订单号
         Prepay();
-        adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
+
 
 
 
@@ -346,7 +346,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                 }
                 MapList=CommonData.orderInfo.spList;
             }
-
+            adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
         }
 
         CommonData.player.reset();

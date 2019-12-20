@@ -253,6 +253,7 @@ public class payWayActivity  extends Activity {
                         responseAppid=response1.getAppid();
                         responnse_subAppid=response1.getSubAppid();
                         responsemachid=response1.getMch_id();
+                        CommonData.mch_id=responsemachid;
                         responnse_submachid=response1.getSubMchId();
 
                         double a = Double.valueOf(CommonData.orderInfo.totalPrice)*10*10;

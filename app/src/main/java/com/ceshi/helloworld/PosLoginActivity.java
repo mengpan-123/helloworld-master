@@ -189,11 +189,8 @@ public class PosLoginActivity extends AppCompatActivity {
                             userId = response1.getUserId();
 
 
-                            WirttenDataToSqlite();
-
                             //然后根据获取到的 门店的值 ，进行下一次门店商户号的获取
-                           /* StoreIdEntityCall = RetrofitHelper.getInstance().getStoreId(use_khid);
-
+                            StoreIdEntityCall = RetrofitHelper.getInstance().getStoreId(use_khid);
                             StoreIdEntityCall.enqueue(new Callback<StoreIdEntity>() {
                                 @Override
                                 public void onResponse(Call<StoreIdEntity> call, Response<StoreIdEntity> response) {
@@ -227,7 +224,7 @@ public class PosLoginActivity extends AppCompatActivity {
                                 public void onFailure(Call<StoreIdEntity> call, Throwable t) {
 
                                 }
-                            });*/
+                            });
 
 
                         }

@@ -348,4 +348,11 @@ public class RetrofitHelper {
         return mAPIService.upgetorderbyid(userId,storeId,transId,"0");
 
     }
+
+    public Call<OrderDetailEntity> getMchIdByStoreId(String storeId){
+
+        return mAPIService.getMchIdByStoreId(storeId);
+
+    }
+
 }

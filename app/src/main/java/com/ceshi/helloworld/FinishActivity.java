@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
@@ -16,24 +17,33 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ceshi.helloworld.bean.StoreIdEntity;
 import com.ceshi.helloworld.net.CommonData;
 import com.ceshi.helloworld.net.MyDatabaseHelper;
+import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
 import com.ceshi.helloworld.net.ToastUtil;
 import com.szsicod.print.escpos.PrinterAPI;
 import com.szsicod.print.io.InterfaceAPI;
 import com.szsicod.print.io.SerialAPI;
+import com.tencent.wxpayface.IWxPayfaceCallback;
+import com.tencent.wxpayface.WxPayFace;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class FinishActivity extends AppCompatActivity  {
@@ -69,14 +79,19 @@ public class FinishActivity extends AppCompatActivity  {
             //只会有一种支付方式
             if (CommonData.usepayway.equals("WXPaymentCodePay")){
                 printpaytype="微信支付";
+                //微信支付时，调用 交易上报接口
+
+                reportOrder();
+
             }
             else if(CommonData.usepayway.equals("AliPaymentCodePay")){
                 printpaytype="支付宝支付";
+
             }
             else{
                 printpaytype="刷脸支付";
             }
-
+            //reportOrder();
             TextView paytype = findViewById(R.id.paytype);
             paytype.setText(printpaytype);
         }
@@ -89,6 +104,11 @@ public class FinishActivity extends AppCompatActivity  {
         CommonData.player=MediaPlayer.create(this,R.raw.finishpay);
         CommonData.player.start();
         CommonData.player.setLooping(false);
+
+
+
+
+
 
 
         //打印
@@ -117,6 +137,7 @@ public class FinishActivity extends AppCompatActivity  {
             String today = sdf.format(date);
 
             values.put("date_lr", today);
+            values.put("mch_id", CommonData.mch_id);
 
             db.update(CommonData.tablename,values,"khid= ?",new String[] { CommonData.khid });
 
@@ -174,6 +195,93 @@ public class FinishActivity extends AppCompatActivity  {
             startTime();
         };
     };
+
+
+
+    public void reportOrder() {
+
+        Call<StoreIdEntity> StoreIdEntityCall;
+
+        if (CommonData.mch_id.equals("")){
+            //如果为空，就重新获取，然后更新数据库
+            //然后根据获取到的 门店的值 ，进行下一次门店商户号的获取
+            StoreIdEntityCall = RetrofitHelper.getInstance().getStoreId(CommonData.khid);
+            StoreIdEntityCall.enqueue(new Callback<StoreIdEntity>() {
+                @Override
+                public void onResponse(Call<StoreIdEntity> call, Response<StoreIdEntity> response) {
+                    if (response != null) {
+                        StoreIdEntity body = response.body();
+                        if(null!=body) {
+                            //这里就直接拿到后台返回的对象StoreIdEntity  比如我要取return下的code
+                            StoreIdEntity.ReturnBean returnX = body.getReturnX();
+
+                            int nCode = returnX.getNCode();
+                            if (nCode == 0) {
+                                StoreIdEntity.ResponseBean response1 = body.getResponse();
+
+                                CommonData.mch_id = response1.getMch_id();
+
+                                Map<String, Object> m1 = new HashMap<String, Object>();
+                                m1.put("mch_id", CommonData.mch_id); // 商户号
+                                m1.put("out_trade_no", CommonData.ordernumber);  // 填写商户订单号
+                                WxPayFace.getInstance().reportOrder(m1, new IWxPayfaceCallback() {
+                                    @Override
+                                    public void response(Map info) throws RemoteException {
+                                        if (info == null) {
+                                            new RuntimeException("调用返回为空").printStackTrace();
+                                            return ;
+                                        }
+                                        String code = (String) info.get("return_code");
+                                        String msg = (String) info.get("return_msg");
+
+                                        if (code == null || !code.equals("SUCCESS")) {
+                                            new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
+                                            return ;
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<StoreIdEntity> call, Throwable t) {
+
+                }
+            });
+
+
+
+        }
+        else
+        {
+            //否则直接调用
+            Map<String, Object> m1 = new HashMap<String, Object>();
+            m1.put("mch_id", CommonData.mch_id); // 商户号
+            m1.put("out_trade_no", CommonData.ordernumber);  // 填写商户订单号
+            WxPayFace.getInstance().reportOrder(m1, new IWxPayfaceCallback() {
+                @Override
+                public void response(Map info) throws RemoteException {
+                    if (info == null) {
+                        new RuntimeException("调用返回为空").printStackTrace();
+                        return ;
+                    }
+                    String code = (String) info.get("return_code");
+                    String msg = (String) info.get("return_msg");
+
+                    if (code == null || !code.equals("SUCCESS")) {
+                        new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
+                        return ;
+                    }
+                }
+            });
+        }
+
+
+
+    }
 
 
 
