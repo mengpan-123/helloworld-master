@@ -20,7 +20,8 @@ public class WaitingFinishActivity extends AppCompatActivity {
     //支付成功后 等待查询支付界面
 
     private Call<PaysuccessofdeviceEntity> PaysuccessCall;
-    private String  payresult="";
+
+    private String payResult="";
     private  int  i=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +42,25 @@ public class WaitingFinishActivity extends AppCompatActivity {
                     while (i < 50) {
                         //Thread.sleep(1000);
 
-                        SystemClock.sleep(3000);
+                        SystemClock.sleep(2000);
 
-                        if (getPayresult().equals("OK")) {
+                        getPayresult();
+                        if (payResult=="OK"){
                             Intent intent = new Intent(WaitingFinishActivity.this, FinishActivity.class);
                             startActivity(intent);
+                            finish();
                             break;
                         }
 
                         i++;
                     }
 
-                    if (payresult != "OK") {
-                        //说明 支付失败了
+                    if (i>=50){
                         Intent intent = new Intent(WaitingFinishActivity.this, PayFailActivity.class);
                         startActivity(intent);
+                        finish();
                     }
+
                 }
             }.start();
 
@@ -64,6 +68,7 @@ public class WaitingFinishActivity extends AppCompatActivity {
         catch(Exception ex){
             Intent intent = new Intent(WaitingFinishActivity.this, PayFailActivity.class);
             startActivity(intent);
+            finish();
         }
 
 
@@ -76,7 +81,7 @@ public class WaitingFinishActivity extends AppCompatActivity {
      * Created by zhoupan on 2019/11/8.
      * 轮询支付结果信息
      * */
-    public String getPayresult() {
+    public void getPayresult() {
 
         PaysuccessCall= RetrofitHelper.getInstance().paysuccessofdevice(CommonData.khid,CommonData.orderInfo.prepayId);
         PaysuccessCall.enqueue(new Callback<PaysuccessofdeviceEntity>() {
@@ -87,16 +92,11 @@ public class WaitingFinishActivity extends AppCompatActivity {
 
                     PaysuccessofdeviceEntity body = response.body();
                     if (body.getReturnX().getNCode()==0){
-                        //跳转到支付等待界面
-                        //Intent intent = new Intent(WaitingFinishActivity.this, FinishActivity.class);
-                        //startActivity(intent);
-                        //payresult="OK";
-                        payresult=  "OK";
-                    }
-                    else
-                    {
-
-                        payresult="";
+                        //跳转到支付完成界面
+                        /*Intent intent = new Intent(WaitingFinishActivity.this, FinishActivity.class);
+                        startActivity(intent);
+                        finish();*/
+                        payResult="OK";
                     }
 
                 }
@@ -109,8 +109,6 @@ public class WaitingFinishActivity extends AppCompatActivity {
 
         });
 
-
-        return payresult;
     }
 }
 

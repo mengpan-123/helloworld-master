@@ -7,6 +7,8 @@ import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.BitmapDrawable;
@@ -47,6 +49,7 @@ import com.ceshi.helloworld.net.ToastUtil;
 import com.szsicod.print.escpos.PrinterAPI;
 import com.szsicod.print.io.InterfaceAPI;
 import com.szsicod.print.io.SerialAPI;
+import com.tencent.wxpayface.WxPayFace;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -77,6 +80,14 @@ public class NewIndexActivity extends Activity {
         setContentView(R.layout.activity_newindex);
 
 
+        if (CommonData.khid.equals("")||CommonData.userId.equals("")){
+
+            //如果异常之后获取不到 基本参数，就到登陆界面去，重新获取或重新登陆
+            Intent intent = new Intent(NewIndexActivity.this, PosLoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
 
 
@@ -84,7 +95,7 @@ public class NewIndexActivity extends Activity {
 
         String path = Environment.getExternalStorageDirectory().getPath()+"/"+"index.mp4";//获取视频路径
 
-       Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
+        Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
         video.setVideoURI(uri);//为视频播放器设置视频路径
         video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
 
@@ -115,7 +126,9 @@ public class NewIndexActivity extends Activity {
 
         TextView appversion=findViewById(R.id.appversion);
         appversion.setText("Version : "+ CommonData.app_version);
-
+        if (CommonData.app_version.equals("")){
+            appversion.setText(getAppVersion(this));//因为出现过版本号未获取到的的问题，所以这么写
+        }
 
         //从数据库取数据，如果万一数据有是从1 开始的话，说明可能 程序中断了，机器重启了，从数据库查找本地保存的已知 的流水号
         if (CommonData.number==1) {
@@ -207,6 +220,8 @@ public class NewIndexActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        releasePayFace();
 
 
         // 创建PopupWindow对象
@@ -478,6 +493,19 @@ public class NewIndexActivity extends Activity {
     }
 
 
+    //版本号名称
+    public static String getAppVersion(Context context) {
+        PackageManager manager = context.getPackageManager();
+        String code = "";
+        try {
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            code = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return code;
+    }
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void exitAPP() {
@@ -489,6 +517,10 @@ public class NewIndexActivity extends Activity {
         }
     }
 
+
+    private void releasePayFace() {
+        WxPayFace.getInstance().releaseWxpayface(this);
+    }
 
     /**
      *

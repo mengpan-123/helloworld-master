@@ -88,9 +88,6 @@ public class PosLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
         //1.0  首先创建出数据库  BaseInfo ，用于保存信息
         try {
             dbHelper = new MyDatabaseHelper(this, "BaseInfo2.db", null, 1);
@@ -104,6 +101,7 @@ public class PosLoginActivity extends AppCompatActivity {
         }
 
         app_version=getAppVersion(this);
+        CommonData.app_version = app_version;
 
         //2.0  先从本地选取初始化数据，如果拿到了，说明初始化过，则直接跳转，跳过登录
         InitData(querydb);
@@ -235,10 +233,6 @@ public class PosLoginActivity extends AppCompatActivity {
 
                     }
                 });
-
-                //app_version = getAppVersion(PosLoginActivity.this);
-                //Intent intent = new Intent(PosLoginActivity.this, IndexActivity.class);
-                //startActivity(intent);
             }
         });
     }
@@ -257,9 +251,6 @@ public class PosLoginActivity extends AppCompatActivity {
                 // 遍历Cursor对象，取出数据并打印
                 do {
                     CommonData.khid = cursor.getString(cursor.getColumnIndex("khid"));
-
-                    CommonData.app_version = app_version;
-
                     CommonData.lCorpId = cursor.getString(cursor.getColumnIndex("lCorpId"));
 
                     CommonData.corpId = cursor.getString(cursor.getColumnIndex("corpId"));
@@ -337,7 +328,8 @@ public class PosLoginActivity extends AppCompatActivity {
 
             values.clear();
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
 
         }
 

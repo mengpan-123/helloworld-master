@@ -131,6 +131,17 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgoods);
+
+        if (CommonData.khid.equals("")||CommonData.userId.equals("")){
+
+            //如果异常之后获取不到 基本参数，就到登陆界面去，重新获取或重新登陆
+            Intent intent = new Intent(CarItemsActicity.this, PosLoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+
         initView();
         if (CommonData.hyMessage == null) {
             phone_view.setText("我是会员");
@@ -139,7 +150,7 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
         }
 
 
-       //推出之后回到首页
+       //点击退出按钮，之后回到首页
         findViewById(R.id.exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,41 +159,14 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-
-
-
-
     }
 
     private void initView() {
         //一进来就得执行。初始化会员支付，初始化订单号
         Prepay();
 
-
-
-
-        //如果从支付失败界面重新 进入的时候 ，应该需要重新加载购物车
-       /* if (null!=CommonData.orderInfo){
-            if (null!=CommonData.orderInfo.spList){
-                HashMap<String, String> temp_map = new HashMap<>();
-                for (Map.Entry<String, List<SplnfoList>> entry : CommonData.orderInfo.spList.entrySet()){
-                    temp_map.clear();
-                    temp_map.put("id", entry.getValue().get(0).getGoodsId());
-                    temp_map.put("name", entry.getValue().get(0).getPluName());
-                    temp_map.put("price", String.valueOf(entry.getValue().get(0).getRealPrice()));
-                    temp_map.put("count", String.valueOf(entry.getValue().get(0).getPackNum()));
-
-                    listmap.add(temp_map);
-                }
-
-                MapList=CommonData.orderInfo.spList;
-            }
-        }*/
-
-
-
         listtop = findViewById(R.id.listtop);
-        //top_bar = (LinearLayout) findViewById(R.id.top_bar);
+
         listview = (ListView) findViewById(R.id.listview);
         text_tip = (ImageView) findViewById(R.id.text_tip);
 
@@ -390,24 +374,26 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onResponse(Call<getCartItemsEntity> call, Response<getCartItemsEntity> response) {
                                 if (response != null) {
-                                    getCartItemsEntity body = response.body();
-                                    if(null==body){
-                                        ToastUtil.showToast(CarItemsActicity.this, "商品查询通知", "接口访问异常，请重试");
-                                        return;
-                                    }
-                                    if (body.getReturnX().getNCode() == 0) {
-                                        //下面先  获取到 总价和总金额折扣这些
-                                        CommonData.orderInfo.totalCount = body.getResponse().getTotalQty();
-                                        CommonData.orderInfo.totalPrice = body.getResponse().getShouldAmount();
-                                        CommonData.orderInfo.totalDisc = body.getResponse().getDisAmount();
 
-                                        List<getCartItemsEntity.ResponseBean.ItemsListBean> itemsList = body.getResponse().getItemsList();
-                                        for (int sm = 0; sm < itemsList.size(); sm++) {
-                                            List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
-                                            for (int sk = 0; sk < sub_itemsList.size(); sk++) {
-                                                //拿到产品编码
-                                                String barcode = sub_itemsList.get(sk).getSBarcode();
-                                                double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
+                                    try {
+                                        getCartItemsEntity body = response.body();
+                                        if (null == body) {
+                                            ToastUtil.showToast(CarItemsActicity.this, "商品查询通知", "接口访问异常，请重试");
+                                            return;
+                                        }
+                                        if (body.getReturnX().getNCode() == 0) {
+                                            //下面先  获取到 总价和总金额折扣这些
+                                            CommonData.orderInfo.totalCount = body.getResponse().getTotalQty();
+                                            CommonData.orderInfo.totalPrice = body.getResponse().getShouldAmount();
+                                            CommonData.orderInfo.totalDisc = body.getResponse().getDisAmount();
+
+                                            List<getCartItemsEntity.ResponseBean.ItemsListBean> itemsList = body.getResponse().getItemsList();
+                                            for (int sm = 0; sm < itemsList.size(); sm++) {
+                                                List<getCartItemsEntity.ResponseBean.ItemsListBean.ItemsBean> sub_itemsList = itemsList.get(sm).getItems();
+                                                for (int sk = 0; sk < sub_itemsList.size(); sk++) {
+                                                    //拿到产品编码
+                                                    String barcode = sub_itemsList.get(sk).getSBarcode();
+                                                    double nRealPrice = sub_itemsList.get(sk).getNPluPrice();
                                                /* //有会员登录，会员价低取会员价
                                                 //无会员登录，则获取 nPluPrice
                                                 if (CommonData.hyMessage != null) {
@@ -416,69 +402,73 @@ public class CarItemsActicity extends AppCompatActivity implements View.OnClickL
                                                 } else {
                                                     nRealPrice = sub_itemsList.get(sk).getNPluPrice();
                                                 }*/
-                                                if (MapList.containsKey(barcode)) {
+                                                    if (MapList.containsKey(barcode)) {
 
-                                                    //如果存在，拿到集合，增加数量，总价，折扣
-                                                    MapList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
-                                                    MapList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());  //原价
-                                                    MapList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));  //实际总售价
+                                                        //如果存在，拿到集合，增加数量，总价，折扣
+                                                        MapList.get(barcode).get(0).setPackNum(sub_itemsList.get(sk).getNQty());
+                                                        MapList.get(barcode).get(0).setMainPrice(sub_itemsList.get(sk).getNRealPrice());  //原价
+                                                        MapList.get(barcode).get(0).setRealPrice(String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));  //实际总售价
 
-                                                    //修改列表的数量
-                                                    for (int k = 0; k < listmap.size(); k++) {
-                                                        if (listmap.get(k).get("id").equals(barcode)) {
-                                                            listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
-                                                            listmap.get(k).put("MainPrice", String.valueOf(nRealPrice));
-                                                            listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
-                                                            listmap.get(k).put("actname", itemsList.get(sm).getDisRule());
+                                                        //修改列表的数量
+                                                        for (int k = 0; k < listmap.size(); k++) {
+                                                            if (listmap.get(k).get("id").equals(barcode)) {
+                                                                listmap.get(k).put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
+                                                                listmap.get(k).put("MainPrice", String.valueOf(nRealPrice));
+                                                                listmap.get(k).put("realprice", String.valueOf(sub_itemsList.get(sk).getPluRealAmount()));
+                                                                listmap.get(k).put("actname", itemsList.get(sm).getDisRule());
+                                                            }
                                                         }
+                                                    } else {
+                                                        List<SplnfoList> uselist = new ArrayList<SplnfoList>();
+                                                        SplnfoList usesplnfo = new SplnfoList();
+                                                        usesplnfo.setBarcode(sub_itemsList.get(sk).getSBarcode());
+                                                        usesplnfo.setGoodsId(sub_itemsList.get(sk).getSGoodsId());
+                                                        usesplnfo.setMainPrice(nRealPrice); //每一个产品的原价，无需计算
+                                                        usesplnfo.setPackNum(sub_itemsList.get(sk).getNQty());
+                                                        usesplnfo.setPluName(sub_itemsList.get(sk).getSGoodsName());
+                                                        usesplnfo.setTotaldisc(sub_itemsList.get(sk).getPluDis());// 总折扣
+                                                        usesplnfo.setRealPrice(sub_itemsList.get(sk).getPluRealAmount());  //总实际售价
+                                                        usesplnfo.setActname(itemsList.get(sm).getDisRule());
+                                                        usesplnfo.setNweight(sub_itemsList.get(sk).getNWeight());  //产品的重量
+
+
+                                                        uselist.add(usesplnfo);
+                                                        //说明产品不存在，直接增加进去
+                                                        MapList.put(barcode, uselist);
+
+
+                                                        //下面是只取几个字段去改变 界面显示的
+                                                        map.put("barcode", sub_itemsList.get(sk).getSBarcode());
+                                                        map.put("id", barcode);
+                                                        map.put("name", sub_itemsList.get(sk).getSGoodsName());
+                                                        map.put("MainPrice", String.valueOf(nRealPrice));  //原价
+                                                        map.put("disc", String.valueOf(sub_itemsList.get(sk).getPluDis()));  //折扣
+                                                        map.put("realprice", sub_itemsList.get(sk).getPluRealAmount());
+                                                        map.put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
+                                                        map.put("actname", itemsList.get(sm).getDisRule());
+                                                        listmap.add(map);
+
+
                                                     }
                                                 }
-                                                else {
-                                                    List<SplnfoList> uselist = new ArrayList<SplnfoList>();
-                                                    SplnfoList usesplnfo = new SplnfoList();
-                                                    usesplnfo.setBarcode(sub_itemsList.get(sk).getSBarcode());
-                                                    usesplnfo.setGoodsId(sub_itemsList.get(sk).getSGoodsId());
-                                                    usesplnfo.setMainPrice(nRealPrice); //每一个产品的原价，无需计算
-                                                    usesplnfo.setPackNum(sub_itemsList.get(sk).getNQty());
-                                                    usesplnfo.setPluName(sub_itemsList.get(sk).getSGoodsName());
-                                                    usesplnfo.setTotaldisc(sub_itemsList.get(sk).getPluDis());// 总折扣
-                                                    usesplnfo.setRealPrice(sub_itemsList.get(sk).getPluRealAmount());  //总实际售价
-                                                    usesplnfo.setActname(itemsList.get(sm).getDisRule());
-                                                    usesplnfo.setNweight(sub_itemsList.get(sk).getNWeight());  //产品的重量
-
-
-                                                    uselist.add(usesplnfo);
-                                                    //说明产品不存在，直接增加进去
-                                                    MapList.put(barcode, uselist);
-
-
-                                                    //下面是只取几个字段去改变 界面显示的
-                                                    map.put("barcode", sub_itemsList.get(sk).getSBarcode());
-                                                    map.put("id", barcode);
-                                                    map.put("name", sub_itemsList.get(sk).getSGoodsName());
-                                                    map.put("MainPrice", String.valueOf(nRealPrice));  //原价
-                                                    map.put("disc", String.valueOf(sub_itemsList.get(sk).getPluDis()));  //折扣
-                                                    map.put("realprice", sub_itemsList.get(sk).getPluRealAmount());
-                                                    map.put("count", String.valueOf(sub_itemsList.get(sk).getNQty()));
-                                                    map.put("actname", itemsList.get(sm).getDisRule());
-                                                    listmap.add(map);
-
-
-                                                }
                                             }
+
+                                            CommonData.orderInfo.spList = MapList;
+
+                                            //界面上实现  增加一个元素
+                                            adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
+                                            listview.setAdapter(adapter);
+                                            listview.setSelection(listview.getBottom());  //加这一句话的目的是，超屏幕现实的时候，自动定位在底部
+                                            listview.setSelection(adapter.getCount() - 1);
+                                            adapter.setRefreshPriceInterface(CarItemsActicity.this);
+                                            priceControl(adapter.getPitchOnMap());
                                         }
-
-                                        CommonData.orderInfo.spList = MapList;
-
-                                        //界面上实现  增加一个元素
-                                        adapter = new CreateAddAdapter(CarItemsActicity.this, listmap);
-                                        listview.setAdapter(adapter);
-                                        listview.setSelection(listview.getBottom());  //加这一句话的目的是，超屏幕现实的时候，自动定位在底部
-                                        listview.setSelection(adapter.getCount()-1);
-                                        adapter.setRefreshPriceInterface(CarItemsActicity.this);
-                                        priceControl(adapter.getPitchOnMap());
                                     }
+                                    catch(Exception ex){
+                                        ToastUtil.showToast(CarItemsActicity.this, "商品查询通知", "商品返回格式无法解析，请记录该商品并联系管理员");
+                                        return;
 
+                                    }
                                 }
                             }
 

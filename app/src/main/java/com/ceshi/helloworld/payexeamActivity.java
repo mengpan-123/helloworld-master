@@ -203,8 +203,6 @@ public class payexeamActivity extends AppCompatActivity {
                     ResponseSignBean body = response.body();
                     if (null!=body) {
 
-
-
                         if (body.getReturnX().getNCode() == 0) {
 
                             ResponseSignBean.ResponseBean response1 = body.getResponse();
@@ -219,8 +217,8 @@ public class payexeamActivity extends AppCompatActivity {
                             }
                             //说明当前支付时成功的，跳转到 支付等待界面
                             Intent intent = new Intent(payexeamActivity.this, WaitingFinishActivity.class);
-
                             startActivity(intent);
+                            return;
 
                         } else {
                             //Toast.makeText(InputGoodsActivity.this,body.getReturnX().getStrText(),Toast.LENGTH_SHORT).show();

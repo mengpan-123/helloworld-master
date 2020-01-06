@@ -313,17 +313,19 @@ public class payWayActivity  extends Activity {
 
                                     wxFaceMoneypay();
                                 }
-                               /* else if(code.equals("USER_CANCEL")){
+
+                                WxPayFace.getInstance().releaseWxpayface(payWayActivity.this);
+                              /* *//* else if(code.equals("USER_CANCEL")){
 
                                     WxPayFace.getInstance().releaseWxpayface(InputGoodsActivity.this);
                                     //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户取消了支付，请重试");
                                     return;
 
-                                }*/
+                                }*//*
                                 WxPayFace.getInstance().releaseWxpayface(payWayActivity.this);
                                 //ToastUtil.showToast(InputGoodsActivity.this, "支付通知", "用户取消了支付，请重试");
                                 return;
-
+*/
                             }
                         });
 
@@ -429,6 +431,9 @@ public class payWayActivity  extends Activity {
                                 }
                             }
                         });
+
+                        //释放刷脸资源
+                        WxPayFace.getInstance().releaseWxpayface(payWayActivity.this);
 
                     }
                     if (body.getReturnX().getNCode()==0){

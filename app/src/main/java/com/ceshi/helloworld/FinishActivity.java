@@ -28,6 +28,7 @@ import com.szsicod.print.io.InterfaceAPI;
 import com.szsicod.print.io.SerialAPI;
 import com.tencent.wxpayface.IWxPayfaceCallback;
 import com.tencent.wxpayface.WxPayFace;
+import com.tencent.wxpayface.WxfacePayCommonCode;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -91,7 +92,8 @@ public class FinishActivity extends AppCompatActivity  {
             else{
                 printpaytype="刷脸支付";
             }
-            //reportOrder();
+           /* CommonData.ordernumber="900150019122000003";
+            reportOrder();*/
             TextView paytype = findViewById(R.id.paytype);
             paytype.setText(printpaytype);
         }
@@ -104,11 +106,6 @@ public class FinishActivity extends AppCompatActivity  {
         CommonData.player=MediaPlayer.create(this,R.raw.finishpay);
         CommonData.player.start();
         CommonData.player.setLooping(false);
-
-
-
-
-
 
 
         //打印
@@ -184,11 +181,13 @@ public class FinishActivity extends AppCompatActivity  {
                 }else {
                     Intent intent = new Intent(FinishActivity.this, NewIndexActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             }
         };
         timer.schedule(task, 1000);
     }
+
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             time.setText(msg.arg1 + "");
@@ -197,6 +196,25 @@ public class FinishActivity extends AppCompatActivity  {
     };
 
 
+    private boolean isSuccessInfo(Map info) {
+        if (info == null) {
+
+            ToastUtil.showToast(FinishActivity.this, "温馨提示", "调用返回为空");
+            new RuntimeException("调用返回为空").printStackTrace();
+            return false;
+        }
+        String code = (String) info.get("return_code");
+        String msg = (String) info.get("return_msg");
+
+
+        if (code == null || !code.equals(WxfacePayCommonCode.VAL_RSP_PARAMS_SUCCESS)) {
+            ToastUtil.showToast(FinishActivity.this, "温馨提示", "调用返回非成功信息, 请查看日志");
+            new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 
     public void reportOrder() {
 
@@ -221,25 +239,47 @@ public class FinishActivity extends AppCompatActivity  {
 
                                 CommonData.mch_id = response1.getMch_id();
 
-                                Map<String, Object> m1 = new HashMap<String, Object>();
-                                m1.put("mch_id", CommonData.mch_id); // 商户号
-                                m1.put("out_trade_no", CommonData.ordernumber);  // 填写商户订单号
-                                WxPayFace.getInstance().reportOrder(m1, new IWxPayfaceCallback() {
-                                    @Override
-                                    public void response(Map info) throws RemoteException {
-                                        if (info == null) {
-                                            new RuntimeException("调用返回为空").printStackTrace();
-                                            return ;
-                                        }
-                                        String code = (String) info.get("return_code");
-                                        String msg = (String) info.get("return_msg");
+                                //否则直接调用
+                                Map<String, String> m1 = new HashMap<>();
+                                //m1.put("ip", "192.168.1.1"); //若没有代理,则不需要此行
+                                //m1.put("port", "8888");//若没有代理,则不需要此行*/
+                                try {
+                                    //1.0 刷脸支付初始化成功
+                                    WxPayFace.getInstance().initWxpayface(FinishActivity.this, m1, new IWxPayfaceCallback() {
+                                        @Override
+                                        public void response(Map info) throws RemoteException {
+                                            if (!isSuccessInfo(info)) {
+                                                return;
+                                            }
+                                            Map<String, Object> m1 = new HashMap<String, Object>();
+                                            m1.put("mch_id", CommonData.mch_id); // 商户号
+                                            m1.put("out_trade_no", CommonData.ordernumber);  // 填写商户订单号
+                                            WxPayFace.getInstance().reportOrder(m1, new IWxPayfaceCallback() {
+                                                @Override
+                                                public void response(Map info) throws RemoteException {
+                                                    releasePayFace();
 
-                                        if (code == null || !code.equals("SUCCESS")) {
-                                            new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
-                                            return ;
+                                                    if (info == null) {
+                                                        new RuntimeException("调用返回为空").printStackTrace();
+                                                        return;
+                                                    }
+                                                    String code = (String) info.get("return_code");
+                                                    String msg = (String) info.get("return_msg");
+                                                    Log.e("", "code");
+                                                    if (code == null || !code.equals("SUCCESS")) {
+                                                        new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
+                                                        return;
+                                                    }
+
+                                                    Log.d("", "调用返回成功");
+                                                }
+                                            });
                                         }
-                                    }
-                                });
+                                    });
+                                } catch (Exception ex) {
+
+                                }
+
                             }
                         }
                     }
@@ -255,35 +295,55 @@ public class FinishActivity extends AppCompatActivity  {
 
 
         }
-        else
-        {
+        else {
             //否则直接调用
-            Map<String, Object> m1 = new HashMap<String, Object>();
-            m1.put("mch_id", CommonData.mch_id); // 商户号
-            m1.put("out_trade_no", CommonData.ordernumber);  // 填写商户订单号
-            WxPayFace.getInstance().reportOrder(m1, new IWxPayfaceCallback() {
-                @Override
-                public void response(Map info) throws RemoteException {
-                    if (info == null) {
-                        new RuntimeException("调用返回为空").printStackTrace();
-                        return ;
-                    }
-                    String code = (String) info.get("return_code");
-                    String msg = (String) info.get("return_msg");
+            Map<String, String> m1 = new HashMap<>();
+            try {
+                //1.0 刷脸支付初始化成功
+                WxPayFace.getInstance().initWxpayface(FinishActivity.this, m1, new IWxPayfaceCallback() {
+                    @Override
+                    public void response(Map info) throws RemoteException {
+                        if (!isSuccessInfo(info)) {
+                            return;
+                        }
+                        Map<String, Object> m1 = new HashMap<String, Object>();
+                        m1.put("mch_id", CommonData.mch_id); // 商户号
+                        m1.put("out_trade_no", CommonData.ordernumber);  // 填写商户订单号
+                        WxPayFace.getInstance().reportOrder(m1, new IWxPayfaceCallback() {
+                            @Override
+                            public void response(Map info) throws RemoteException {
 
-                    if (code == null || !code.equals("SUCCESS")) {
-                        new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
-                        return ;
+                                releasePayFace();
+
+                                if (info == null) {
+                                    new RuntimeException("调用返回为空").printStackTrace();
+                                    return;
+                                }
+                                String code = (String) info.get("return_code");
+                                String msg = (String) info.get("return_msg");
+                                Log.e("", "code");
+                                if (code == null || !code.equals("SUCCESS")) {
+                                    new RuntimeException("调用返回非成功信息: " + msg).printStackTrace();
+                                    return;
+                                }
+                                return;
+
+                            }
+                        });
                     }
-                }
-            });
+                });
+            } catch (Exception ex) {
+
+            }
         }
 
 
 
     }
 
-
+    private void releasePayFace() {
+        WxPayFace.getInstance().releaseWxpayface(this);
+    }
 
     protected void print()
     {
