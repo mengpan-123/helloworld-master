@@ -45,9 +45,7 @@ import com.ceshi.helloworld.net.OrderInfo;
 import com.ceshi.helloworld.net.RetrofitHelper;
 import com.ceshi.helloworld.net.SplnfoList;
 import com.ceshi.helloworld.net.ToastUtil;
-import com.tencent.wxpayface.IWxPayfaceCallback;
-import com.tencent.wxpayface.WxPayFace;
-import com.tencent.wxpayface.WxfacePayCommonCode;
+
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;

@@ -7,8 +7,8 @@ android {
         applicationId "com.ceshi.helloworld"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 3050
-        versionName "5.6.5"  //文件版本号
+        versionCode 3020
+        versionName "5.9.88"  //文件版本号
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     android.applicationVariants.all {
@@ -30,6 +30,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+    allprojects {
+        repositories {
+            mavenCentral()
+        }
+    }
 
      repositories{
          flatDir

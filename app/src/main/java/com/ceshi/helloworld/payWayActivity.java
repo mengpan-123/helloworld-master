@@ -41,6 +41,7 @@ public class payWayActivity  extends Activity {
     //支付识别码
     private String payAuthCode = "";
 
+
     private String mAuthInfo;   //刷脸支付 获取的个人授权信息，从接口获取
     private String openid;      //刷脸支付获取微信openid
     private String out_trade_no;   //获取的交易流水号，用于刷脸支付

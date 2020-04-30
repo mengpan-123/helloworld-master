@@ -3,7 +3,6 @@ package com.ceshi.helloworld;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.bumptech.glide.Glide;
 import com.ceshi.helloworld.bean.ClearCarEntity;
 import com.ceshi.helloworld.bean.GetHyInfoEntity;
 import com.ceshi.helloworld.bean.OrderDetailEntity;
@@ -76,7 +74,7 @@ public class NewIndexActivity extends Activity {
     private  Context  context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceStatxt2te);
         setContentView(R.layout.activity_newindex);
 
 
@@ -95,7 +93,7 @@ public class NewIndexActivity extends Activity {
 
         String path = Environment.getExternalStorageDirectory().getPath()+"/"+"index.mp4";//获取视频路径
 
-        Uri uri = Uri.parse("http://www.ikengee.com.cn/test1/index.mp4");//将路径转换成uri
+        Uri uri = Uri.parse("http://52.81.85.108:8080/uploadapk/index.mp4");//将路径转换成uri
         video.setVideoURI(uri);//为视频播放器设置视频路径
         video.setMediaController(new MediaController(NewIndexActivity.this));//显示控制栏
 

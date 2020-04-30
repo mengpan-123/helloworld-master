@@ -108,13 +108,13 @@ public class OneActivity extends AppCompatActivity {
                             if (!isSuccessInfo(info)) {
                                 return;
                             }
-
                             String rawdata = info.get("rawdata").toString();
 
                             try {
                                 selfgetAuthInfo(rawdata);
-
-                            } catch (Exception e) {
+                            }
+                            catch (Exception e)
+                            {
                                 e.printStackTrace();
                             }
                         }
